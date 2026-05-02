@@ -1,0 +1,113 @@
+import os
+import json
+import time
+from datetime import datetime
+from src.pipelines.llava_med import LLaVAMedPipeline
+from src.pipelines.case_loader import load_chexpert_cases
+from src.pipelines.base import save_output
+from src.pipelines.result_writer import build_result_row, write_jsonl
+
+OUTPUT_DIR = "logs"
+RESULTS_DIR = "results"
+MODEL_SLUG = "llava_med"
+MODE = "image_text"
+
+print("runme started", flush=True)
+
+def confirm_pipeline_on_cases(pipeline, cases, output_dir):
+    logs = []
+    result_rows = []
+    result_path = os.path.join(
+        RESULTS_DIR,
+        MODEL_SLUG,
+        f"{MODE}_valid_{len(cases)}.jsonl",
+    )
+    log_path = os.path.join(
+        output_dir, "confirmation_logs",
+        f"LLaVAMed_{datetime.now():%Y%m%d_%H%M%S}.json"
+    )
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+
+    for case in cases:
+        print(f"\nRunning on {case['case_id']}...", flush=True)
+        started = time.monotonic()
+        try:
+            out = pipeline.predict(
+                image=case["image"],
+                text=case["text"],
+                case_id=case["case_id"],
+                ground_truth=case["ground_truth"]
+            )
+            assert isinstance(out.diagnosis, str) and len(out.diagnosis) > 0
+            assert 0.0 <= out.confidence <= 1.0
+            assert isinstance(out.explanation, str) and len(out.explanation) > 0
+            assert len(out.raw_response) > 0
+            status = "PASS"
+            error = None
+            elapsed = time.monotonic() - started
+            print(
+                f"  PASS | diagnosis={out.diagnosis} | "
+                f"confidence={out.confidence:.2f} | {elapsed:.1f}s",
+                flush=True,
+            )
+        except AssertionError as e:
+            status = "FAIL (assertion)"
+            error = str(e)
+            out = None
+            elapsed = time.monotonic() - started
+            print(f"  FAIL | {error} | {elapsed:.1f}s", flush=True)
+        except Exception as e:
+            status = "FAIL (exception)"
+            error = str(e)
+            out = None
+            elapsed = time.monotonic() - started
+            print(f"  FAIL | {error} | {elapsed:.1f}s", flush=True)
+
+        log_entry = {
+            "case_id": case["case_id"],
+            "ground_truth": case["ground_truth"],
+            "status": status,
+            "error": error,
+            "diagnosis": out.diagnosis if out else None,
+            "confidence": out.confidence if out else None,
+            "explanation": out.explanation if out else None,
+            "elapsed_seconds": round(elapsed, 2),
+        }
+        logs.append(log_entry)
+        result_rows.append(
+            build_result_row(
+                model=MODEL_SLUG,
+                mode=MODE,
+                case=case,
+                output=out,
+                status=status,
+                error=error,
+                elapsed_seconds=elapsed,
+            )
+        )
+        if out:
+            save_output(out, output_dir)
+
+        with open(log_path, "w") as f:
+            json.dump(logs, f, indent=2)
+        write_jsonl(result_path, result_rows)
+
+    print(f"\nLog saved to {log_path}", flush=True)
+    print(f"Results saved to {result_path}", flush=True)
+    return logs
+
+
+if __name__ == "__main__":
+    CHEXPERT_ROOT = "/Users/ard/Desktop/medical llm/data/chexpert small"
+
+    print("Loading cases...", flush=True)
+    case_count = int(os.environ.get("CASE_COUNT", "10"))
+    cases = load_chexpert_cases(CHEXPERT_ROOT, split="valid", n=case_count)
+
+    print("Loading LLaVA-Med model...", flush=True)
+    device = os.environ.get("LLAVAMED_DEVICE", "auto")
+    pipeline = LLaVAMedPipeline(device=device)
+
+    logs = confirm_pipeline_on_cases(pipeline, cases, OUTPUT_DIR)
+    passed = sum(1 for l in logs if l["status"] == "PASS")
+    print(f"\nResult: {passed}/{len(logs)} passed", flush=True)

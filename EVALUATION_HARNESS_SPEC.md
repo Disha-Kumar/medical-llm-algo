@@ -109,6 +109,13 @@ Run all baseline modes:
 python -u scripts/run_baselines.py --models qwen2_vl biovil_t --cases 5
 ```
 
+Run the full `(model, case, condition)` evaluation harness:
+
+```bash
+python -u scripts/run_eval_harness.py --model qwen2_vl --cases 1 --conditions original image_only text_only
+python -u scripts/run_eval_harness.py --model qwen2_vl --cases 1 --conditions original watermark brightness_low contrast_high
+```
+
 ## Logging Contract
 
 Each run writes JSONL rows to:
@@ -189,6 +196,12 @@ hallucination_flag
 hallucination_reason
 ```
 
+The implemented harness writes these fields to:
+
+```text
+results/evaluation_harness/<model>/<split>_<N>_<conditions>.jsonl
+```
+
 ## Model-Specific Notes
 
 LLaVA-Med:
@@ -213,4 +226,3 @@ Med-Flamingo:
 
 - Adapter exists.
 - Requires external local Med-Flamingo installation through `MED_FLAMINGO_COMMAND`.
-

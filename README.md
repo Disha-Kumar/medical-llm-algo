@@ -57,6 +57,12 @@ python -u scripts/run_baselines.py --models qwen2_vl --cases 1
 python -u scripts/run_baselines.py --models qwen2_vl biovil_t --cases 5
 ```
 
+Run the full evaluation harness over `(model, case, condition)` triples:
+
+```bash
+python -u scripts/run_eval_harness.py --model qwen2_vl --cases 1 --conditions original image_only text_only
+```
+
 Results are written under:
 
 ```text

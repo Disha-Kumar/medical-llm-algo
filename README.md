@@ -75,6 +75,13 @@ Baseline interpretation:
 - `image_only`: image plus an instruction saying no clinical note is provided.
 - `text_only`: clinical note only, no image input.
 
+Hallucination detection prompt templates:
+
+```text
+HALLUCINATION_PROMPTS.md
+HALLUCINATION_QUALITY_NOTES.md
+```
+
 ## Notes
 
 BioViL-T is a radiology representation baseline in this repo. The current

@@ -202,6 +202,13 @@ The implemented harness writes these fields to:
 results/evaluation_harness/<model>/<split>_<N>_<conditions>.jsonl
 ```
 
+Hallucination judge prompt templates and manual quality notes are stored in:
+
+```text
+HALLUCINATION_PROMPTS.md
+HALLUCINATION_QUALITY_NOTES.md
+```
+
 ## Model-Specific Notes
 
 LLaVA-Med:

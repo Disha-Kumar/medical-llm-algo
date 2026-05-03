@@ -50,11 +50,24 @@ image_only
 text_only
 ```
 
+Run all three baseline modes for selected models:
+
+```bash
+python -u scripts/run_baselines.py --models qwen2_vl --cases 1
+python -u scripts/run_baselines.py --models qwen2_vl biovil_t --cases 5
+```
+
 Results are written under:
 
 ```text
 results/<model>/<mode>_valid_<N>.jsonl
 ```
+
+Baseline interpretation:
+
+- `image_text`: image plus CheXpert clinical note.
+- `image_only`: image plus an instruction saying no clinical note is provided.
+- `text_only`: clinical note only, no image input.
 
 ## Notes
 
@@ -74,4 +87,3 @@ GPT-4o requires:
 ```bash
 export OPENAI_API_KEY="..."
 ```
-

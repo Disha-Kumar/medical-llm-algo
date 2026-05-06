@@ -63,6 +63,14 @@ Run the full evaluation harness over `(model, case, condition)` triples:
 python -u scripts/run_eval_harness.py --model qwen2_vl --cases 1 --conditions original image_only text_only
 ```
 
+Run the resumable full batch harness across selected models and conditions:
+
+```bash
+python -u scripts/run_full_batch.py --models qwen2_vl biovil_t
+```
+
+See `MODULE_USAGE.md` for importable module usage.
+
 Results are written under:
 
 ```text

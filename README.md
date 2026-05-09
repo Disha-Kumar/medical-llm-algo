@@ -8,6 +8,7 @@ Implemented pipeline modules:
 - Qwen2-VL
 - BioViL-T baseline
 - GPT-4o adapter
+- GPT-4o OpenRouter adapter
 - Med-Flamingo adapter
 
 ## Setup
@@ -40,6 +41,13 @@ Do not commit dataset files, model weights, API keys, or `.venv`.
 python -u scripts/run_experiment.py --model qwen2_vl --mode image_text --cases 1
 python -u scripts/run_experiment.py --model llava_med --mode image_text --cases 1
 python -u scripts/run_experiment.py --model biovil_t --mode image_text --cases 5
+```
+
+Run GPT-4o through OpenRouter:
+
+```bash
+export OPENROUTER_API_KEY="your_openrouter_key_here"
+python -u scripts/run_experiment.py --model gpt4o_openrouter --mode image_text --cases 1
 ```
 
 Modes:
@@ -107,4 +115,10 @@ GPT-4o requires:
 
 ```bash
 export OPENAI_API_KEY="..."
+```
+
+GPT-4o through OpenRouter requires:
+
+```bash
+export OPENROUTER_API_KEY="..."
 ```

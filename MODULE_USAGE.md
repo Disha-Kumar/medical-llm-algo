@@ -11,6 +11,13 @@ Small smoke test:
 python -u scripts/run_full_batch.py --models qwen2_vl --conditions original image_only text_only --cases 1
 ```
 
+GPT-4o through OpenRouter can be run as another model name:
+
+```bash
+export OPENROUTER_API_KEY="your_openrouter_key_here"
+python -u scripts/run_full_batch.py --models gpt4o_openrouter --conditions original image_only text_only --cases 1
+```
+
 Full selected-model run over all available frontal CheXpert valid cases:
 
 ```bash

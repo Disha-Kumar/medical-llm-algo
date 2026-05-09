@@ -13,6 +13,7 @@ results/**/*.json
 results/**/*.csv
 shared_outputs/**/*.jsonl
 shared_outputs/**/*.json
+experiments/**/outputs/
 
 .env
 *.key

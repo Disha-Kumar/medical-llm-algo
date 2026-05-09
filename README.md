@@ -37,6 +37,21 @@ Do not commit dataset files, model weights, API keys, or `.venv`.
 
 ## Run
 
+CheXpert-small testing wrappers live under:
+
+```text
+experiments/chexpert_small_testing/
+```
+
+CheXpert Plus experiment scaffolding lives under:
+
+```text
+experiments/chexpert_plus/
+```
+
+The model pipelines themselves stay in `src/pipelines/` so they can be reused
+for both CheXpert small testing and CheXpert Plus experiments.
+
 ```bash
 python -u scripts/run_experiment.py --model qwen2_vl --mode image_text --cases 1
 python -u scripts/run_experiment.py --model llava_med --mode image_text --cases 1

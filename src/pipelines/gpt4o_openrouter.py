@@ -6,7 +6,7 @@ from urllib.request import Request, urlopen
 from PIL import Image
 
 from src.pipelines.base import MedicalVLM, ModelOutput, parse_output
-from src.pipelines.common import CHEXPERT_LABELS, image_to_data_url, make_prompt
+from src.pipelines.common import CHEXPERT_LABELS, image_to_data_url
 
 
 class GPT4oOpenRouterPipeline(MedicalVLM):
@@ -55,18 +55,30 @@ class GPT4oOpenRouterPipeline(MedicalVLM):
         return parse_output(raw, "gpt4o_openrouter", case_id, ground_truth)
 
     def _make_openrouter_prompt(self, clinical_note: str) -> str:
-        prompt = make_prompt(clinical_note, self.mode)
         labels = ", ".join(CHEXPERT_LABELS)
+        note = clinical_note.strip() or "No clinical note provided."
+        if self.mode == "image_only":
+            input_note = "No clinical note is provided. Use only the benchmark image."
+        elif self.mode == "text_only":
+            input_note = f"Use only this benchmark text: {note}"
+        else:
+            input_note = f"Benchmark text: {note}"
+
         return (
-            "You are evaluating a de-identified chest X-ray benchmark case for "
-            "research only. This is not clinical care, not medical advice, and "
-            "not a patient-facing diagnosis. Your task is only to assign one "
-            "CheXpert-style research label from the allowed list and provide "
-            "brief visual evidence if an image is provided. If evidence is "
-            "limited, choose the closest allowed label with low confidence. "
-            "Do not refuse solely because the image is medical.\n\n"
+            "You are labeling a de-identified public benchmark example for an "
+            "academic machine-learning robustness study. This is not clinical "
+            "care, not medical advice, not triage, and not a patient-facing "
+            "diagnostic decision. Do not identify any person. Do not recommend "
+            "treatment. Only choose one allowed CheXpert benchmark label and "
+            "briefly state the image/text evidence used for that label. If the "
+            "evidence is limited, choose the closest allowed label with low "
+            "confidence.\n\n"
             f"Allowed labels: {labels}\n\n"
-            f"{prompt}"
+            "Return exactly these three lines and no other text:\n"
+            "DIAGNOSIS: <one allowed label>\n"
+            "CONFIDENCE: <float from 0.0 to 1.0>\n"
+            "EXPLANATION: <one short research-only evidence sentence>\n\n"
+            f"{input_note}"
         )
 
     def _chat_completion(self, payload: dict) -> str:

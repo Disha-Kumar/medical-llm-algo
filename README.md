@@ -122,3 +122,7 @@ GPT-4o through OpenRouter requires:
 ```bash
 export OPENROUTER_API_KEY="..."
 ```
+
+If `gpt4o_openrouter` returns `I'm sorry, I can't assist with that.`, the API
+call succeeded but the model refused the medical image classification request.
+Record this as a model/provider refusal rather than a code crash.

@@ -6,7 +6,7 @@ from urllib.request import Request, urlopen
 from PIL import Image
 
 from src.pipelines.base import MedicalVLM, ModelOutput, parse_output
-from src.pipelines.common import image_to_data_url, make_prompt
+from src.pipelines.common import CHEXPERT_LABELS, image_to_data_url, make_prompt
 
 
 class GPT4oOpenRouterPipeline(MedicalVLM):
@@ -36,7 +36,7 @@ class GPT4oOpenRouterPipeline(MedicalVLM):
         case_id: str,
         ground_truth: str,
     ) -> ModelOutput:
-        content = [{"type": "text", "text": make_prompt(text, self.mode)}]
+        content = [{"type": "text", "text": self._make_openrouter_prompt(text)}]
         if self.mode != "text_only":
             content.append(
                 {
@@ -53,6 +53,21 @@ class GPT4oOpenRouterPipeline(MedicalVLM):
         }
         raw = self._chat_completion(payload)
         return parse_output(raw, "gpt4o_openrouter", case_id, ground_truth)
+
+    def _make_openrouter_prompt(self, clinical_note: str) -> str:
+        prompt = make_prompt(clinical_note, self.mode)
+        labels = ", ".join(CHEXPERT_LABELS)
+        return (
+            "You are evaluating a de-identified chest X-ray benchmark case for "
+            "research only. This is not clinical care, not medical advice, and "
+            "not a patient-facing diagnosis. Your task is only to assign one "
+            "CheXpert-style research label from the allowed list and provide "
+            "brief visual evidence if an image is provided. If evidence is "
+            "limited, choose the closest allowed label with low confidence. "
+            "Do not refuse solely because the image is medical.\n\n"
+            f"Allowed labels: {labels}\n\n"
+            f"{prompt}"
+        )
 
     def _chat_completion(self, payload: dict) -> str:
         headers = {

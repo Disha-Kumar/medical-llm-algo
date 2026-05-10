@@ -1,9 +1,7 @@
 import os
-
 import torch
 from PIL import Image
 from transformers import AutoProcessor, Qwen2VLForConditionalGeneration
-
 from src.pipelines.base import MedicalVLM, ModelOutput, parse_output
 from src.pipelines.common import make_prompt, move_inputs, resolve_device, resolve_dtype
 
@@ -34,29 +32,27 @@ class Qwen2VLPipeline(MedicalVLM):
         self.model.eval()
 
     def _make_qwen_prompt(self, clinical_note: str) -> str:
-    labels = (
-        "atelectasis, cardiomegaly, consolidation, edema, "
-        "pleural effusion, pneumonia, pneumothorax, no finding"
-    )
-    note = clinical_note.strip() or "No clinical note provided."
-
-    if self.mode == "image_only":
-        context = "No clinical note is available. Examine the chest X-ray image carefully."
-    elif self.mode == "text_only":
-        context = f"No image is available. Use this clinical note only: {note}"
-    else:
-        context = f"Clinical note: {note}"
-
-    return (
-        f"You are an expert radiologist. Examine the chest X-ray and provide a diagnosis.\n"
-        f"{context}\n\n"
-        f"Choose exactly one diagnosis from: {labels}.\n"
-        f"Look carefully at the image before deciding. Different cases have different findings.\n\n"
-        f"Respond in exactly this format:\n"
-        f"DIAGNOSIS: <label>\n"
-        f"CONFIDENCE: <number between 0.0 and 1.0>\n"
-        f"EXPLANATION: <one to two sentences citing specific visual findings>\n"
-    )
+        labels = (
+            "atelectasis, cardiomegaly, consolidation, edema, "
+            "pleural effusion, pneumonia, pneumothorax, no finding"
+        )
+        note = clinical_note.strip() or "No clinical note provided."
+        if self.mode == "image_only":
+            context = "No clinical note is available. Examine the chest X-ray image carefully."
+        elif self.mode == "text_only":
+            context = f"No image is available. Use this clinical note only: {note}"
+        else:
+            context = f"Clinical note: {note}"
+        return (
+            f"You are an expert radiologist. Examine the chest X-ray and provide a diagnosis.\n"
+            f"{context}\n\n"
+            f"Choose exactly one diagnosis from: {labels}.\n"
+            f"Look carefully at the image before deciding. Different cases have different findings.\n\n"
+            f"Respond in exactly this format:\n"
+            f"DIAGNOSIS: <label>\n"
+            f"CONFIDENCE: <number between 0.0 and 1.0>\n"
+            f"EXPLANATION: <one to two sentences citing specific visual findings>\n"
+        )
 
     def predict(
         self,
@@ -73,7 +69,6 @@ class Qwen2VLPipeline(MedicalVLM):
             images = [image.convert("RGB")]
         content.append({"type": "text", "text": prompt})
         messages = [{"role": "user", "content": content}]
-
         formatted = self.processor.apply_chat_template(
             messages,
             tokenize=False,
@@ -84,7 +79,6 @@ class Qwen2VLPipeline(MedicalVLM):
             kwargs["images"] = images
         inputs = self.processor(**kwargs)
         inputs = move_inputs(inputs, self.device, self.dtype)
-
         with torch.no_grad():
             print("  Generating...", flush=True)
             output_ids = self.model.generate(
@@ -93,7 +87,6 @@ class Qwen2VLPipeline(MedicalVLM):
                 do_sample=False,
             )
             print("  Generation complete.", flush=True)
-
         generated_ids = output_ids[0][inputs["input_ids"].shape[1]:]
         raw = self.processor.decode(generated_ids, skip_special_tokens=True)
         return parse_output(raw, "qwen2_vl", case_id, ground_truth)

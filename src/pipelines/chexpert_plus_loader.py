@@ -62,6 +62,10 @@ def load_chexpert_plus_cases(
     split: str | None = None,
     n: int = 10,
     frontal_only: bool = True,
+    cohort_column: str | None = None,
+    cohort_value: str | None = None,
+    scanner_column: str | None = None,
+    scanner_value: str | None = None,
 ) -> list[dict]:
     root = Path(chexpert_root)
     csv_path = _find_csv(root, split)
@@ -70,6 +74,8 @@ def load_chexpert_plus_cases(
 
     if frontal_only:
         df = _filter_frontal(df)
+    df = _filter_value(df, cohort_column, cohort_value)
+    df = _filter_value(df, scanner_column, scanner_value)
 
     cases = []
     for _, row in df.iterrows():
@@ -89,6 +95,8 @@ def load_chexpert_plus_cases(
                 "image": image,
                 "text": _make_text(row),
                 "ground_truth": _extract_ground_truth(row),
+                "cohort": _value(row, [cohort_column] if cohort_column else [], ""),
+                "scanner": _value(row, [scanner_column] if scanner_column else [], ""),
             }
         )
         if len(cases) == n:
@@ -96,6 +104,12 @@ def load_chexpert_plus_cases(
 
     print(f"Loaded {len(cases)} cases from CheXpert Plus ({csv_path.name}).")
     return cases
+
+
+def available_metadata_columns(chexpert_root: str, split: str | None = None) -> list[str]:
+    root = Path(chexpert_root)
+    csv_path = _find_csv(root, split)
+    return list(pd.read_csv(csv_path, nrows=1).columns)
 
 
 def _find_csv(root: Path, split: str | None) -> Path:
@@ -130,6 +144,18 @@ def _filter_frontal(df: pd.DataFrame) -> pd.DataFrame:
                 return df[path.str.contains("frontal|pa|ap", regex=True, na=False)]
 
     return df
+
+
+def _filter_value(df: pd.DataFrame, column: str | None, value: str | None) -> pd.DataFrame:
+    if not column and not value:
+        return df
+    if not column or not value:
+        raise ValueError("Both metadata column and value are required for cohort/scanner filtering.")
+    if column not in df.columns:
+        available = ", ".join(df.columns)
+        raise ValueError(f"Column '{column}' not found. Available columns: {available}")
+    values = df[column].astype(str).str.lower()
+    return df[values == value.lower()]
 
 
 def _resolve_image_path(root: Path, row: pd.Series) -> Path | None:

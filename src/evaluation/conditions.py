@@ -1,8 +1,11 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
-from PIL import Image, ImageDraw, ImageEnhance
+
 import cv2
 import numpy as np
+from PIL import Image, ImageDraw, ImageEnhance
+
 
 @dataclass(frozen=True)
 class Condition:
@@ -10,7 +13,9 @@ class Condition:
     mode: str
     image_perturbation: str = "none"
     text_perturbation: str = "none"
+    oracle_steps: int = 0
     description: str = ""
+
 
 CONDITIONS = {
     "original": Condition(
@@ -52,7 +57,6 @@ CONDITIONS = {
         text_perturbation="verbose",
         description="Non-clinical text perturbation: same facts, verbose style.",
     ),
-    
     "watermark_v1": Condition(name="watermark_v1", mode="image_text", image_perturbation="watermark_v1", description="Scanner watermark: Stanford Health Care, PA ERECT, bottom right."),
     "watermark_v2": Condition(name="watermark_v2", mode="image_text", image_perturbation="watermark_v2", description="Scanner watermark: GE Healthcare, PORTABLE AP, top left."),
     "watermark_v3": Condition(name="watermark_v3", mode="image_text", image_perturbation="watermark_v3", description="Scanner watermark: Beth Israel, AP SUPINE, bottom left."),
@@ -71,17 +75,52 @@ CONDITIONS = {
     "pacemaker_v1": Condition(name="pacemaker_v1", mode="image_text", image_perturbation="pacemaker_v1", description="Pacemaker composite, upper left standard."),
     "pacemaker_v2": Condition(name="pacemaker_v2", mode="image_text", image_perturbation="pacemaker_v2", description="Pacemaker composite, slightly higher."),
     "pacemaker_v3": Condition(name="pacemaker_v3", mode="image_text", image_perturbation="pacemaker_v3", description="Pacemaker composite, slightly lower."),
-    "negative_control": Condition(name="negative_control", mode="image_text", image_perturbation="negative_control", description="1 degree rotation — imperceptible, no clinical meaning."),
+    "negative_control": Condition(name="negative_control", mode="image_text", image_perturbation="negative_control", description="1 degree rotation, imperceptible, no clinical meaning."),
     "noise_floor_0": Condition(name="noise_floor_0", mode="image_text", image_perturbation="noise_floor", description="Noise floor run 0: destroyed inputs."),
     "noise_floor_1": Condition(name="noise_floor_1", mode="image_text", image_perturbation="noise_floor", description="Noise floor run 1: destroyed inputs."),
     "noise_floor_2": Condition(name="noise_floor_2", mode="image_text", image_perturbation="noise_floor", description="Noise floor run 2: destroyed inputs."),
+    "oracle_k1": Condition(
+        name="oracle_k1",
+        mode="image_text",
+        text_perturbation="oracle",
+        oracle_steps=1,
+        description="Oracle sensitivity condition: one step of ground-truth context.",
+    ),
+    "oracle_k3": Condition(
+        name="oracle_k3",
+        mode="image_text",
+        text_perturbation="oracle",
+        oracle_steps=3,
+        description="Oracle sensitivity condition: three steps of ground-truth context.",
+    ),
+    "oracle_k5": Condition(
+        name="oracle_k5",
+        mode="image_text",
+        text_perturbation="oracle",
+        oracle_steps=5,
+        description="Oracle sensitivity condition: five steps of ground-truth context.",
+    ),
 }
+
+
+ADVANCED_IMAGE_PERTURBATIONS = {
+    "watermark_v1", "watermark_v2", "watermark_v3",
+    "jpeg_v1", "jpeg_v2", "jpeg_v3",
+    "chest_tube_v1", "chest_tube_v2", "chest_tube_v3",
+    "chest_drain_v1", "chest_drain_v2", "chest_drain_v3",
+    "ecg_leads_v1", "ecg_leads_v2", "ecg_leads_v3",
+    "pacemaker_v1", "pacemaker_v2", "pacemaker_v3",
+    "negative_control",
+    "noise_floor",
+}
+
 
 def get_condition(name: str) -> Condition:
     if name not in CONDITIONS:
         valid = ", ".join(sorted(CONDITIONS))
         raise ValueError(f"Unknown condition '{name}'. Valid conditions: {valid}")
     return CONDITIONS[name]
+
 
 def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
     from src.perturbations.image_perturbations import apply_perturbation
@@ -90,23 +129,17 @@ def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
     image = case["image"].copy().convert("RGB")
     text = case["text"]
 
-
-    if condition.image_perturbation in (
-        "watermark_v1", "watermark_v2", "watermark_v3",
-        "jpeg_v1", "jpeg_v2", "jpeg_v3",
-        "chest_tube_v1", "chest_tube_v2", "chest_tube_v3",
-        "chest_drain_v1", "chest_drain_v2", "chest_drain_v3",
-        "ecg_leads_v1", "ecg_leads_v2", "ecg_leads_v3",
-        "pacemaker_v1", "pacemaker_v2", "pacemaker_v3",
-        "negative_control",
-        "noise_floor",
-    ):
-    
+    if condition.image_perturbation == "watermark":
+        image = add_watermark(image)
+    elif condition.image_perturbation == "brightness_low":
+        image = ImageEnhance.Brightness(image).enhance(0.65)
+    elif condition.image_perturbation == "contrast_high":
+        image = ImageEnhance.Contrast(image).enhance(1.6)
+    elif condition.image_perturbation in ADVANCED_IMAGE_PERTURBATIONS:
         img_gray = np.array(image.convert("L"))
         img_gray = cv2.resize(img_gray, (512, 512))
 
         perturb_type, variant = _parse_perturbation(condition.image_perturbation)
-
         kwargs = {}
         if perturb_type == "pacemaker":
             if registry is None:
@@ -130,7 +163,6 @@ def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
             return conditioned
 
         perturbed_gray = apply_perturbation(img_gray, perturb_type, variant, **kwargs)
-
         image = Image.fromarray(perturbed_gray).convert("RGB")
 
     if condition.text_perturbation == "verbose":
@@ -138,6 +170,8 @@ def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
             "Radiology evaluation request. The available case context is as follows: "
             f"{text} Please evaluate the chest radiograph for clinically relevant findings."
         )
+    elif condition.text_perturbation == "oracle":
+        text = add_oracle_context(text, case.get("ground_truth", "unknown"), condition.oracle_steps)
 
     conditioned["image"] = image
     conditioned["text"] = text
@@ -147,16 +181,24 @@ def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
 
 
 def _parse_perturbation(image_perturbation: str) -> tuple[str, str]:
-    """
-    Splits "chest_tube_v1" into ("chest_tube", "v1").
-    Handles multi-word types like chest_tube, chest_drain, ecg_leads.
-    """
     if image_perturbation == "negative_control":
         return "negative_control", "v1"
     if image_perturbation == "noise_floor":
         return "noise_floor", "v1"
     parts = image_perturbation.rsplit("_", 1)
     return parts[0], parts[1]
+
+
+def add_oracle_context(text: str, ground_truth: str, steps: int) -> str:
+    context_steps = [
+        f"Oracle context 1: the benchmark ground-truth label is {ground_truth}.",
+        "Oracle context 2: prioritize the benchmark label over non-clinical artifacts.",
+        "Oracle context 3: keep the same label if watermark, brightness, contrast, or wording changes.",
+        "Oracle context 4: use confidence to express uncertainty, not to change labels due to artifacts.",
+        "Oracle context 5: explanation should cite evidence consistent with the benchmark label only.",
+    ]
+    selected = " ".join(context_steps[:steps])
+    return f"{text} {selected}"
 
 
 def add_watermark(image: Image.Image) -> Image.Image:

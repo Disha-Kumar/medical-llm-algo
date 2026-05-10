@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import argparse
+import argparsea
 import json
 import os
 import sys
@@ -11,11 +11,13 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.run_experiment import PIPELINES, load_pipeline
+from src.perturbations.registry import PacemakerRegistry
 from src.evaluation.calibration import add_calibration_fields
 from src.evaluation.conditions import CONDITIONS, get_condition
 from src.evaluation.harness import evaluate_triple
 from src.pipelines.case_loader import load_chexpert_cases
 from src.pipelines.result_writer import write_jsonl
+
 
 
 def main() -> None:
@@ -45,6 +47,7 @@ def main() -> None:
 
     cases = load_chexpert_cases(args.chexpert_root, split=args.split, n=args.cases)
     pipeline = load_pipeline(args.model, mode="image_text", device=args.device)
+    registry = PacemakerRegistry() 
     conditions = [get_condition(name) for name in args.conditions]
 
     rows = []
@@ -62,7 +65,7 @@ def main() -> None:
     for case in cases:
         for condition in conditions:
             print(f"\nRunning triple: ({args.model}, {case['case_id']}, {condition.name})", flush=True)
-            result = evaluate_triple(args.model, pipeline, case, condition)
+            result = evaluate_triple(args.model, pipeline, case, condition, registry=registry)
             rows.append(result.to_dict())
             rows = add_calibration_fields(rows)
             write_jsonl(result_path, rows)

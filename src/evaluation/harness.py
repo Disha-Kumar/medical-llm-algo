@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import json
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
+from pathlib import Path
 
 from src.evaluation.conditions import Condition, apply_condition
 from src.evaluation.hallucination import flag_hallucination
@@ -31,14 +33,55 @@ class EvaluationOutput:
     def to_dict(self) -> dict:
         return asdict(self)
 
+def _cache_path(results_root: str, model_name: str,
+                case_id: str, condition_name: str) -> Path:
+    safe_case = case_id.replace("/", "_").replace("\\", "_")
+    fname = f"{safe_case}__{condition_name}.json"
+    return Path(results_root) / "cache" / model_name / fname
 
-def evaluate_triple(model_name: str, pipeline, case: dict, condition: Condition) -> EvaluationOutput:
-    conditioned_case = apply_condition(case, condition)
+
+def _load_cache(path: Path) -> EvaluationOutput | None:
+    if not path.exists():
+        return None
+    try:
+        with open(path) as f:
+            return EvaluationOutput(**json.load(f))
+    except Exception:
+        return None 
+
+
+def _save_cache(path: Path, output: EvaluationOutput) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w") as f:
+        json.dump(output.to_dict(), f, indent=2)
+
+
+def evaluate_triple(
+    model_name: str,
+    pipeline,
+    case: dict,
+    condition: Condition,
+    registry=None,
+    results_root: str = "results",
+    use_cache: bool = True,
+) -> EvaluationOutput:
+
+    # edit cache check 
+    cache_file = _cache_path(results_root, model_name,
+                              case["case_id"], condition.name)
+    if use_cache:
+        cached = _load_cache(cache_file)
+        if cached is not None:
+            return cached
+
+    conditioned_case = apply_condition(case, condition, registry=registry)
+
     old_mode = getattr(pipeline, "mode", None)
     if old_mode is not None:
         pipeline.mode = condition.mode
 
     started = time.monotonic()
+
     try:
         output = pipeline.predict(
             image=conditioned_case["image"],
@@ -64,6 +107,7 @@ def evaluate_triple(model_name: str, pipeline, case: dict, condition: Condition)
         confidence = output.confidence
         explanation = output.explanation
         raw_response = output.raw_response
+
     except Exception as exc:
         hallucination = flag_hallucination(None, None, conditioned_case["ground_truth"])
         status = "FAIL"
@@ -72,11 +116,12 @@ def evaluate_triple(model_name: str, pipeline, case: dict, condition: Condition)
         confidence = None
         explanation = None
         raw_response = None
+
     finally:
         if old_mode is not None:
             pipeline.mode = old_mode
 
-    return EvaluationOutput(
+    result = EvaluationOutput(
         timestamp=datetime.now().isoformat(timespec="seconds"),
         model=model_name,
         case_id=conditioned_case["case_id"],
@@ -95,3 +140,9 @@ def evaluate_triple(model_name: str, pipeline, case: dict, condition: Condition)
         clinical_text=conditioned_case.get("text"),
         raw_response=raw_response,
     )
+
+    # edit cache pass and known failures
+    if result.status in ("PASS", "INCOMPLETE_OUTPUT", "PARSE_FAILED"):
+        _save_cache(cache_file, result)
+
+    return result

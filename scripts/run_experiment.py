@@ -19,6 +19,7 @@ PIPELINES = {
     "llava_med": ("src.pipelines.llava_med", "LLaVAMedPipeline"),
     "qwen2_vl": ("src.pipelines.qwen2_vl", "Qwen2VLPipeline"),
     "gpt4o": ("src.pipelines.gpt4o", "GPT4oPipeline"),
+    "gpt4o_openrouter": ("src.pipelines.gpt4o_openrouter", "GPT4oOpenRouterPipeline"),
     "biovil_t": ("src.pipelines.biovil_t", "BioViLTPipeline"),
     "med_flamingo": ("src.pipelines.med_flamingo", "MedFlamingoPipeline"),
 }

@@ -8,6 +8,7 @@ Implemented pipeline modules:
 - Qwen2-VL
 - BioViL-T baseline
 - GPT-4o adapter
+- GPT-4o OpenRouter adapter
 - Med-Flamingo adapter
 
 ## Setup
@@ -36,10 +37,32 @@ Do not commit dataset files, model weights, API keys, or `.venv`.
 
 ## Run
 
+CheXpert-small testing wrappers live under:
+
+```text
+experiments/chexpert_small_testing/
+```
+
+CheXpert Plus experiment scaffolding lives under:
+
+```text
+experiments/chexpert_plus/
+```
+
+The model pipelines themselves stay in `src/pipelines/` so they can be reused
+for both CheXpert small testing and CheXpert Plus experiments.
+
 ```bash
 python -u scripts/run_experiment.py --model qwen2_vl --mode image_text --cases 1
 python -u scripts/run_experiment.py --model llava_med --mode image_text --cases 1
 python -u scripts/run_experiment.py --model biovil_t --mode image_text --cases 5
+```
+
+Run GPT-4o through OpenRouter:
+
+```bash
+export OPENROUTER_API_KEY="your_openrouter_key_here"
+python -u scripts/run_experiment.py --model gpt4o_openrouter --mode image_text --cases 1
 ```
 
 Modes:
@@ -62,6 +85,14 @@ Run the full evaluation harness over `(model, case, condition)` triples:
 ```bash
 python -u scripts/run_eval_harness.py --model qwen2_vl --cases 1 --conditions original image_only text_only
 ```
+
+Run the resumable full batch harness across selected models and conditions:
+
+```bash
+python -u scripts/run_full_batch.py --models qwen2_vl biovil_t
+```
+
+See `MODULE_USAGE.md` for importable module usage.
 
 Results are written under:
 
@@ -100,3 +131,13 @@ GPT-4o requires:
 ```bash
 export OPENAI_API_KEY="..."
 ```
+
+GPT-4o through OpenRouter requires:
+
+```bash
+export OPENROUTER_API_KEY="..."
+```
+
+If `gpt4o_openrouter` returns `I'm sorry, I can't assist with that.`, the API
+call succeeded but the model refused the medical image classification request.
+Record this as a model/provider refusal rather than a code crash.

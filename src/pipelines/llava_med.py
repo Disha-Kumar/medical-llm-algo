@@ -3,6 +3,7 @@ import torch
 from PIL import Image
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 from src.pipelines.base import MedicalVLM, ModelOutput, parse_output
+from src.pipelines.common import make_prompt
 
 
 class LLaVAMedPipeline(MedicalVLM):
@@ -105,31 +106,32 @@ class LLaVAMedPipeline(MedicalVLM):
             return f"[INST] {prompt} [/INST]"
         return f"[INST] <image>\n{prompt} [/INST]"
 
+    def _make_llavamed_prompt(self, clinical_note: str) -> str:
+        labels = (
+            "atelectasis, cardiomegaly, consolidation, edema, pleural effusion, "
+            "pneumonia, pneumothorax, no finding"
+        )
+        note = clinical_note.strip() or "No clinical note provided."
+        if self.mode == "image_only":
+            note = "Use image only. No clinical note."
+        elif self.mode == "text_only":
+            note = f"Use text only: {note}"
+        else:
+            note = f"Clinical note: {note}"
+
+        return (
+            "Choose one CheXpert label. "
+            f"Labels: {labels}.\n"
+            "Return only this format:\n"
+            "DIAGNOSIS: <label>\n"
+            "CONFIDENCE: <0.0-1.0>\n"
+            "EXPLANATION: <one sentence>\n\n"
+            f"{note}"
+        )
+
     def predict(self, image: Image.Image, text: str,
                 case_id: str, ground_truth: str) -> ModelOutput:
-        if self.mode == "text_only":
-            prompt = (
-                "You are given a clinical note for a research-only CheXpert task. "
-                "Return exactly three lines in the format below. Do not explain the task. "
-                "Do not define the fields. Do not add any text before or after the three lines.\n\n"
-                "DIAGNOSIS: <single label from: atelectasis, cardiomegaly, consolidation, "
-                "edema, pleural effusion, pneumonia, pneumothorax, no finding>\n"
-                "CONFIDENCE: <float between 0.0 and 1.0>\n"
-                "EXPLANATION: <one to three sentences describing the evidence>\n\n"
-                "Choose the best label from the list, even if uncertain.\n\n"
-                f"Clinical Note: {text}"
-            )
-        else:
-            prompt = (
-                "Analyze the provided chest X-ray image for a research-only CheXpert task. "
-                "Return exactly three lines in the format below. Do not explain the task. "
-                "Do not define the fields. Do not add any text before or after the three lines.\n\n"
-                "DIAGNOSIS: <single label from: atelectasis, cardiomegaly, consolidation, "
-                "edema, pleural effusion, pneumonia, pneumothorax, no finding>\n"
-                "CONFIDENCE: <float between 0.0 and 1.0>\n"
-                "EXPLANATION: <one to three sentences describing the evidence>\n\n"
-                "Choose the best label from the list, even if uncertain."
-            )
+        prompt = self._make_llavamed_prompt(text)
         full_prompt = self._format_prompt(prompt)
 
         if self.mode == "text_only":

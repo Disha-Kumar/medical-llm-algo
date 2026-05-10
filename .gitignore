@@ -11,6 +11,9 @@ logs/
 results/**/*.jsonl
 results/**/*.json
 results/**/*.csv
+shared_outputs/**/*.jsonl
+shared_outputs/**/*.json
+experiments/**/outputs/
 
 .env
 *.key
@@ -22,4 +25,3 @@ results/**/*.csv
 *.pth
 *.ckpt
 *.onnx
-

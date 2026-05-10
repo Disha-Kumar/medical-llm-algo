@@ -120,12 +120,13 @@ class LLaVAMedPipeline(MedicalVLM):
             note = f"Clinical note: {note}"
 
         return (
-            "Choose one CheXpert label. "
-            f"Labels: {labels}.\n"
-            "Return only this format:\n"
-            "DIAGNOSIS: <label>\n"
-            "CONFIDENCE: <0.0-1.0>\n"
-            "EXPLANATION: <one sentence>\n\n"
+            f"You are a radiologist analyzing a chest X-ray.\n"
+            f"{context}\n\n"
+            f"Select exactly one diagnosis from this list: {labels}.\n\n"
+            f"Respond in exactly this format and nothing else:\n"
+            f"DIAGNOSIS: <label>\n"
+            f"CONFIDENCE: <number between 0.0 and 1.0>\n"
+            f"EXPLANATION: <one sentence citing specific image findings>\n"
             f"{note}"
         )
 

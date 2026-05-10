@@ -1,7 +1,9 @@
 import os
+
 import torch
 from PIL import Image
 from transformers import AutoProcessor, Qwen2VLForConditionalGeneration
+
 from src.pipelines.base import MedicalVLM, ModelOutput, parse_output
 from src.pipelines.common import make_prompt, move_inputs, resolve_device, resolve_dtype
 

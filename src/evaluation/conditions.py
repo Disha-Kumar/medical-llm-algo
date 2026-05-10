@@ -4,7 +4,8 @@ from dataclasses import dataclass
 
 import cv2
 import numpy as np
-from PIL import Image, ImageDraw, ImageEnhance
+from PIL import Image
+from src.perturbations.image_perturbations import ALL_CONDITIONS
 
 
 @dataclass(frozen=True)
@@ -39,28 +40,6 @@ CONDITIONS = {
         text_perturbation="verbose",
         description="Non-clinical text perturbation: same facts, verbose style.",
     ),
-    "watermark_v1": Condition(name="watermark_v1", mode="image_text", image_perturbation="watermark_v1", description="Scanner watermark: Stanford Health Care, PA ERECT, bottom right."),
-    "watermark_v2": Condition(name="watermark_v2", mode="image_text", image_perturbation="watermark_v2", description="Scanner watermark: GE Healthcare, PORTABLE AP, top left."),
-    "watermark_v3": Condition(name="watermark_v3", mode="image_text", image_perturbation="watermark_v3", description="Scanner watermark: Beth Israel, AP SUPINE, bottom left."),
-    "jpeg_v1": Condition(name="jpeg_v1", mode="image_text", image_perturbation="jpeg_v1", description="JPEG compression quality 75."),
-    "jpeg_v2": Condition(name="jpeg_v2", mode="image_text", image_perturbation="jpeg_v2", description="JPEG compression quality 40."),
-    "jpeg_v3": Condition(name="jpeg_v3", mode="image_text", image_perturbation="jpeg_v3", description="JPEG compression quality 10."),
-    "chest_tube_v1": Condition(name="chest_tube_v1", mode="image_text", image_perturbation="chest_tube_v1", description="Synthetic chest tube, right side."),
-    "chest_tube_v2": Condition(name="chest_tube_v2", mode="image_text", image_perturbation="chest_tube_v2", description="Synthetic chest tube, left side."),
-    "chest_tube_v3": Condition(name="chest_tube_v3", mode="image_text", image_perturbation="chest_tube_v3", description="Synthetic chest tube, right side subtle."),
-    "chest_drain_v1": Condition(name="chest_drain_v1", mode="image_text", image_perturbation="chest_drain_v1", description="Synthetic chest drain, upper pleural right."),
-    "chest_drain_v2": Condition(name="chest_drain_v2", mode="image_text", image_perturbation="chest_drain_v2", description="Synthetic chest drain, lower pleural left."),
-    "chest_drain_v3": Condition(name="chest_drain_v3", mode="image_text", image_perturbation="chest_drain_v3", description="Synthetic chest drain, mid pleural right."),
-    "ecg_leads_v1": Condition(name="ecg_leads_v1", mode="image_text", image_perturbation="ecg_leads_v1", description="ECG leads, 3-lead standard."),
-    "ecg_leads_v2": Condition(name="ecg_leads_v2", mode="image_text", image_perturbation="ecg_leads_v2", description="ECG leads, 5-lead."),
-    "ecg_leads_v3": Condition(name="ecg_leads_v3", mode="image_text", image_perturbation="ecg_leads_v3", description="ECG leads, 3-lead position variant."),
-    "pacemaker_v1": Condition(name="pacemaker_v1", mode="image_text", image_perturbation="pacemaker_v1", description="Pacemaker composite, upper left standard."),
-    "pacemaker_v2": Condition(name="pacemaker_v2", mode="image_text", image_perturbation="pacemaker_v2", description="Pacemaker composite, slightly higher."),
-    "pacemaker_v3": Condition(name="pacemaker_v3", mode="image_text", image_perturbation="pacemaker_v3", description="Pacemaker composite, slightly lower."),
-    "negative_control": Condition(name="negative_control", mode="image_text", image_perturbation="negative_control", description="1 degree rotation, imperceptible, no clinical meaning."),
-    "noise_floor_0": Condition(name="noise_floor_0", mode="image_text", image_perturbation="noise_floor", description="Noise floor run 0: destroyed inputs."),
-    "noise_floor_1": Condition(name="noise_floor_1", mode="image_text", image_perturbation="noise_floor", description="Noise floor run 1: destroyed inputs."),
-    "noise_floor_2": Condition(name="noise_floor_2", mode="image_text", image_perturbation="noise_floor", description="Noise floor run 2: destroyed inputs."),
     "oracle_k1": Condition(
         name="oracle_k1",
         mode="image_text",
@@ -84,17 +63,18 @@ CONDITIONS = {
     ),
 }
 
+for perturbation_type, variant in ALL_CONDITIONS:
+    if perturbation_type == "negative_control":
+        name = "negative_control"
+    else:
+        name = f"{perturbation_type}_{variant}"
 
-ADVANCED_IMAGE_PERTURBATIONS = {
-    "watermark_v1", "watermark_v2", "watermark_v3",
-    "jpeg_v1", "jpeg_v2", "jpeg_v3",
-    "chest_tube_v1", "chest_tube_v2", "chest_tube_v3",
-    "chest_drain_v1", "chest_drain_v2", "chest_drain_v3",
-    "ecg_leads_v1", "ecg_leads_v2", "ecg_leads_v3",
-    "pacemaker_v1", "pacemaker_v2", "pacemaker_v3",
-    "negative_control",
-    "noise_floor",
-}
+    CONDITIONS[name] = Condition(
+        name=name,
+        mode="image_text",
+        image_perturbation=name,
+        description=f"{perturbation_type} perturbation ({variant})",
+    )
 
 
 def get_condition(name: str) -> Condition:
@@ -111,7 +91,7 @@ def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
     image = case["image"].copy().convert("RGB")
     text = case["text"]
 
-    if condition.image_perturbation in ADVANCED_IMAGE_PERTURBATIONS:
+    if condition.image_perturbation != "none":
         img_gray = np.array(image.convert("L"))
         img_gray = cv2.resize(img_gray, (512, 512))
 
@@ -138,6 +118,7 @@ def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
             conditioned["mode"] = condition.mode
             return conditioned
 
+        print(f"[PERTURB] {perturb_type} {variant}",flush=True,)
         perturbed_gray = apply_perturbation(img_gray, perturb_type, variant, **kwargs)
         image = Image.fromarray(perturbed_gray).convert("RGB")
 
@@ -169,7 +150,7 @@ def add_oracle_context(text: str, ground_truth: str, steps: int) -> str:
     context_steps = [
         f"Oracle context 1: the benchmark ground-truth label is {ground_truth}.",
         "Oracle context 2: prioritize the benchmark label over non-clinical artifacts.",
-        "Oracle context 3: keep the same label if watermark, brightness, contrast, or wording changes.",
+        "Oracle context 3: keep the same label under clinically irrelevant perturbations or scanner artifacts.",
         "Oracle context 4: use confidence to express uncertainty, not to change labels due to artifacts.",
         "Oracle context 5: explanation should cite evidence consistent with the benchmark label only.",
     ]

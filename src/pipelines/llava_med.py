@@ -3,7 +3,6 @@ import torch
 from PIL import Image
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 from src.pipelines.base import MedicalVLM, ModelOutput, parse_output
-from src.pipelines.common import make_prompt
 
 
 class LLaVAMedPipeline(MedicalVLM):
@@ -108,7 +107,29 @@ class LLaVAMedPipeline(MedicalVLM):
 
     def predict(self, image: Image.Image, text: str,
                 case_id: str, ground_truth: str) -> ModelOutput:
-        prompt = make_prompt(text, self.mode)
+        if self.mode == "text_only":
+            prompt = (
+                "You are given a clinical note for a research-only CheXpert task. "
+                "Return exactly three lines in the format below. Do not explain the task. "
+                "Do not define the fields. Do not add any text before or after the three lines.\n\n"
+                "DIAGNOSIS: <single label from: atelectasis, cardiomegaly, consolidation, "
+                "edema, pleural effusion, pneumonia, pneumothorax, no finding>\n"
+                "CONFIDENCE: <float between 0.0 and 1.0>\n"
+                "EXPLANATION: <one to three sentences describing the evidence>\n\n"
+                "Choose the best label from the list, even if uncertain.\n\n"
+                f"Clinical Note: {text}"
+            )
+        else:
+            prompt = (
+                "Analyze the provided chest X-ray image for a research-only CheXpert task. "
+                "Return exactly three lines in the format below. Do not explain the task. "
+                "Do not define the fields. Do not add any text before or after the three lines.\n\n"
+                "DIAGNOSIS: <single label from: atelectasis, cardiomegaly, consolidation, "
+                "edema, pleural effusion, pneumonia, pneumothorax, no finding>\n"
+                "CONFIDENCE: <float between 0.0 and 1.0>\n"
+                "EXPLANATION: <one to three sentences describing the evidence>\n\n"
+                "Choose the best label from the list, even if uncertain."
+            )
         full_prompt = self._format_prompt(prompt)
 
         if self.mode == "text_only":

@@ -33,24 +33,6 @@ CONDITIONS = {
         mode="text_only",
         description="Baseline condition: clinical note is provided without image.",
     ),
-    "watermark": Condition(
-        name="watermark",
-        mode="image_text",
-        image_perturbation="watermark",
-        description="Non-clinical image perturbation: synthetic hospital watermark.",
-    ),
-    "brightness_low": Condition(
-        name="brightness_low",
-        mode="image_text",
-        image_perturbation="brightness_low",
-        description="Non-clinical image perturbation: reduced brightness.",
-    ),
-    "contrast_high": Condition(
-        name="contrast_high",
-        mode="image_text",
-        image_perturbation="contrast_high",
-        description="Non-clinical image perturbation: increased contrast.",
-    ),
     "text_style_verbose": Condition(
         name="text_style_verbose",
         mode="image_text",
@@ -129,13 +111,7 @@ def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
     image = case["image"].copy().convert("RGB")
     text = case["text"]
 
-    if condition.image_perturbation == "watermark":
-        image = add_watermark(image)
-    elif condition.image_perturbation == "brightness_low":
-        image = ImageEnhance.Brightness(image).enhance(0.65)
-    elif condition.image_perturbation == "contrast_high":
-        image = ImageEnhance.Contrast(image).enhance(1.6)
-    elif condition.image_perturbation in ADVANCED_IMAGE_PERTURBATIONS:
+    if condition.image_perturbation in ADVANCED_IMAGE_PERTURBATIONS:
         img_gray = np.array(image.convert("L"))
         img_gray = cv2.resize(img_gray, (512, 512))
 
@@ -201,14 +177,4 @@ def add_oracle_context(text: str, ground_truth: str, steps: int) -> str:
     return f"{text} {selected}"
 
 
-def add_watermark(image: Image.Image) -> Image.Image:
-    overlay = image.copy()
-    draw = ImageDraw.Draw(overlay)
-    margin = max(8, image.width // 40)
-    box_width = min(image.width - 2 * margin, max(120, image.width // 3))
-    box_height = max(24, image.height // 14)
-    x0 = image.width - box_width - margin
-    y0 = margin
-    draw.rectangle([x0, y0, x0 + box_width, y0 + box_height], fill=(20, 20, 20))
-    draw.text((x0 + 8, y0 + 6), "HOSPITAL_A", fill=(245, 245, 245))
-    return Image.blend(image, overlay, alpha=0.28)
+

@@ -106,9 +106,32 @@ class LLaVAMedPipeline(MedicalVLM):
             return f"[INST] {prompt} [/INST]"
         return f"[INST] <image>\n{prompt} [/INST]"
 
+    def _make_llavamed_prompt(self, clinical_note: str) -> str:
+        labels = (
+            "atelectasis, cardiomegaly, consolidation, edema, pleural effusion, "
+            "pneumonia, pneumothorax, no finding"
+        )
+        note = clinical_note.strip() or "No clinical note provided."
+        if self.mode == "image_only":
+            note = "Use image only. No clinical note."
+        elif self.mode == "text_only":
+            note = f"Use text only: {note}"
+        else:
+            note = f"Clinical note: {note}"
+
+        return (
+            "Choose one CheXpert label. "
+            f"Labels: {labels}.\n"
+            "Return only this format:\n"
+            "DIAGNOSIS: <label>\n"
+            "CONFIDENCE: <0.0-1.0>\n"
+            "EXPLANATION: <one sentence>\n\n"
+            f"{note}"
+        )
+
     def predict(self, image: Image.Image, text: str,
                 case_id: str, ground_truth: str) -> ModelOutput:
-        prompt = make_prompt(text, self.mode)
+        prompt = self._make_llavamed_prompt(text)
         full_prompt = self._format_prompt(prompt)
 
         if self.mode == "text_only":

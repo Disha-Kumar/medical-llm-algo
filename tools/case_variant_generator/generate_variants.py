@@ -20,6 +20,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src.pipelines.case_loader import load_chexpert_cases
 from src.perturbations.image_perturbations import apply_perturbation as apply_image_perturbation
 from src.perturbations.text_perturbations import apply_text_perturbation
+from src.perturbations.registry import PacemakerRegistry
 
 
 DEFAULT_VARIANTS = [
@@ -118,6 +119,7 @@ def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run
 
     img_gray = np.array(image.convert("L"))
     img_gray = cv2.resize(img_gray, (512, 512))
+    pm_registry = PacemakerRegistry()
 
     for modality, perturb_type, variant, needs_pm in variants:
         perturb_label = _perturbation_label(perturb_type)
@@ -131,7 +133,10 @@ def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run
             if not dry_run:
                 subdir.mkdir(parents=True, exist_ok=True)
                 try:
-                    perturbed_img = apply_image_perturbation(img_gray, perturb_type, variant)
+                    kwargs = {}
+                    if perturb_type == "pacemaker":
+                        kwargs["pacemaker_source"] = pm_registry.next_pacemaker()
+                    perturbed_img = apply_image_perturbation(img_gray,perturb_type,variant,**kwargs)
                     result_pil = Image.fromarray(perturbed_img)
                     result_pil.save(str(out_path))
                 except Exception as exc:

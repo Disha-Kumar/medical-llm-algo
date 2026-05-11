@@ -42,17 +42,27 @@ class MedFlamingoPipeline(MedicalVLM):
         prompt = make_prompt(text, self.mode)
         with tempfile.NamedTemporaryFile(suffix=".jpg") as image_file:
             image.convert("RGB").save(image_file.name)
-            completed = subprocess.run(
-                [
-                    *self.command_parts,
-                    "--image",
-                    image_file.name,
-                    "--prompt",
-                    prompt,
-                ],
-                check=True,
-                capture_output=True,
-                text=True,
-            )
+            command = [
+                *self.command_parts,
+                "--image",
+                image_file.name,
+                "--prompt",
+                prompt,
+            ]
+            try:
+                completed = subprocess.run(
+                    command,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+            except subprocess.CalledProcessError as exc:
+                stderr = (exc.stderr or "").strip()
+                stdout = (exc.stdout or "").strip()
+                details = stderr or stdout or "no stdout/stderr captured"
+                raise RuntimeError(
+                    "Med-Flamingo external command failed. "
+                    f"Exit code: {exc.returncode}. Details: {details}"
+                ) from exc
         raw = completed.stdout.strip()
         return parse_output(raw, "med_flamingo", case_id, ground_truth)

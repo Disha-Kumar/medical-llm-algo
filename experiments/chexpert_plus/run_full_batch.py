@@ -16,18 +16,23 @@ from src.evaluation.conditions import get_condition
 from src.evaluation.harness import evaluate_triple
 from src.pipelines.chexpert_plus_loader import load_chexpert_plus_cases
 from src.pipelines.result_writer import write_jsonl
+from src.perturbations.image_perturbations import ALL_CONDITIONS
 
 
 DEFAULT_MODELS = ["qwen2_vl", "llava_med", "biovil_t", "med_flamingo"]
+
 DEFAULT_CONDITIONS = [
     "original",
     "image_only",
     "text_only",
-    "watermark",
-    "brightness_low",
-    "contrast_high",
     "text_style_verbose",
 ]
+
+for perturbation_type, variant in ALL_CONDITIONS:
+    if perturbation_type == "negative_control":
+        DEFAULT_CONDITIONS.append("negative_control")
+    else:
+        DEFAULT_CONDITIONS.append(f"{perturbation_type}_{variant}")
 
 
 def main() -> None:

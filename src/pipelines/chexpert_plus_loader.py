@@ -72,6 +72,8 @@ def load_chexpert_plus_cases(
     df = pd.read_csv(csv_path)
     df = df.replace(-1, 0)
 
+    if split and "split" in df.columns:
+        df = df[df["split"].astype(str).str.lower() == split.lower()]
     if frontal_only:
         df = _filter_frontal(df)
     df = _filter_value(df, cohort_column, cohort_value)
@@ -226,7 +228,10 @@ def _make_case_id(row: pd.Series, image_path: Path) -> str:
     for column in ["study_id", "StudyID", "dicom_id", "image_id", "patient_id", "subject_id"]:
         if column in row and not pd.isna(row[column]):
             return f"chexpert_plus_{column}_{row[column]}".replace("/", "_")
-    return f"chexpert_plus_{image_path.stem}".replace("/", "_")
+    parts = image_path.with_suffix("").parts
+    if len(parts) >= 4:
+        return f"chexpert_plus_{'_'.join(parts[-4:])}".replace("/", "_")
+    return f"chexpert_plus_{image_path.with_suffix('').as_posix()}".replace("/", "_")
 
 
 def _value(row: pd.Series, columns: list[str], default: str) -> str:

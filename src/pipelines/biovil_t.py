@@ -10,13 +10,19 @@ from src.pipelines.common import CHEXPERT_LABELS
 
 
 LABEL_PROMPTS = {
-    "atelectasis": "There is atelectasis on the chest x-ray.",
+    "enlarged cardiomediastinum": "There is an enlarged cardiomediastinum on the chest x-ray.",
     "cardiomegaly": "There is cardiomegaly with an enlarged cardiac silhouette.",
-    "consolidation": "There is focal airspace consolidation.",
+    "lung opacity": "There is a lung opacity visible on the chest x-ray.",
+    "lung lesion": "There is a lung lesion or mass visible on the chest x-ray.",
     "edema": "There is pulmonary edema.",
-    "pleural effusion": "There is a pleural effusion.",
+    "consolidation": "There is focal airspace consolidation.",
     "pneumonia": "There are findings concerning for pneumonia.",
+    "atelectasis": "There is atelectasis on the chest x-ray.",
     "pneumothorax": "There is a pneumothorax.",
+    "pleural effusion": "There is a pleural effusion.",
+    "pleural other": "There is pleural thickening or other pleural abnormality.",
+    "fracture": "There is a rib or bone fracture visible on the chest x-ray.",
+    "support devices": "There are support devices such as lines or tubes present.",
     "no finding": "No acute cardiopulmonary abnormality is seen.",
 }
 

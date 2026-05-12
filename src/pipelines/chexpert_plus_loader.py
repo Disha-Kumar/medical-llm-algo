@@ -7,15 +7,22 @@ from PIL import Image
 
 
 CHEXPERT_PLUS_LABELS = [
-    "Atelectasis",
+    "Enlarged Cardiomediastinum",
     "Cardiomegaly",
-    "Consolidation",
+    "Lung Opacity",
+    "Lung Lesion",
     "Edema",
-    "Pleural Effusion",
+    "Consolidation",
     "Pneumonia",
+    "Atelectasis",
     "Pneumothorax",
+    "Pleural Effusion",
+    "Pleural Other",
+    "Fracture",
+    "Support Devices",
     "No Finding",
 ]
+
 
 CSV_CANDIDATES = [
     "df_chexpert_plus_240401.csv",

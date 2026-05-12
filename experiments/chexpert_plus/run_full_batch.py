@@ -16,7 +16,6 @@ from src.evaluation.conditions import get_condition
 from src.evaluation.harness import evaluate_triple
 from src.pipelines.chexpert_plus_loader import load_chexpert_plus_cases
 from src.pipelines.result_writer import write_jsonl
-from src.perturbations.image_perturbations import ALL_CONDITIONS
 from src.perturbations.registry import PacemakerRegistry
 
 
@@ -53,12 +52,6 @@ DEFAULT_CONDITIONS = [
     "paraphrase_v2",
     "paraphrase_v3",
 ]
-
-for perturbation_type, variant in ALL_CONDITIONS:
-    if perturbation_type == "negative_control":
-        DEFAULT_CONDITIONS.append("negative_control")
-    else:
-        DEFAULT_CONDITIONS.append(f"{perturbation_type}_{variant}")
 
 
 def main() -> None:

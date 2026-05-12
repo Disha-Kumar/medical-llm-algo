@@ -116,3 +116,14 @@ def apply_text_perturbation(
             f"Unknown text perturbation_type '{perturbation_type}'. "
             "Valid types: demographic, contradiction, paraphrase"
         )
+
+
+ALL_CONDITIONS = [
+    ("demographic",   "v1"),
+    ("demographic",   "v2"),
+    ("contradiction", "v1"),
+    ("contradiction", "v2"),
+    ("paraphrase",    "v1"),
+    ("paraphrase",    "v2"),
+    ("paraphrase",    "v3"),
+]

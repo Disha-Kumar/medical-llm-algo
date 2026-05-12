@@ -46,7 +46,7 @@ def main() -> None:
         flush=True,
     )
 
-    cases = load_chexpert_cases(args.chexpert_root, split=args.split, n=args.cases)
+    cases = load_chexpert_plus_cases(args.chexpert_root, split=None, n=args.cases, frontal_only=False)
     pipeline = load_pipeline(args.model, mode="image_text", device=args.device)
     registry = PacemakerRegistry() 
     conditions = [get_condition(name) for name in args.conditions]

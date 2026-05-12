@@ -121,13 +121,12 @@ class LLaVAMedPipeline(MedicalVLM):
 
         return (
             f"You are a radiologist analyzing a chest X-ray.\n"
-            f"{context}\n\n"
+            f"{note}\n\n"
             f"Select exactly one diagnosis from this list: {labels}.\n\n"
             f"Respond in exactly this format and nothing else:\n"
             f"DIAGNOSIS: <label>\n"
             f"CONFIDENCE: <number between 0.0 and 1.0>\n"
             f"EXPLANATION: <one sentence citing specific image findings>\n"
-            f"{note}"
         )
 
     def predict(self, image: Image.Image, text: str,

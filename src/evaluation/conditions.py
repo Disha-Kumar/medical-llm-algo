@@ -5,7 +5,10 @@ from dataclasses import dataclass
 import cv2
 import numpy as np
 from PIL import Image
-from src.perturbations.image_perturbations import ALL_CONDITIONS
+from src.perturbations.image_perturbations import ALL_CONDITIONS as IMAGE_CONDITIONS
+from src.perturbations.text_perturbations import ALL_CONDITIONS as TEXT_CONDITIONS
+from src.perturbations.text_perturbations import apply_text_perturbation
+import random
 
 
 @dataclass(frozen=True)
@@ -34,12 +37,6 @@ CONDITIONS = {
         mode="text_only",
         description="Baseline condition: clinical note is provided without image.",
     ),
-    "text_style_verbose": Condition(
-        name="text_style_verbose",
-        mode="image_text",
-        text_perturbation="verbose",
-        description="Non-clinical text perturbation: same facts, verbose style.",
-    ),
     "oracle_k1": Condition(
         name="oracle_k1",
         mode="image_text",
@@ -63,7 +60,7 @@ CONDITIONS = {
     ),
 }
 
-for perturbation_type, variant in ALL_CONDITIONS:
+for perturbation_type, variant in IMAGE_CONDITIONS:
     if perturbation_type == "negative_control":
         name = "negative_control"
     else:
@@ -74,6 +71,32 @@ for perturbation_type, variant in ALL_CONDITIONS:
         mode="image_text",
         image_perturbation=name,
         description=f"{perturbation_type} perturbation ({variant})",
+    )
+    
+_IMAGE_TYPES = sorted({pt for pt, _ in IMAGE_CONDITIONS if pt != "negative_control"})
+for perturbation_type in _IMAGE_TYPES:
+    CONDITIONS[perturbation_type] = Condition(
+        name=perturbation_type,
+        mode="image_text",
+        image_perturbation=perturbation_type,
+        description=f"{perturbation_type} perturbation (random variant).",
+    )
+
+for _i in range(3):
+    CONDITIONS[f"noise_floor_{_i}"] = Condition(
+        name=f"noise_floor_{_i}",
+        mode="image_text",
+        image_perturbation="noise_floor",
+        description=f"Noise floor run {_i}: destroyed inputs.",
+    )
+
+for perturbation_type, variant in TEXT_CONDITIONS:
+    name = f"{perturbation_type}_{variant}"
+    CONDITIONS[name] = Condition(
+        name=name,
+        mode="image_text",
+        text_perturbation=name,
+        description=f"{perturbation_type} text perturbation ({variant})",
     )
 
 
@@ -96,6 +119,8 @@ def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
         img_gray = cv2.resize(img_gray, (512, 512))
 
         perturb_type, variant = _parse_perturbation(condition.image_perturbation)
+        if variant == "random":
+            variant = random.choice(["v1", "v2", "v3"])
         kwargs = {}
         if perturb_type == "pacemaker":
             if registry is None:
@@ -122,11 +147,17 @@ def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
         perturbed_gray = apply_perturbation(img_gray, perturb_type, variant, **kwargs)
         image = Image.fromarray(perturbed_gray).convert("RGB")
 
-    if condition.text_perturbation == "verbose":
-        text = (
-            "Radiology evaluation request. The available case context is as follows: "
-            f"{text} Please evaluate the chest radiograph for clinically relevant findings."
+    if condition.text_perturbation not in ("none", "oracle"):
+        tp = condition.text_perturbation          
+        parts = tp.rsplit("_", 1)
+        perturb_type, variant = parts[0], parts[1]
+        if variant == "random":
+            variant = random.choice(["v1", "v2", "v3"])
+        text = apply_text_perturbation(
+            text, perturb_type, variant,
+            ground_truth=case.get("ground_truth", "no finding"),
         )
+        
     elif condition.text_perturbation == "oracle":
         text = add_oracle_context(text, case.get("ground_truth", "unknown"), condition.oracle_steps)
 
@@ -143,7 +174,9 @@ def _parse_perturbation(image_perturbation: str) -> tuple[str, str]:
     if image_perturbation == "noise_floor":
         return "noise_floor", "v1"
     parts = image_perturbation.rsplit("_", 1)
-    return parts[0], parts[1]
+    if len(parts) == 2 and parts[1] in ("v1", "v2", "v3"):
+        return parts[0], parts[1]
+    return image_perturbation, "random"
 
 
 def add_oracle_context(text: str, ground_truth: str, steps: int) -> str:

@@ -15,7 +15,8 @@ from src.perturbations.registry import PacemakerRegistry
 from src.evaluation.calibration import add_calibration_fields
 from src.evaluation.conditions import CONDITIONS, get_condition
 from src.evaluation.harness import evaluate_triple
-from src.pipelines.case_loader import load_chexpert_cases
+#from src.pipelines.case_loader import load_chexpert_cases
+from src.pipelines.chexpert_plus_loader import load_chexpert_plus_cases
 from src.pipelines.result_writer import write_jsonl
 
 

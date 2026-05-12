@@ -25,6 +25,9 @@ CHEXPERT_PLUS_LABELS = [
 
 
 CSV_CANDIDATES = [
+    # "df_chexpert_plus_240401.csv",
+    "selected_cases_with_demographics.csv",
+    "selected_cases.csv",
     "df_chexpert_plus_240401.csv",
     "chexpert_plus.csv",
     "metadata.csv",
@@ -44,10 +47,11 @@ IMAGE_COLUMNS = [
 ]
 
 TEXT_COLUMNS = [
+    "report",
+    "section_findings",
     "section_impression",
     "impression",
     "Impression",
-    "section_findings",
     "findings",
     "Findings",
     "section_clinical_history",
@@ -232,12 +236,17 @@ def _label_candidates(label: str) -> list[str]:
 
 
 def _make_case_id(row: pd.Series, image_path: Path) -> str:
-    for column in ["study_id", "StudyID", "dicom_id", "image_id", "patient_id", "subject_id"]:
+    for column in IMAGE_COLUMNS:
         if column in row and not pd.isna(row[column]):
-            return f"chexpert_plus_{column}_{row[column]}".replace("/", "_")
-    parts = image_path.with_suffix("").parts
-    if len(parts) >= 4:
-        return f"chexpert_plus_{'_'.join(parts[-4:])}".replace("/", "_")
+            parts = str(row[column]).replace("\\", "/").split("/")
+            try:
+                patient_num = "".join(filter(str.isdigit, parts[-3]))
+                study_num = "".join(filter(str.isdigit, parts[-2]))
+                patient_id = patient_num.zfill(5)
+                study_id = f"S{study_num.zfill(2)}"
+                return f"CXP_{patient_id}_{study_id}"
+            except (IndexError, ValueError):
+                pass
     return f"chexpert_plus_{image_path.with_suffix('').as_posix()}".replace("/", "_")
 
 

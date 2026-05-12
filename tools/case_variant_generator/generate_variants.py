@@ -25,13 +25,31 @@ from src.perturbations.registry import PacemakerRegistry
 
 DEFAULT_VARIANTS = [
     ("image", "watermark",        "v1", False),
+    ("image", "watermark",        "v2", False),
+    ("image", "watermark",        "v3", False),
+    ("image", "jpeg",             "v1", False),
     ("image", "jpeg",             "v2", False),
+    ("image", "jpeg",             "v3", False),
+    ("image", "chest_tube",       "v1", False),
+    ("image", "chest_tube",       "v2", False),
+    ("image", "chest_tube",       "v3", False),
+    ("image", "chest_drain",      "v1", False),
+    ("image", "chest_drain",      "v2", False),
+    ("image", "chest_drain",      "v3", False),
+    ("image", "ecg_leads",        "v1", False),
+    ("image", "ecg_leads",        "v2", False),
+    ("image", "ecg_leads",        "v3", False),
+    ("image", "pacemaker",        "v1", True),
+    ("image", "pacemaker",        "v2", True),
+    ("image", "pacemaker",        "v3", True),
     ("image", "negative_control", "v1", False),
     ("text",  "demographic",      "v1", False),
     ("text",  "demographic",      "v2", False),
     ("text",  "contradiction",    "v1", False),
+    ("text",  "contradiction",    "v2", False),
     ("text",  "paraphrase",       "v1", False),
     ("text",  "paraphrase",       "v2", False),
+    ("text",  "paraphrase",       "v3", False),
 ]
 
 

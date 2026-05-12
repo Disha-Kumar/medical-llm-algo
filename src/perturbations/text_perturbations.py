@@ -64,39 +64,62 @@ def inject_contradiction(text: str, ground_truth: str, variant: str = "v1") -> s
     return f"{age_sex} Chest X-ray (frontal view). {contradiction}"
 
 
-def paraphrase(text: str, variant: str = "v1") -> str:
-    age_sex = _extract_age_sex(text)
-
-    if variant == "v1":
-        return (
-            f"{age_sex} Frontal chest radiograph obtained. "
-            f"Please assess for any pathological abnormalities."
-        )
-    elif variant == "v2":
-        return (
-            f"Radiological assessment requested. Patient demographics: {age_sex.rstrip('.')}. "
-            f"Modality: chest X-ray, frontal projection. "
-            f"Clinical question: evaluate for pathology."
-        )
-    else:
-        return (
-            f"A frontal chest film has been acquired for {age_sex.rstrip('.')}. "
-            f"The referring clinician requests interpretation for "
-            f"any acute or chronic thoracic findings."
-        )
-
-
 _AGE_SEX_PATTERN = re.compile(
     r"(\d+)-year-old\s+(male|female|unknown)\s+patient\.?",
     re.IGNORECASE,
 )
-
+_AGE_SEX_PATTERN_ALT = re.compile(
+    r"(\d+)\s+years?\s+of\s+age,?\s+(male|female)",
+    re.IGNORECASE,
+)
 
 def _extract_age_sex(text: str) -> str:
     match = _AGE_SEX_PATTERN.search(text)
     if match:
         return f"{match.group(1)}-year-old {match.group(2).lower()} patient."
+    match = _AGE_SEX_PATTERN_ALT.search(text)
+    if match:
+        return f"{match.group(1)}-year-old {match.group(2).lower()} patient."
     return "Patient."
+
+def _extract_findings(text: str) -> str:
+    """Pull out the FINDINGS section, or fall back to full text."""
+    findings_match = re.search(
+        r"FINDINGS?[:\s]+(.*?)(?=IMPRESSION|SUMMARY|CONCLUSION|ACCESSION|$)",
+        text, re.IGNORECASE | re.DOTALL
+    )
+    if findings_match:
+        return findings_match.group(1).strip()
+    impression_match = re.search(
+        r"IMPRESSION[:\s]+(.*?)(?=SUMMARY|CONCLUSION|ACCESSION|$)",
+        text, re.IGNORECASE | re.DOTALL
+    )
+    if impression_match:
+        return impression_match.group(1).strip()
+    return text.strip
+
+def paraphrase(text: str, variant: str = "v1") -> str:
+    age_sex = _extract_age_sex(text)
+    findings = _extract_findings(text)
+
+    findings = findings[:600].strip()
+
+    if variant == "v1":
+        return (
+            f"{age_sex} Chest X-ray (frontal view) was obtained. "
+            f"Radiological review indicates the following: {findings}"
+        )
+    elif variant == "v2":
+        return (
+            f"Radiological assessment. Patient: {age_sex.rstrip('.')}. "
+            f"Modality: frontal chest radiograph. "
+            f"Observed findings: {findings}"
+        )
+    else:
+        return (
+            f"A frontal chest film was acquired. {age_sex} "
+            f"The interpreting radiologist notes: {findings}"
+        )
 
 
 def apply_text_perturbation(

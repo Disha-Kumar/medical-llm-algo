@@ -10,16 +10,39 @@ from src.evaluation.conditions import CONDITIONS, get_condition
 from src.evaluation.harness import evaluate_triple
 from src.pipelines.case_loader import load_chexpert_cases
 from src.pipelines.result_writer import write_jsonl
+from src.perturbations.registry import PacemakerRegistry
 
 
 ALL_CONDITIONS = [
     "original",
     "image_only",
     "text_only",
-    "watermark",
-    "brightness_low",
-    "contrast_high",
-    "text_style_verbose",
+    "watermark_v1",
+    "watermark_v2",
+    "watermark_v3",
+    "jpeg_v1",
+    "jpeg_v2",
+    "jpeg_v3",
+    "chest_tube_v1",
+    "chest_tube_v2",
+    "chest_tube_v3",
+    "chest_drain_v1",
+    "chest_drain_v2",
+    "chest_drain_v3",
+    "ecg_leads_v1",
+    "ecg_leads_v2",
+    "ecg_leads_v3",
+    "pacemaker_v1",
+    "pacemaker_v2",
+    "pacemaker_v3",
+    "negative_control",
+    "demographic_v1",
+    "demographic_v2",
+    "contradiction_v1",
+    "contradiction_v2",
+    "paraphrase_v1",
+    "paraphrase_v2",
+    "paraphrase_v3",
 ]
 
 DEFAULT_MODELS = ["qwen2_vl", "biovil_t"]
@@ -89,6 +112,7 @@ def run_model_conditions(
     }
 
     pipeline = load_pipeline(model, mode="image_text", device=device)
+    registry = PacemakerRegistry()
 
     for case in loaded_cases:
         for condition in condition_objects:
@@ -97,7 +121,7 @@ def run_model_conditions(
                 print(f"Skipping completed triple: ({model}, {key[0]}, {key[1]})", flush=True)
                 continue
 
-            result = _evaluate_with_retries(model, pipeline, case, condition, retries)
+            result = _evaluate_with_retries(model, pipeline, case, condition, retries, registry=registry)
             rows = [row for row in rows if (row["case_id"], row["condition"]) != key]
             rows.append(result)
             rows = add_calibration_fields(rows)
@@ -115,11 +139,11 @@ def run_model_conditions(
     return summary
 
 
-def _evaluate_with_retries(model: str, pipeline, case: dict, condition, retries: int) -> dict:
+def _evaluate_with_retries(model: str, pipeline, case: dict, condition, retries: int, *, registry=None) -> dict:
     attempts = max(1, retries + 1)
     last_result = None
     for attempt in range(1, attempts + 1):
-        result = evaluate_triple(model, pipeline, case, condition).to_dict()
+        result = evaluate_triple(model, pipeline, case, condition, registry=registry).to_dict()
         result["attempt"] = attempt
         if result["status"] != "FAIL":
             return result

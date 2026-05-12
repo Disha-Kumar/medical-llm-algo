@@ -122,8 +122,8 @@ def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run
     log_entries = []
 
     base_dir = output_dir / "base"
-    base_img_path = base_dir / f"{case_id}_image.png"
-    base_report_path = base_dir / f"{case_id}_report.json"
+    base_img_path = base_dir / f"{case_id}_base_image.png"
+    base_report_path = base_dir / f"{case_id}_base_report.json"
 
     if not dry_run:
         base_dir.mkdir(parents=True, exist_ok=True)
@@ -143,10 +143,11 @@ def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run
         perturb_label = _perturbation_label(perturb_type)
 
         if modality == "image":
-            filename = f"{case_id}_image_{perturb_label}_{variant}"
+            if perturb_label == "drains":
+                filename = f"{case_id}_image_{perturb_label}_{perturb_type}_{variant}"
+            else:
+                filename = f"{case_id}_image_{perturb_label}_{variant}"
             ext = ".jpg" if perturb_type == "jpeg" else ".png"
-            subdir = output_dir / "perturbed" / "image" / _folder_name(perturb_type)
-            out_path = subdir / f"{filename}{ext}"
 
             if not dry_run:
                 subdir.mkdir(parents=True, exist_ok=True)
@@ -182,7 +183,7 @@ def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run
                 desc = profile.get("label", variant)
                 filename = f"{case_id}_text_{perturb_label}_{desc}"
             else:
-                filename = f"{case_id}_text_{perturb_label}_{variant}"
+                filename = f"{case_id}_text_{perturb_label}_{variant}_{desc}"
 
             subdir = output_dir / "perturbed" / "text" / _folder_name(perturb_type)
             out_path = subdir / f"{filename}.json"

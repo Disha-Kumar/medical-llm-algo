@@ -21,6 +21,7 @@ from src.pipelines.case_loader import load_chexpert_cases
 from src.perturbations.image_perturbations import apply_perturbation as apply_image_perturbation
 from src.perturbations.text_perturbations import apply_text_perturbation
 from src.perturbations.registry import PacemakerRegistry
+from src.pipelines.chexpert_plus_loader import load_chexpert_plus_cases
 
 
 DEFAULT_VARIANTS = [
@@ -183,7 +184,7 @@ def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run
                 from src.perturbations.text_perturbations import _DEMOGRAPHIC_PROFILES
                 profile = _DEMOGRAPHIC_PROFILES.get(variant, {})
                 desc = profile.get("label", variant)
-                filename = f"{case_id}_text_{perturb_label}_{desc}"
+                filename = f"{case_id}_text_{perturb_label}_{variant}_{desc}"
             else:
                 filename = f"{case_id}_text_{perturb_label}_{variant}"
 
@@ -250,6 +251,7 @@ def main():
     parser.add_argument("--output-dir", default=str(PROJECT_ROOT / "data" / "variants"))
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--dataset-name", default="chexpert_small")
+    parser.add_argument("--dataset", default="small", choices=["small", "plus"])
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir)
@@ -259,7 +261,10 @@ def main():
         flush=True,
     )
 
-    cases = load_chexpert_cases(args.chexpert_root, split=args.split, n=args.cases)
+    if args.dataset == "plus":
+        cases = load_chexpert_plus_cases(args.chexpert_root, split=args.split, n=args.cases, frontal_only=True)
+    else:
+        cases = load_chexpert_cases(args.chexpert_root, split=args.split, n=args.cases)
     if not cases:
         print("No cases loaded. Check --chexpert-root path.", flush=True)
         return

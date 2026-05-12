@@ -4,6 +4,7 @@ from PIL import Image
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 from src.pipelines.base import MedicalVLM, ModelOutput, parse_output
 from src.pipelines.common import make_prompt
+from src.pipelines.common import CHEXPERT_LABELS
 
 
 class LLaVAMedPipeline(MedicalVLM):
@@ -107,10 +108,7 @@ class LLaVAMedPipeline(MedicalVLM):
         return f"[INST] <image>\n{prompt} [/INST]"
 
     def _make_llavamed_prompt(self, clinical_note: str) -> str:
-        labels = (
-            "atelectasis, cardiomegaly, consolidation, edema, pleural effusion, "
-            "pneumonia, pneumothorax, no finding"
-        )
+        labels = ", ".join(CHEXPERT_LABELS)
         note = clinical_note.strip() or "No clinical note provided."
         if self.mode == "image_only":
             note = "Use image only. No clinical note."

@@ -7,13 +7,19 @@ from PIL import Image
 
 
 CHEXPERT_LABELS = [
-    "atelectasis",
+    "enlarged cardiomediastinum",
     "cardiomegaly",
-    "consolidation",
+    "lung opacity",
+    "lung lesion",
     "edema",
-    "pleural effusion",
+    "consolidation",
     "pneumonia",
+    "atelectasis",
     "pneumothorax",
+    "pleural effusion",
+    "pleural other",
+    "fracture",
+    "support devices",
     "no finding",
 ]
 
@@ -21,8 +27,9 @@ DIAGNOSIS_PROMPT = (
     "Analyze the provided chest X-ray information for a research-only CheXpert task. "
     "Return exactly three lines in the format below. Do not explain the task. "
     "Do not define the fields. Do not add any text before or after the three lines.\n\n"
-    "DIAGNOSIS: <single label from: atelectasis, cardiomegaly, consolidation, "
-    "edema, pleural effusion, pneumonia, pneumothorax, no finding>\n"
+    "DIAGNOSIS: <single label from: enlarged cardiomediastinum, cardiomegaly, "
+    "lung opacity, lung lesion, edema, consolidation, pneumonia, atelectasis, "
+    "pneumothorax, pleural effusion, pleural other, fracture, support devices, no finding>\n"
     "CONFIDENCE: <float between 0.0 and 1.0>\n"
     "EXPLANATION: <one to three sentences describing the evidence>\n\n"
     "Choose the best label from the list, even if uncertain."

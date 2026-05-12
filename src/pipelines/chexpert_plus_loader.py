@@ -179,6 +179,8 @@ def _resolve_image_path(root: Path, row: pd.Series) -> Path | None:
         candidates = [
             root / value,
             root / value.lstrip("/"),
+            root / "images" / value,
+            root / "images" / value.lstrip("/"),
             root / "/".join(value.split("/")[1:]),
         ]
         for candidate in candidates:

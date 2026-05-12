@@ -6,6 +6,7 @@ from transformers import AutoProcessor, Qwen2VLForConditionalGeneration
 
 from src.pipelines.base import MedicalVLM, ModelOutput, parse_output
 from src.pipelines.common import make_prompt, move_inputs, resolve_device, resolve_dtype
+from src.pipelines.common import CHEXPERT_LABELS
 
 
 class Qwen2VLPipeline(MedicalVLM):
@@ -34,10 +35,7 @@ class Qwen2VLPipeline(MedicalVLM):
         self.model.eval()
 
     def _make_qwen_prompt(self, clinical_note: str) -> str:
-        labels = (
-            "atelectasis, cardiomegaly, consolidation, edema, "
-            "pleural effusion, pneumonia, pneumothorax, no finding"
-        )
+        labels = ", ".join(CHEXPERT_LABELS)
         note = clinical_note.strip() or "No clinical note provided."
         if self.mode == "image_only":
             context = "No clinical note is available. Examine the chest X-ray image carefully."

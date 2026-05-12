@@ -17,6 +17,7 @@ from src.evaluation.harness import evaluate_triple
 from src.pipelines.chexpert_plus_loader import load_chexpert_plus_cases
 from src.pipelines.result_writer import write_jsonl
 from src.perturbations.image_perturbations import ALL_CONDITIONS
+from src.perturbations.registry import PacemakerRegistry
 
 
 DEFAULT_MODELS = ["qwen2_vl", "llava_med", "biovil_t", "med_flamingo"]
@@ -25,7 +26,6 @@ DEFAULT_CONDITIONS = [
     "original",
     "image_only",
     "text_only",
-    "text_style_verbose",
 ]
 
 for perturbation_type, variant in ALL_CONDITIONS:
@@ -78,6 +78,7 @@ def main() -> None:
         }
 
         pipeline = load_pipeline(model_name, mode="image_text", device=args.device)
+        registry = PacemakerRegistry()
         for case in cases:
             for condition in conditions:
                 key = (case["case_id"], condition.name)
@@ -85,7 +86,7 @@ def main() -> None:
                     print(f"Skipping completed triple: ({model_name}, {key[0]}, {key[1]})", flush=True)
                     continue
 
-                result = _evaluate_with_retries(model_name, pipeline, case, condition, args.retries)
+                result = _evaluate_with_retries(model_name, pipeline, case, condition, args.retries, registry=registry)
                 rows = [row for row in rows if (row["case_id"], row["condition"]) != key]
                 rows.append(result)
                 rows = add_calibration_fields(rows)
@@ -107,11 +108,11 @@ def main() -> None:
         print(summary)
 
 
-def _evaluate_with_retries(model_name: str, pipeline, case: dict, condition, retries: int) -> dict:
+def _evaluate_with_retries(model_name: str, pipeline, case: dict, condition, retries: int, *, registry=None) -> dict:
     attempts = max(1, retries + 1)
     last_result = None
     for attempt in range(1, attempts + 1):
-        result = evaluate_triple(model_name, pipeline, case, condition).to_dict()
+        result = evaluate_triple(model_name, pipeline, case, condition, registry=registry).to_dict()
         result["attempt"] = attempt
         if result["status"] != "FAIL":
             return result

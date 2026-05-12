@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 
 from __future__ import annotations
 
@@ -54,7 +54,7 @@ DEFAULT_VARIANTS = [
 ]
 
 
-def _shorten_case_id(raw_id: str) -> str:
+def _shorten_case_id(raw_id: str, dataset: str = "small") -> str:
     short = raw_id
     for prefix in [
         "chexpert_CheXpert-v1.0-small_valid_",
@@ -65,7 +65,8 @@ def _shorten_case_id(raw_id: str) -> str:
         if short.startswith(prefix):
             short = short[len(prefix):]
             break
-    return f"CXS_{short}"
+    prefix = "CXP" if dataset == "plus" else "CXS"
+    return f"{prefix}_{short}"
 
 
 def _make_report_json(case_id, modality, perturbation_type, variant,
@@ -115,8 +116,8 @@ def _folder_name(perturb_type):
     return mapping.get(perturb_type, perturb_type)
 
 
-def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run=False):
-    case_id = _shorten_case_id(case["case_id"])
+def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run=False, dataset="small"):
+    case_id = _shorten_case_id(case["case_id"], dataset=dataset)
     base_text = case["text"]
     ground_truth = case["ground_truth"]
     image = case["image"]
@@ -149,7 +150,7 @@ def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run
             else:
                 filename = f"{case_id}_image_{perturb_label}_{variant}"
             ext = ".jpg" if perturb_type == "jpeg" else ".png"
-            subdir = output_dir / "perturbed" / "image" / _folder_name(perturb_type)  
+            subdir = output_dir / "perturbed" / "image" / _folder_name(perturb_type)
             out_path = subdir / f"{filename}{ext}"
 
             if not dry_run:
@@ -158,7 +159,7 @@ def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run
                     kwargs = {}
                     if perturb_type == "pacemaker":
                         kwargs["pacemaker_source"] = pm_registry.next_pacemaker()
-                    perturbed_img = apply_image_perturbation(img_gray,perturb_type,variant,**kwargs)
+                    perturbed_img = apply_image_perturbation(img_gray, perturb_type, variant, **kwargs)
                     result_pil = Image.fromarray(perturbed_img)
                     result_pil.save(str(out_path))
                 except Exception as exc:
@@ -226,7 +227,7 @@ def write_perturbation_log(log_entries, output_dir):
     print(f"\nPerturbation log: {log_path}", flush=True)
 
 
-def write_case_index(cases, output_dir):
+def write_case_index(cases, output_dir, dataset="small"):
     meta_dir = output_dir / "metadata"
     meta_dir.mkdir(parents=True, exist_ok=True)
     index_path = meta_dir / "case_index.csv"
@@ -236,7 +237,7 @@ def write_case_index(cases, output_dir):
         for case in cases:
             writer.writerow([
                 case["case_id"],
-                _shorten_case_id(case["case_id"]),
+                _shorten_case_id(case["case_id"], dataset=dataset),
                 case["ground_truth"],
                 case["text"],
             ])
@@ -271,7 +272,7 @@ def main():
 
     all_log_entries = []
     for i, case in enumerate(cases):
-        short = _shorten_case_id(case["case_id"])
+        short = _shorten_case_id(case["case_id"], dataset=args.dataset)
         print(f"\n[{i + 1}/{len(cases)}] {short} (gt={case['ground_truth']})", flush=True)
         entries = generate_variants_for_case(
             case=case,
@@ -279,12 +280,13 @@ def main():
             variants=DEFAULT_VARIANTS,
             dataset_name=args.dataset_name,
             dry_run=args.dry_run,
+            dataset=args.dataset,
         )
         all_log_entries.extend(entries)
 
     if not args.dry_run:
         write_perturbation_log(all_log_entries, output_dir)
-        write_case_index(cases, output_dir)
+        write_case_index(cases, output_dir, dataset=args.dataset)
 
     total = len(all_log_entries)
     per_case = total / len(cases) if cases else 0

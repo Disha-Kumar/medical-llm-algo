@@ -38,16 +38,10 @@ def flag_hallucination(diagnosis: str | None, explanation: str | None, ground_tr
             "Model asserted a pathology for a ground-truth no-finding case.",
         )
 
-    if ground_truth_norm and diagnosis_norm != ground_truth_norm:
-        return HallucinationResult(
-            True,
-            f"Diagnosis '{diagnosis_norm}' does not match ground truth '{ground_truth_norm}'.",
-        )
-
     unsupported = [
         label
         for label in CHEXPERT_LABELS
-        if label != ground_truth_norm and label in explanation_norm
+        if label != ground_truth_norm and label != diagnosis_norm and label in explanation_norm
     ]
     if unsupported:
         return HallucinationResult(

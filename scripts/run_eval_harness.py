@@ -21,6 +21,7 @@ from src.pipelines.result_writer import write_jsonl
 
 
 
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", required=True, choices=PIPELINES.keys())
@@ -38,6 +39,7 @@ def main() -> None:
     )
     parser.add_argument("--device", default="auto")
     parser.add_argument("--results-dir", default="results/evaluation_harness")
+    parser.add_argument("--dataset", default="plus", choices=["small", "plus"])
     args = parser.parse_args()
 
     print(
@@ -46,21 +48,26 @@ def main() -> None:
         flush=True,
     )
 
-    cases = load_chexpert_plus_cases(args.chexpert_root, split=None, n=args.cases, frontal_only=False)
+    if args.dataset == "plus":
+        cases = load_chexpert_plus_cases(args.chexpert_root, split=None, n=args.cases, frontal_only=False)
+    else:
+        cases = load_chexpert_cases(args.chexpert_root, split=args.split, n=args.cases)
     pipeline = load_pipeline(args.model, mode="image_text", device=args.device)
     registry = PacemakerRegistry() 
     conditions = [get_condition(name) for name in args.conditions]
 
     rows = []
+    dataset_tag = "CXP" if args.dataset == "plus" else "CXS"
+    conditions_tag = "_".join(args.conditions)
     result_path = os.path.join(
         args.results_dir,
         args.model,
-        f"{args.split}_{len(cases)}_{'_'.join(args.conditions)}.jsonl",
+        f"{dataset_tag}_{len(cases)}cases_{conditions_tag}.jsonl",
     )
     summary_path = os.path.join(
         args.results_dir,
         args.model,
-        f"{args.split}_{len(cases)}_{'_'.join(args.conditions)}_summary.json",
+        f"{dataset_tag}_{len(cases)}cases_{conditions_tag}_summary.json",
     )
 
     for case in cases:

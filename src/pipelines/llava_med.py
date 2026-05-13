@@ -17,7 +17,7 @@ class LLaVAMedPipeline(MedicalVLM):
         self.device = self._resolve_device(device)
         self.dtype = self._resolve_dtype(self.device)
         self.mode = mode
-        self.max_new_tokens = int(os.environ.get("LLAVAMED_MAX_NEW_TOKENS", "96"))
+        self.max_new_tokens = int(os.environ.get("LLAVAMED_MAX_NEW_TOKENS", "256"))
         print(
             f"LLaVA-Med runtime: device={self.device}, "
             f"dtype={self.dtype}, mode={self.mode}, max_new_tokens={self.max_new_tokens}",
@@ -108,23 +108,25 @@ class LLaVAMedPipeline(MedicalVLM):
         return f"[INST] <image>\n{prompt} [/INST]"
 
     def _make_llavamed_prompt(self, clinical_note: str) -> str:
-        labels = ", ".join(CHEXPERT_LABELS)
         note = clinical_note.strip() or "No clinical note provided."
         if self.mode == "image_only":
-            note = "Use image only. No clinical note."
+            note = "No clinical note is provided. Use the image only."
         elif self.mode == "text_only":
-            note = f"Use text only: {note}"
+            note = f"Use the clinical note only. Clinical Note: {note}"
         else:
-            note = f"Clinical note: {note}"
+            note = f"Clinical Note: {note}"
 
         return (
-            f"You are a radiologist analyzing a chest X-ray.\n"
-            f"{note}\n\n"
-            f"Select exactly one diagnosis from this list: {labels}.\n\n"
-            f"Respond in exactly this format and nothing else:\n"
-            f"DIAGNOSIS: <label>\n"
-            f"CONFIDENCE: <number between 0.0 and 1.0>\n"
-            f"EXPLANATION: <one sentence citing specific image findings>\n"
+            "Analyze the provided chest X-ray information for a research-only CheXpert task. "
+            "Return exactly three lines in the format below. Do not explain the task. "
+            "Do not define the fields. Do not add any text before or after the three lines.\n\n"
+            "DIAGNOSIS: <single label from: enlarged cardiomediastinum, cardiomegaly, "
+            "lung opacity, lung lesion, edema, consolidation, pneumonia, atelectasis, "
+            "pneumothorax, pleural effusion, pleural other, fracture, support devices, no finding>\n"
+            "CONFIDENCE: <float between 0.0 and 1.0>\n"
+            "EXPLANATION: <one to three sentences describing the visual evidence>\n\n"
+            "Choose the best label from the list, even if uncertain.\n\n"
+            f"{note}"
         )
 
     def predict(self, image: Image.Image, text: str,
@@ -147,7 +149,9 @@ class LLaVAMedPipeline(MedicalVLM):
             output_ids = self.model.generate(
                 **inputs,
                 max_new_tokens=self.max_new_tokens,
-                do_sample=False
+                do_sample=True,
+                temperature=0.3,
+                top_p=0.9,
             )
             print("  Generation complete.", flush=True)
         raw = self.processor.decode(

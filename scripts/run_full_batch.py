@@ -15,18 +15,10 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--models", nargs="+", default=DEFAULT_MODELS)
     parser.add_argument("--conditions", nargs="+", default=ALL_CONDITIONS)
-    parser.add_argument(
-        "--cases",
-        type=int,
-        default=None,
-        help="Number of frontal cases to run. Omit for full available case set.",
-    )
+    parser.add_argument("--cases", type=int, default=None)
     parser.add_argument("--split", default="valid")
-    parser.add_argument(
-        "--chexpert-root",
-        default=None,
-        help="CheXpert root. Defaults to CHEXPERT_ROOT or data/chexpert small.",
-    )
+    parser.add_argument("--dataset", default="small", choices=["small", "plus"])
+    parser.add_argument("--chexpert-root", default=None)
     parser.add_argument("--shared-dir", default="shared_outputs/full_eval")
     parser.add_argument("--device", default="auto")
     parser.add_argument("--retries", type=int, default=1)
@@ -37,6 +29,7 @@ def main() -> None:
         conditions=args.conditions,
         cases=args.cases,
         split=args.split,
+        dataset=args.dataset,
         chexpert_root=args.chexpert_root,
         shared_dir=args.shared_dir,
         device=args.device,

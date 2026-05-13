@@ -99,6 +99,15 @@ for perturbation_type, variant in TEXT_CONDITIONS:
         description=f"{perturbation_type} text perturbation ({variant})",
     )
 
+_TEXT_TYPES = sorted({pt for pt, _ in TEXT_CONDITIONS})
+for perturbation_type in _TEXT_TYPES:
+    CONDITIONS[perturbation_type] = Condition(
+        name=perturbation_type,
+        mode="image_text",
+        text_perturbation=perturbation_type,
+        description=f"{perturbation_type} text perturbation (random variant).",
+    )
+
 
 def get_condition(name: str) -> Condition:
     if name not in CONDITIONS:
@@ -148,10 +157,12 @@ def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
         image = Image.fromarray(perturbed_gray).convert("RGB")
 
     if condition.text_perturbation not in ("none", "oracle"):
-        tp = condition.text_perturbation          
+        tp = condition.text_perturbation
         parts = tp.rsplit("_", 1)
-        perturb_type, variant = parts[0], parts[1]
-        if variant == "random":
+        if len(parts) == 2 and parts[1] in ("v1", "v2", "v3"):
+            perturb_type, variant = parts[0], parts[1]
+        else:
+            perturb_type = tp
             variant = random.choice(["v1", "v2", "v3"])
         text = apply_text_perturbation(
             text, perturb_type, variant,

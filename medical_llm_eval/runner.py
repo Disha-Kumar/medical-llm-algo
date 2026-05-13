@@ -9,6 +9,7 @@ from src.evaluation.calibration import add_calibration_fields
 from src.evaluation.conditions import CONDITIONS, get_condition
 from src.evaluation.harness import evaluate_triple
 from src.pipelines.case_loader import load_chexpert_cases
+from src.pipelines.chexpert_plus_loader import load_chexpert_plus_cases
 from src.pipelines.result_writer import write_jsonl
 from src.perturbations.registry import PacemakerRegistry
 
@@ -43,9 +44,26 @@ ALL_CONDITIONS = [
     "paraphrase_v1",
     "paraphrase_v2",
     "paraphrase_v3",
+    "sliding_context_v1",
+    "sliding_context_v2",
+    "sliding_context_v3",
+    "perfect_retrieval_v1",
+    "perfect_retrieval_v2",
+    "perfect_retrieval_v3",
 ]
 
 DEFAULT_MODELS = ["qwen2_vl", "biovil_t"]
+
+
+def _load_cases(dataset: str, chexpert_root: str, split: str, n: int) -> list[dict]:
+    if dataset == "plus":
+        return load_chexpert_plus_cases(
+            chexpert_root,
+            split=split if split != "valid" else None,
+            n=n,
+            frontal_only=True,
+        )
+    return load_chexpert_cases(chexpert_root, split=split, n=n)
 
 
 def run_batch(
@@ -54,6 +72,7 @@ def run_batch(
     conditions: list[str] | None = None,
     cases: int | None = None,
     split: str = "valid",
+    dataset: str = "small",
     chexpert_root: str | None = None,
     shared_dir: str = "shared_outputs/full_eval",
     device: str = "auto",
@@ -61,7 +80,11 @@ def run_batch(
 ) -> list[dict]:
     models = models or DEFAULT_MODELS
     conditions = conditions or ALL_CONDITIONS
-    chexpert_root = chexpert_root or os.environ.get("CHEXPERT_ROOT", "data/chexpert small")
+    if chexpert_root is None:
+        if dataset == "plus":
+            chexpert_root = os.environ.get("CHEXPERT_PLUS_ROOT", "data/chexpert plus")
+        else:
+            chexpert_root = os.environ.get("CHEXPERT_ROOT", "data/chexpert small")
     summaries = []
     for model in models:
         summaries.append(
@@ -70,6 +93,7 @@ def run_batch(
                 conditions=conditions,
                 cases=cases,
                 split=split,
+                dataset=dataset,
                 chexpert_root=chexpert_root,
                 shared_dir=shared_dir,
                 device=device,
@@ -85,24 +109,22 @@ def run_model_conditions(
     conditions: list[str],
     cases: int | None,
     split: str,
+    dataset: str,
     chexpert_root: str,
     shared_dir: str,
     device: str,
     retries: int,
 ) -> dict:
-    loaded_cases = load_chexpert_cases(
-        chexpert_root,
-        split=split,
-        n=cases or 1_000_000,
-    )
+    loaded_cases = _load_cases(dataset, chexpert_root, split, cases or 1_000_000)
     if cases is not None:
         loaded_cases = loaded_cases[:cases]
 
+    dataset_label = "chexpert_plus" if dataset == "plus" else split
     condition_objects = [get_condition(name) for name in conditions]
     output_dir = Path(shared_dir) / model
     output_dir.mkdir(parents=True, exist_ok=True)
-    result_path = output_dir / f"{split}_{len(loaded_cases)}_{'_'.join(conditions)}.jsonl"
-    summary_path = output_dir / f"{split}_{len(loaded_cases)}_{'_'.join(conditions)}_summary.json"
+    result_path = output_dir / f"{dataset_label}_{len(loaded_cases)}_{'_'.join(conditions)}.jsonl"
+    summary_path = output_dir / f"{dataset_label}_{len(loaded_cases)}_{'_'.join(conditions)}_summary.json"
 
     rows = _load_existing_rows(result_path)
     completed = {
@@ -133,7 +155,7 @@ def run_model_conditions(
                 flush=True,
             )
 
-    summary = _build_summary(model, loaded_cases, conditions, rows, str(result_path))
+    summary = _build_summary(dataset, model, loaded_cases, conditions, rows, str(result_path))
     with open(summary_path, "w") as f:
         json.dump(summary, f, indent=2)
     return summary
@@ -169,6 +191,7 @@ def _load_existing_rows(path: Path) -> list[dict]:
 
 
 def _build_summary(
+    dataset: str,
     model: str,
     cases: list[dict],
     conditions: list[str],
@@ -176,6 +199,7 @@ def _build_summary(
     result_path: str,
 ) -> dict:
     return {
+        "dataset": dataset,
         "model": model,
         "cases": len(cases),
         "conditions": conditions,

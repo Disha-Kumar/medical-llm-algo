@@ -1,2 +1,3 @@
 openai
 pydicom
+hi-ml-multimodal

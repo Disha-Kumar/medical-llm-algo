@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -87,8 +88,9 @@ def main() -> None:
     for model_name in args.models:
         output_dir = Path(args.shared_dir) / model_name
         output_dir.mkdir(parents=True, exist_ok=True)
-        result_path = output_dir / f"chexpert_plus_{len(cases)}_{'_'.join(args.conditions)}.jsonl"
-        summary_path = output_dir / f"chexpert_plus_{len(cases)}_{'_'.join(args.conditions)}_summary.json"
+        stem = _result_stem("chexpert_plus", len(cases), args.conditions)
+        result_path = output_dir / f"{stem}.jsonl"
+        summary_path = output_dir / f"{stem}_summary.json"
         rows = _load_existing_rows(result_path)
         completed = {
             (row["case_id"], row["condition"])
@@ -154,6 +156,15 @@ def _load_existing_rows(path: Path) -> list[dict]:
             if line:
                 rows.append(json.loads(line))
     return rows
+
+
+def _result_stem(dataset_label: str, case_count: int, conditions: list[str]) -> str:
+    condition_slug = "_".join(conditions)
+    stem = f"{dataset_label}_{case_count}_{condition_slug}"
+    if len(stem) <= 180:
+        return stem
+    digest = hashlib.sha1(condition_slug.encode("utf-8")).hexdigest()[:10]
+    return f"{dataset_label}_{case_count}_{len(conditions)}conditions_{digest}"
 
 
 def _build_summary(

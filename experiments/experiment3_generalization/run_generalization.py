@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -88,7 +89,7 @@ def _run(
     for model_name in models:
         output_dir = shared_dir / output_prefix / model_name
         output_dir.mkdir(parents=True, exist_ok=True)
-        stem = f"{output_prefix}_{len(cases)}_{'_'.join(condition_names)}"
+        stem = _result_stem(output_prefix, len(cases), condition_names)
         result_path = output_dir / f"{stem}.jsonl"
         summary_path = output_dir / f"{stem}_summary.json"
         rows = _load_existing_rows(result_path)
@@ -147,6 +148,15 @@ def _load_existing_rows(path: Path) -> list[dict]:
             if line:
                 rows.append(json.loads(line))
     return rows
+
+
+def _result_stem(prefix: str, case_count: int, conditions: list[str]) -> str:
+    condition_slug = "_".join(conditions)
+    stem = f"{prefix}_{case_count}_{condition_slug}"
+    if len(stem) <= 180:
+        return stem
+    digest = hashlib.sha1(condition_slug.encode("utf-8")).hexdigest()[:10]
+    return f"{prefix}_{case_count}_{len(conditions)}conditions_{digest}"
 
 
 def _summary(experiment: str, model: str, cases: list[dict], conditions: list[str], rows: list[dict], result_path: str) -> dict:

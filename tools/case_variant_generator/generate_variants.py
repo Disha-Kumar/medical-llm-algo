@@ -61,6 +61,8 @@ def _shorten_case_id(raw_id: str, dataset: str = "small") -> str:
         "chexpert_CheXpert-v1.0-small_train_",
         "chexpert_plus_",
         "chexpert_",
+        "CXP_",
+        "CXS_",
     ]:
         if short.startswith(prefix):
             short = short[len(prefix):]

@@ -31,9 +31,10 @@ class LLaVAMedPipeline(MedicalVLM):
             self.MODEL_ID,
             torch_dtype=self.dtype,
             low_cpu_mem_usage=True,
+            load_in_8bit=True,
+            device_map="auto",
             token=os.environ.get("HF_TOKEN")
         )
-        self.model.to(self.device)
         self.model.eval()
 
     @staticmethod

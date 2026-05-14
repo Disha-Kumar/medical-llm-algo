@@ -27,14 +27,22 @@ class LLaVAMedPipeline(MedicalVLM):
             self.MODEL_ID,
             token=os.environ.get("HF_TOKEN")
         )
+        model_kwargs = {
+            "torch_dtype": self.dtype,
+            "low_cpu_mem_usage": True,
+            "token": os.environ.get("HF_TOKEN"),
+        }
+        use_8bit = os.environ.get("LLAVAMED_LOAD_IN_8BIT", "0") == "1"
+        if use_8bit and self.device == "cuda":
+            model_kwargs["load_in_8bit"] = True
+            model_kwargs["device_map"] = "auto"
+
         self.model = LlavaForConditionalGeneration.from_pretrained(
             self.MODEL_ID,
-            torch_dtype=self.dtype,
-            low_cpu_mem_usage=True,
-            load_in_8bit=True,
-            device_map="auto",
-            token=os.environ.get("HF_TOKEN")
+            **model_kwargs,
         )
+        if "device_map" not in model_kwargs:
+            self.model.to(self.device)
         self.model.eval()
 
     @staticmethod

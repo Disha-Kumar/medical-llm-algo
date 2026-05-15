@@ -18,9 +18,12 @@ class LLaVAMedPipeline(MedicalVLM):
         self.dtype = self._resolve_dtype(self.device)
         self.mode = mode
         self.max_new_tokens = int(os.environ.get("LLAVAMED_MAX_NEW_TOKENS", "256"))
+        self.prompt_style = os.environ.get("LLAVAMED_PROMPT_STYLE", "default").lower()
+        self.do_sample = os.environ.get("LLAVAMED_DO_SAMPLE", "1") != "0"
         print(
             f"LLaVA-Med runtime: device={self.device}, "
-            f"dtype={self.dtype}, mode={self.mode}, max_new_tokens={self.max_new_tokens}",
+            f"dtype={self.dtype}, mode={self.mode}, max_new_tokens={self.max_new_tokens}, "
+            f"prompt_style={self.prompt_style}, do_sample={self.do_sample}",
             flush=True,
         )
         self.processor = AutoProcessor.from_pretrained(
@@ -125,6 +128,18 @@ class LLaVAMedPipeline(MedicalVLM):
         else:
             note = f"Clinical Note: {note}"
 
+        if self.prompt_style == "simple":
+            return (
+                "Chest X-ray research task. Choose one label only from: "
+                "atelectasis, cardiomegaly, consolidation, edema, pleural effusion, "
+                "pneumonia, pneumothorax, no finding.\n\n"
+                "Answer exactly in this format:\n"
+                "DIAGNOSIS: <label>\n"
+                "CONFIDENCE: <0.0 to 1.0>\n"
+                "EXPLANATION: <short evidence sentence>\n\n"
+                f"{note}"
+            )
+
         return (
             "Analyze the provided chest X-ray information for a research-only CheXpert task. "
             "Return exactly three lines in the format below. Do not explain the task. "
@@ -155,13 +170,15 @@ class LLaVAMedPipeline(MedicalVLM):
 
         with torch.no_grad():
             print("  Generating...", flush=True)
-            output_ids = self.model.generate(
+            generation_kwargs = {
                 **inputs,
-                max_new_tokens=self.max_new_tokens,
-                do_sample=True,
-                temperature=0.3,
-                top_p=0.9,
-            )
+                "max_new_tokens": self.max_new_tokens,
+                "do_sample": self.do_sample,
+            }
+            if self.do_sample:
+                generation_kwargs["temperature"] = 0.3
+                generation_kwargs["top_p"] = 0.9
+            output_ids = self.model.generate(**generation_kwargs)
             print("  Generation complete.", flush=True)
         raw = self.processor.decode(
             output_ids[0][inputs["input_ids"].shape[1]:],

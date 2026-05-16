@@ -83,45 +83,9 @@ class LLaVAMedPipeline(MedicalVLM):
         return moved
 
     def _format_prompt(self, prompt: str) -> str:
-        if self.mode == "text_only":
-            messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
-        else:
-            messages = [
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "image"},
-                        {"type": "text", "text": prompt},
-                    ],
-                }
-            ]
-
-        if hasattr(self.processor, "apply_chat_template"):
-            try:
-                return self.processor.apply_chat_template(
-                    messages,
-                    tokenize=False,
-                    add_generation_prompt=True,
-                )
-            except ValueError:
-                pass
-
-        tokenizer = getattr(self.processor, "tokenizer", self.processor)
-        chat_template = getattr(self.processor, "chat_template", None)
-        if hasattr(tokenizer, "apply_chat_template") and chat_template:
-            try:
-                return tokenizer.apply_chat_template(
-                    messages,
-                    tokenize=False,
-                    add_generation_prompt=True,
-                    chat_template=chat_template,
-                )
-            except ValueError:
-                pass
-
-        if self.mode == "text_only":
-            return f"[INST] {prompt} [/INST]"
-        return f"[INST] <image>\n{prompt} [/INST]"
+    if self.mode == "text_only":
+        return f"USER: {prompt}\nASSISTANT:"
+    return f"USER: <image>\n{prompt}\nASSISTANT:"
 
     def _make_llavamed_prompt(self, clinical_note: str) -> str:
         note = clinical_note.strip() or "No clinical note provided."

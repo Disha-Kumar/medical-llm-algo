@@ -67,12 +67,16 @@ class LLaVAMedPipeline(MedicalVLM):
         return torch.float32
 
     def _to_device(self, inputs):
+        try:
+            target_device = next(self.model.parameters()).device
+        except StopIteration:
+            target_device = self.device
         moved = {}
         for key, value in inputs.items():
             if not torch.is_tensor(value):
                 moved[key] = value
                 continue
-            value = value.to(self.device)
+            value = value.to(target_device)
             if torch.is_floating_point(value):
                 value = value.to(self.dtype)
             moved[key] = value

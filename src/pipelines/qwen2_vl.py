@@ -25,6 +25,8 @@ class Qwen2VLPipeline(MedicalVLM):
         self.processor = AutoProcessor.from_pretrained(
             self.MODEL_ID,
             token=os.environ.get("HF_TOKEN"),
+            min_pixels=256*28*28,
+            max_pixels=512*28*28,
         )
         self.model = Qwen2VLForConditionalGeneration.from_pretrained(
             self.MODEL_ID,

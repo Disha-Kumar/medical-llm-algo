@@ -24,17 +24,18 @@ CHEXPERT_LABELS = [
 ]
 
 DIAGNOSIS_PROMPT = (
-    "Analyze the provided chest X-ray information for a research-only CheXpert task. "
-    "Return exactly three lines in the format below. Do not explain the task. "
-    "Do not define the fields. Do not add any text before or after the three lines.\n\n"
-    "DIAGNOSIS: <single label from: enlarged cardiomediastinum, cardiomegaly, "
-    "lung opacity, lung lesion, edema, consolidation, pneumonia, atelectasis, "
-    "pneumothorax, pleural effusion, pleural other, fracture, support devices, no finding>\n"
-    "CONFIDENCE: <float between 0.0 and 1.0>\n"
-    "EXPLANATION: <one to three sentences describing the evidence>\n\n"
-    "Choose the best label from the list, even if uncertain."
+    "You are evaluating a chest X-ray for a research study. "
+    "You MUST respond in exactly this format with no other text:\n\n"
+    "DIAGNOSIS: <one label, exactly as written below>\n"
+    "CONFIDENCE: <float 0.0-1.0>\n"
+    "EXPLANATION: <one sentence>\n\n"
+    "The ONLY valid labels are:\n"
+    "enlarged cardiomediastinum | cardiomegaly | lung opacity | lung lesion | "
+    "edema | consolidation | pneumonia | atelectasis | pneumothorax | "
+    "pleural effusion | pleural other | fracture | support devices | no finding\n\n"
+    "Copy the label exactly. Do not add words. Do not combine labels. "
+    "If uncertain, pick the single most likely label from the list above."
 )
-
 
 def make_prompt(clinical_note: str = "", mode: str = "image_text") -> str:
     note = clinical_note.strip() or "No clinical note provided."

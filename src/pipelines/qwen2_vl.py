@@ -16,7 +16,7 @@ class Qwen2VLPipeline(MedicalVLM):
         self.device = resolve_device(device)
         self.dtype = resolve_dtype(self.device)
         self.mode = mode
-        self.max_new_tokens = int(os.environ.get("QWEN2_VL_MAX_NEW_TOKENS", "96"))
+        self.max_new_tokens = int(os.environ.get("QWEN2_VL_MAX_NEW_TOKENS", "200"))
         print(
             f"Qwen2-VL runtime: model={self.MODEL_ID}, device={self.device}, "
             f"dtype={self.dtype}, mode={self.mode}, max_new_tokens={self.max_new_tokens}",
@@ -37,7 +37,6 @@ class Qwen2VLPipeline(MedicalVLM):
         self.model.eval()
 
     def _make_qwen_prompt(self, clinical_note: str) -> str:
-        labels = ", ".join(CHEXPERT_LABELS)
         note = clinical_note.strip() or "No clinical note provided."
         if self.mode == "image_only":
             context = "No clinical note is available. Examine the chest X-ray image carefully."
@@ -48,12 +47,17 @@ class Qwen2VLPipeline(MedicalVLM):
         return (
             f"You are an expert radiologist. Examine the chest X-ray and provide a diagnosis.\n"
             f"{context}\n\n"
-            f"Choose exactly one diagnosis from: {labels}.\n"
-            f"Look carefully at the image before deciding. Different cases have different findings.\n\n"
-            f"Respond in exactly this format:\n"
-            f"DIAGNOSIS: <label>\n"
+            f"Choose exactly one diagnosis from this list:\n"
+            f"enlarged cardiomediastinum, cardiomegaly, lung opacity, lung lesion, "
+            f"edema, consolidation, pneumonia, atelectasis, pneumothorax, "
+            f"pleural effusion, pleural other, fracture, support devices, no finding\n\n"
+            f"ONLY write one of the exact labels above. "
+            f"DO NOT write full sentences. "
+            f"DO NOT describe findings in the DIAGNOSIS line.\n\n"
+            f"Respond in exactly this format and nothing else:\n"
+            f"DIAGNOSIS: <one exact label from the list>\n"
             f"CONFIDENCE: <number between 0.0 and 1.0>\n"
-            f"EXPLANATION: <one to two sentences citing specific visual findings>\n"
+            f"EXPLANATION: <one to two sentences citing specific findings>\n"
         )
 
     def predict(

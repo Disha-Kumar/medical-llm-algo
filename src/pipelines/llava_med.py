@@ -83,9 +83,9 @@ class LLaVAMedPipeline(MedicalVLM):
         return moved
 
     def _format_prompt(self, prompt: str) -> str:
-    if self.mode == "text_only":
-        return f"USER: {prompt}\nASSISTANT:"
-    return f"USER: <image>\n{prompt}\nASSISTANT:"
+        if self.mode == "text_only":
+            return f"USER: {prompt}\nASSISTANT:"
+        return f"USER: <image>\n{prompt}\nASSISTANT:"
 
     def _make_llavamed_prompt(self, clinical_note: str) -> str:
         note = clinical_note.strip() or "No clinical note provided."

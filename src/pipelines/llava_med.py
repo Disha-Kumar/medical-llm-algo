@@ -28,14 +28,17 @@ class LLaVAMedPipeline(MedicalVLM):
         )
         self.processor = AutoProcessor.from_pretrained(
             self.MODEL_ID,
-            token=os.environ.get("HF_TOKEN")
+            token=os.environ.get("HF_TOKEN"),
         )
+        self.processor.patch_size = 14
+        self.processor.vision_feature_select_strategy = "default"
+
         model_kwargs = {
             "torch_dtype": self.dtype,
             "low_cpu_mem_usage": True,
             "token": os.environ.get("HF_TOKEN"),
         }
-        use_8bit = os.environ.get("LLAVAMED_LOAD_IN_8BIT", "0") == "1"
+        use_8bit = os.environ.get("LLAVAMED_LOAD_IN_8BIT", "1") == "1"
         if use_8bit and self.device == "cuda":
             model_kwargs["load_in_8bit"] = True
             model_kwargs["device_map"] = "auto"
@@ -88,7 +91,8 @@ class LLaVAMedPipeline(MedicalVLM):
         return f"USER: <image>\n{prompt}\nASSISTANT:"
 
     def _make_llavamed_prompt(self, clinical_note: str) -> str:
-        note = clinical_note.strip() or "No clinical note provided."
+
+        note = clinical_note.strip()[:800] or "No clinical note provided."
         if self.mode == "image_only":
             note = "No clinical note is provided. Use the image only."
         elif self.mode == "text_only":
@@ -99,8 +103,9 @@ class LLaVAMedPipeline(MedicalVLM):
         if self.prompt_style == "simple":
             return (
                 "Chest X-ray research task. Choose one label only from: "
-                "atelectasis, cardiomegaly, consolidation, edema, pleural effusion, "
-                "pneumonia, pneumothorax, no finding.\n\n"
+                "enlarged cardiomediastinum, cardiomegaly, lung opacity, lung lesion, "
+                "edema, consolidation, pneumonia, atelectasis, pneumothorax, "
+                "pleural effusion, pleural other, fracture, support devices, no finding.\n\n"
                 "Answer exactly in this format:\n"
                 "DIAGNOSIS: <label>\n"
                 "CONFIDENCE: <0.0 to 1.0>\n"

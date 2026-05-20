@@ -1,0 +1,18 @@
+{
+  "annotator_id": "muhammad",
+  "case_id": "CXP_02848_S01",
+  "timestamp": "2026-05-20T09:14:35",
+  "models_reviewed": [
+    "gpt4o"
+  ],
+  "tier1_label_flip": "P",
+  "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
+  "tier2_confidence_change": "D",
+  "tier2_confidence_change_label": "drop  -- confidence decreased meaningfully",
+  "tier3_explanation_shift": "P",
+  "tier3_explanation_shift_label": "partial -- shifted in some variants only",
+  "failure_cause": "B",
+  "failure_cause_label": "both",
+  "trigger_perturbations": "chest_drain_v2, demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1",
+  "notes": "GPT-4o flipped mainly on text perturbations (6 flips) with some image flips (1). GPT-4o baseline was already wrong (said consolidation vs ground truth enlarged cardiomediastinum)"
+}

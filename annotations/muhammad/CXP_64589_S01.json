@@ -1,0 +1,19 @@
+{
+  "annotator_id": "muhammad",
+  "case_id": "CXP_64589_S01",
+  "timestamp": "2026-05-20T12:17:28",
+  "models_reviewed": [
+    "gpt4o",
+    "qwen2 vl"
+  ],
+  "tier1_label_flip": "P",
+  "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
+  "tier2_confidence_change": "D",
+  "tier2_confidence_change_label": "drop  -- confidence decreased meaningfully",
+  "tier3_explanation_shift": "P",
+  "tier3_explanation_shift_label": "partial -- shifted in some variants only",
+  "failure_cause": "B",
+  "failure_cause_label": "both",
+  "trigger_perturbations": "contradiction_v1, contradiction_v2, chest_tube_v1, demographic_v1, demographic_v2",
+  "notes": "GPT-4o flipped mainly on text perturbations (6 flips) with some image flips (1). GPT-4o baseline was already wrong (said edema vs ground truth enlarged cardiomediastinum). Qwen2-VL unstable across both image (1 flips) and text (2 flips) perturbations. Qwen2-VL baseline was already wrong (said Cardiomegaly vs ground truth enlarged cardiomediastinum)"
+}

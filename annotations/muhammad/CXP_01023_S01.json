@@ -1,0 +1,19 @@
+{
+  "annotator_id": "muhammad",
+  "case_id": "CXP_01023_S01",
+  "timestamp": "2026-05-20T02:04:29",
+  "models_reviewed": [
+    "gpt4o",
+    "qwen2 vl"
+  ],
+  "tier1_label_flip": "P",
+  "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
+  "tier2_confidence_change": "B",
+  "tier2_confidence_change_label": "both  -- dropped in some variants, increased in others",
+  "tier3_explanation_shift": "Y",
+  "tier3_explanation_shift_label": "yes -- explanation shifted meaningfully",
+  "failure_cause": "B",
+  "failure_cause_label": "both",
+  "trigger_perturbations": "demographic_v1, contradiction_v1, contradiction_v2",
+  "notes": "GPT-4o stable on all image perturbations but flipped on text conditions. Qwen2-VL baseline was already wrong + Qwen2-VL flipped on negative control which suggests general instability."
+}

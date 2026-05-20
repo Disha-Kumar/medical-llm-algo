@@ -1,0 +1,19 @@
+{
+  "annotator_id": "muhammad",
+  "case_id": "CXP_15996_S05",
+  "timestamp": "2026-05-20T10:27:54",
+  "models_reviewed": [
+    "gpt4o",
+    "qwen2 vl"
+  ],
+  "tier1_label_flip": "P",
+  "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
+  "tier2_confidence_change": "D",
+  "tier2_confidence_change_label": "drop  -- confidence decreased meaningfully",
+  "tier3_explanation_shift": "P",
+  "tier3_explanation_shift_label": "partial -- shifted in some variants only",
+  "failure_cause": "B",
+  "failure_cause_label": "both",
+  "trigger_perturbations": "demographic_v2, contradiction_v2, pacemaker_v3, demographic_v1, contradiction_v1",
+  "notes": "GPT-4o stable on all image perturbations but flipped on text conditions (contradiction, demographic). GPT-4o baseline was already wrong (said support devices vs ground truth enlarged cardiomediastinum). Qwen2-VL flipped mainly on text perturbations (7 flips) with some image flips (1). Qwen2-VL baseline was already wrong (said No finding vs ground truth enlarged cardiomediastinum)"
+}

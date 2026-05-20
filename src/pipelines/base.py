@@ -74,9 +74,38 @@ def parse_output(raw: str, model_name: str,
             explanation = line.replace("EXPLANATION:", "").strip()
 
     if not diagnosis:
-        diagnosis   = "parse_failed"
-        explanation = raw.strip()
-        confidence  = 0.0
+        # Fallback: try to find DIAGNOSIS: anywhere in text (not just line start)
+        import re
+        diag_match = re.search(r'DIAGNOSIS:\s*(.+)', raw, re.IGNORECASE)
+        if diag_match:
+            diagnosis = diag_match.group(1).strip()
+        else:
+            # Last resort: scan raw text for any valid CheXpert label
+            raw_lower = raw.lower()
+            for label in CHEXPERT_LABELS:
+                if label in raw_lower and label != "no finding":
+                    diagnosis = label
+                    break
+
+        if not diagnosis:
+            diagnosis   = "parse_failed"
+            explanation = raw.strip()
+            confidence  = 0.0
+        else:
+            diagnosis = _normalize_to_label(diagnosis)
+            if not explanation:
+                explanation = raw.strip()
+            if confidence == 0.0:
+                # Try to extract a confidence number from the text
+                conf_match = re.search(r'CONFIDENCE:\s*([\d.]+)', raw, re.IGNORECASE)
+                if conf_match:
+                    try:
+                        val = float(conf_match.group(1))
+                        confidence = val / 100.0 if val > 1.0 else val
+                    except ValueError:
+                        confidence = 0.5
+                else:
+                    confidence = 0.5
     else:
         diagnosis = _normalize_to_label(diagnosis)
 

@@ -1,10 +1,22 @@
 import os
+import re
 import torch
 from PIL import Image
 from transformers import AutoProcessor, LlavaForConditionalGeneration
 from src.pipelines.base import MedicalVLM, ModelOutput, parse_output
-from src.pipelines.common import make_prompt
 from src.pipelines.common import CHEXPERT_LABELS
+
+
+# Labels as a compact string for the prompt
+_LABEL_LIST = " | ".join(CHEXPERT_LABELS)
+
+# One-shot example so the 7B model sees the exact output shape before generating
+_ONESHOT = (
+    "Example:\n"
+    "DIAGNOSIS: cardiomegaly\n"
+    "CONFIDENCE: 0.8\n"
+    "EXPLANATION: The cardiac silhouette is enlarged.\n"
+)
 
 
 class LLaVAMedPipeline(MedicalVLM):
@@ -13,17 +25,20 @@ class LLaVAMedPipeline(MedicalVLM):
         "chaoyinshe/llava-med-v1.5-mistral-7b-hf",
     )
 
+    # ── prefill token: the model's first generated token comes AFTER this ──
+    # Ending the prompt with "DIAGNOSIS:" forces the model to continue in
+    # structured format instead of rambling in free-form prose.
+    _RESPONSE_PREFILL = " DIAGNOSIS:"
+
     def __init__(self, device: str = "cpu", mode: str = "image_text"):
         self.device = self._resolve_device(device)
         self.dtype = self._resolve_dtype(self.device)
         self.mode = mode
-        self.max_new_tokens = int(os.environ.get("LLAVAMED_MAX_NEW_TOKENS", "256"))
-        self.prompt_style = os.environ.get("LLAVAMED_PROMPT_STYLE", "default").lower()
-        self.do_sample = os.environ.get("LLAVAMED_DO_SAMPLE", "1") != "0"
+        self.max_new_tokens = int(os.environ.get("LLAVAMED_MAX_NEW_TOKENS", "200"))
         print(
             f"LLaVA-Med runtime: device={self.device}, "
-            f"dtype={self.dtype}, mode={self.mode}, max_new_tokens={self.max_new_tokens}, "
-            f"prompt_style={self.prompt_style}, do_sample={self.do_sample}",
+            f"dtype={self.dtype}, mode={self.mode}, "
+            f"max_new_tokens={self.max_new_tokens}",
             flush=True,
         )
         self.processor = AutoProcessor.from_pretrained(
@@ -50,6 +65,8 @@ class LLaVAMedPipeline(MedicalVLM):
         if "device_map" not in model_kwargs:
             self.model.to(self.device)
         self.model.eval()
+
+    # ─── device / dtype helpers ───────────────────────────────────────
 
     @staticmethod
     def _resolve_device(device: str) -> str:
@@ -85,50 +102,78 @@ class LLaVAMedPipeline(MedicalVLM):
             moved[key] = value
         return moved
 
-    def _format_prompt(self, prompt: str) -> str:
-        if self.mode == "text_only":
-            return f"USER: {prompt}\nASSISTANT:"
-        return f"USER: <image>\n{prompt}\nASSISTANT:"
+    # ─── prompt construction ──────────────────────────────────────────
 
-    def _make_llavamed_prompt(self, clinical_note: str) -> str:
+    def _build_prompt(self, clinical_note: str) -> str:
+        """Short, direct prompt with one-shot example.
 
+        7B models handle short prompts far better than multi-paragraph
+        instructions.  The one-shot example shows the exact format the
+        model should follow, and the prefill in _format_prompt() forces
+        the first token to continue in that format.
+        """
         note = clinical_note.strip()[:800] or "No clinical note provided."
-        if self.mode == "image_only":
-            note = "No clinical note is provided. Use the image only."
-        elif self.mode == "text_only":
-            note = f"Use the clinical note only. Clinical Note: {note}"
-        else:
-            note = f"Clinical Note: {note}"
 
-        if self.prompt_style == "simple":
-            return (
-                "Chest X-ray research task. Choose one label only from: "
-                "enlarged cardiomediastinum, cardiomegaly, lung opacity, lung lesion, "
-                "edema, consolidation, pneumonia, atelectasis, pneumothorax, "
-                "pleural effusion, pleural other, fracture, support devices, no finding.\n\n"
-                "Answer exactly in this format:\n"
-                "DIAGNOSIS: <label>\n"
-                "CONFIDENCE: <0.0 to 1.0>\n"
-                "EXPLANATION: <short evidence sentence>\n\n"
-                f"{note}"
-            )
+        if self.mode == "image_only":
+            context = "Use the chest X-ray image only."
+        elif self.mode == "text_only":
+            context = f"Clinical Note: {note}"
+        else:
+            context = f"Clinical Note: {note}"
 
         return (
-            "Analyze the provided chest X-ray information for a research-only CheXpert task. "
-            "Return exactly three lines in the format below. Do not explain the task. "
-            "Do not define the fields. Do not add any text before or after the three lines.\n\n"
-            "DIAGNOSIS: <single label from: enlarged cardiomediastinum, cardiomegaly, "
-            "lung opacity, lung lesion, edema, consolidation, pneumonia, atelectasis, "
-            "pneumothorax, pleural effusion, pleural other, fracture, support devices, no finding>\n"
-            "CONFIDENCE: <float between 0.0 and 1.0>\n"
-            "EXPLANATION: <one to three sentences describing the visual evidence>\n\n"
-            "Choose the best label from the list, even if uncertain.\n\n"
-            f"{note}"
+            f"Classify this chest X-ray. Pick ONE label from:\n"
+            f"{_LABEL_LIST}\n\n"
+            f"{_ONESHOT}\n"
+            f"{context}\n\n"
+            f"Respond in the same format as the example above."
         )
+
+    def _format_prompt(self, prompt: str) -> str:
+        """Build the LLaVA conversation with response prefill.
+
+        By ending with 'ASSISTANT: DIAGNOSIS:' the model's generation
+        starts mid-format, making it far more likely to continue with
+        the label instead of producing free-form prose.
+        """
+        if self.mode == "text_only":
+            return f"USER: {prompt}\nASSISTANT:{self._RESPONSE_PREFILL}"
+        return f"USER: <image>\n{prompt}\nASSISTANT:{self._RESPONSE_PREFILL}"
+
+    # ─── post-processing ──────────────────────────────────────────────
+
+    @staticmethod
+    def _clean_raw_output(raw: str) -> str:
+        """Reconstruct the full structured output.
+
+        Since the prompt prefill already provided 'DIAGNOSIS:', prepend
+        it so parse_output sees a complete structured block.  Also trim
+        anything after a double newline (the model often appends
+        disclaimers or repeats the prompt after the answer).
+        """
+        # Prepend DIAGNOSIS: since it was in the prefill, not in the output
+        text = "DIAGNOSIS:" + raw
+
+        # Cut off trailing noise after the three-line answer
+        # Look for the end of the EXPLANATION line and stop there
+        lines = text.split("\n")
+        kept = []
+        found_explanation = False
+        for line in lines:
+            kept.append(line)
+            if line.strip().upper().startswith("EXPLANATION:"):
+                found_explanation = True
+                break
+        if found_explanation:
+            text = "\n".join(kept)
+
+        return text.strip()
+
+    # ─── inference ────────────────────────────────────────────────────
 
     def predict(self, image: Image.Image, text: str,
                 case_id: str, ground_truth: str) -> ModelOutput:
-        prompt = self._make_llavamed_prompt(text)
+        prompt = self._build_prompt(text)
         full_prompt = self._format_prompt(prompt)
 
         if self.mode == "text_only":
@@ -143,18 +188,21 @@ class LLaVAMedPipeline(MedicalVLM):
 
         with torch.no_grad():
             print("  Generating...", flush=True)
-            generation_kwargs = {
+            output_ids = self.model.generate(
                 **inputs,
-                "max_new_tokens": self.max_new_tokens,
-                "do_sample": self.do_sample,
-            }
-            if self.do_sample:
-                generation_kwargs["temperature"] = 0.3
-                generation_kwargs["top_p"] = 0.9
-            output_ids = self.model.generate(**generation_kwargs)
+                max_new_tokens=self.max_new_tokens,
+                do_sample=True,
+                temperature=0.3,
+                top_p=0.9,
+                repetition_penalty=1.15,
+            )
             print("  Generation complete.", flush=True)
+
         raw = self.processor.decode(
             output_ids[0][inputs["input_ids"].shape[1]:],
-            skip_special_tokens=True
+            skip_special_tokens=True,
         )
-        return parse_output(raw, "llava-med-v1.5-mistral-7b", case_id, ground_truth)
+
+        cleaned = self._clean_raw_output(raw)
+        return parse_output(cleaned, "llava-med-v1.5-mistral-7b",
+                            case_id, ground_truth)

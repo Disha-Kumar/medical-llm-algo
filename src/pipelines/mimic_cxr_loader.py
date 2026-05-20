@@ -24,6 +24,8 @@ MIMIC_CXR_LABELS = [
 ]
 
 METADATA_CANDIDATES = [
+    "mimic_cxr_jpg_manifest.csv",
+    "manifest.csv",
     "mimic-cxr-2.0.0-metadata.csv.gz",
     "mimic-cxr-2.0.0-metadata.csv",
     "metadata.csv.gz",
@@ -47,9 +49,17 @@ LABEL_CANDIDATES = [
     "mimic_cxr_chexpert.csv",
 ]
 
-IMAGE_COLUMNS = ["path", "image_path", "jpg_path", "dicom_path", "dcm_path"]
-TEXT_COLUMNS = ["report", "findings", "impression", "section_findings", "section_impression"]
-VIEW_COLUMNS = ["ViewPosition", "view_position", "view", "View"]
+IMAGE_COLUMNS = ["image_drive_path", "path", "image_path", "jpg_path", "dicom_path", "dcm_path"]
+REPORT_PATH_COLUMNS = ["report_drive_path", "report_path"]
+TEXT_COLUMNS = [
+    "report_text",
+    "report",
+    "findings",
+    "impression",
+    "section_findings",
+    "section_impression",
+]
+VIEW_COLUMNS = ["ViewPosition", "viewposition", "view_position", "view", "View"]
 
 
 def load_mimic_cxr_cases(
@@ -176,11 +186,14 @@ def _resolve_image_path(root: Path, row: pd.Series) -> Path | None:
         if column not in row or pd.isna(row[column]):
             continue
         value = str(row[column])
+        local_tail = _local_dataset_tail(value)
         candidates = [
             root / value,
             root / value.lstrip("/"),
+            root / local_tail,
             root / "files" / value,
             root / "files" / value.lstrip("/"),
+            root / "images" / Path(local_tail).name,
         ]
         for candidate in candidates:
             if candidate.exists():
@@ -197,9 +210,13 @@ def _resolve_image_path(root: Path, row: pd.Series) -> Path | None:
     prefix_folder = f"p{subject_id[:2]}"
     study_folder = f"s{study_id}"
     for suffix in [".jpg", ".jpeg", ".png"]:
-        candidate = root / "files" / prefix_folder / subject_folder / study_folder / f"{dicom_id}{suffix}"
-        if candidate.exists():
-            return candidate
+        candidates = [
+            root / "files" / prefix_folder / subject_folder / study_folder / f"{dicom_id}{suffix}",
+            root / "images" / subject_folder / study_folder / f"{dicom_id}{suffix}",
+        ]
+        for candidate in candidates:
+            if candidate.exists():
+                return candidate
     return None
 
 
@@ -220,8 +237,16 @@ def _make_text(row: pd.Series, reports_root: Path) -> str:
 
 
 def _read_report(row: pd.Series, reports_root: Path) -> str:
-    if "report_path" in row and not pd.isna(row["report_path"]):
-        candidates = [reports_root / str(row["report_path"]), reports_root / str(row["report_path"]).lstrip("/")]
+    for column in REPORT_PATH_COLUMNS:
+        if column not in row or pd.isna(row[column]):
+            continue
+        value = str(row[column])
+        local_tail = _local_dataset_tail(value)
+        candidates = [
+            reports_root / value,
+            reports_root / value.lstrip("/"),
+            reports_root / local_tail,
+        ]
         for candidate in candidates:
             if candidate.exists():
                 return candidate.read_text(errors="ignore").strip()
@@ -233,6 +258,7 @@ def _read_report(row: pd.Series, reports_root: Path) -> str:
     candidates = [
         reports_root / "files" / f"p{subject_id[:2]}" / f"p{subject_id}" / f"s{study_id}.txt",
         reports_root / f"p{subject_id[:2]}" / f"p{subject_id}" / f"s{study_id}.txt",
+        reports_root / "reports" / f"p{subject_id}" / f"s{study_id}.txt",
     ]
     for candidate in candidates:
         if candidate.exists():
@@ -250,13 +276,22 @@ def _extract_ground_truth(row: pd.Series) -> str:
 
 def _label_candidates(label: str) -> list[str]:
     snake = label.lower().replace(" ", "_")
-    return [label, label.lower(), snake, f"chexpert_{snake}", f"label_{snake}"]
+    spaced_lower = label.lower()
+    return [label, spaced_lower, snake, f"chexpert_{snake}", f"label_{snake}"]
 
 
 def _make_case_id(row: pd.Series, image_path: Path) -> str:
     if all(column in row and not pd.isna(row[column]) for column in ["subject_id", "study_id", "dicom_id"]):
         return f"MIMIC_{int(row['subject_id'])}_s{int(row['study_id'])}_{row['dicom_id']}"
     return f"mimic_cxr_{image_path.with_suffix('').as_posix()}".replace("/", "_")
+
+
+def _local_dataset_tail(value: str) -> str:
+    """Map exported Drive paths back to this local MIMIC subset root."""
+    marker = "MIMIC_CXR_JPG/"
+    if marker in value:
+        return value.split(marker, 1)[1].lstrip("/")
+    return value.lstrip("/")
 
 
 def _value(row: pd.Series, columns: list[str], default: str) -> str:

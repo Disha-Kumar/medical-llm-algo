@@ -4,6 +4,40 @@ from PIL import Image
 import json
 import os
 
+from src.pipelines.common import CHEXPERT_LABELS
+
+
+def _normalize_to_label(raw_diagnosis: str) -> str:
+    """
+    Snap a free-form diagnosis string to the nearest CheXpert label.
+
+    Strategy (in priority order):
+      1. Exact match (case-insensitive).
+      2. Substring match: the label appears inside the raw string, or vice versa.
+      3. Token overlap: pick the label that shares the most words with the raw string.
+      4. Fallback to "no finding".
+    """
+    normalized = raw_diagnosis.strip().lower()
+
+    for label in CHEXPERT_LABELS:
+        if normalized == label:
+            return label
+
+    for label in CHEXPERT_LABELS:
+        if label in normalized or normalized in label:
+            return label
+
+    raw_tokens = set(normalized.split())
+    best_label, best_score = "no finding", 0
+    for label in CHEXPERT_LABELS:
+        label_tokens = set(label.split())
+        score = len(raw_tokens & label_tokens)
+        if score > best_score:
+            best_score, best_label = score, label
+
+    return best_label if best_score > 0 else "no finding"
+
+
 @dataclass
 class ModelOutput:
     model_name: str
@@ -43,6 +77,8 @@ def parse_output(raw: str, model_name: str,
         diagnosis   = "parse_failed"
         explanation = raw.strip()
         confidence  = 0.0
+    else:
+        diagnosis = _normalize_to_label(diagnosis)
 
     return ModelOutput(
         model_name=model_name,

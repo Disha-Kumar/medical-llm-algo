@@ -79,6 +79,8 @@ class BioViLTPipeline(MedicalVLM):
             texts,
             add_special_tokens=True,
             padding="longest",
+            truncation=True,
+            max_length=512,
             return_tensors="pt",
         )
         with torch.no_grad():

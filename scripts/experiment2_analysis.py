@@ -127,7 +127,7 @@ def compute_metrics(records):
         # 1. Baseline accuracy: original condition vs ground truth
         correct = sum(
             1 for r in originals
-            if r.get("diagnosis", "").lower().strip() == r.get("ground_truth", "").lower().strip()
+            if (r.get("diagnosis") or "").lower().strip() == (r.get("ground_truth") or "").lower().strip()
         )
         accuracy = correct / n_cases if n_cases > 0 else 0.0
 
@@ -150,7 +150,7 @@ def compute_metrics(records):
         # 5. Parse failure rate
         parse_fails = sum(
             1 for r in perturbations
-            if r.get("status") not in ("PASS", None) or r.get("diagnosis", "").lower() == "parse_failed"
+            if r.get("status") not in ("PASS", None) or (r.get("diagnosis") or "").lower() == "parse_failed"
         )
         parse_fail_rate = parse_fails / n_perturbations if n_perturbations > 0 else 0.0
 

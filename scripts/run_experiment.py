@@ -22,6 +22,7 @@ PIPELINES = {
     "gpt4o_openrouter": ("src.pipelines.gpt4o_openrouter", "GPT4oOpenRouterPipeline"),
     "biovil_t": ("src.pipelines.biovil_t", "BioViLTPipeline"),
     "med_flamingo": ("src.pipelines.med_flamingo", "MedFlamingoPipeline"),
+    "chexagent": ("src.pipelines.chexagent", "CheXAgentPipeline"),
 }
 
 
@@ -30,7 +31,7 @@ def load_pipeline(model: str, mode: str, device: str):
 
     module_name, class_name = PIPELINES[model]
     cls = getattr(importlib.import_module(module_name), class_name)
-    if model in {"llava_med", "qwen2_vl"}:
+    if model in {"llava_med", "qwen2_vl", "chexagent"}:
         return cls(device=device, mode=mode)
     return cls(mode=mode)
 

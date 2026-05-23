@@ -73,27 +73,32 @@ class CheXAgentPipeline(MedicalVLM):
                 {"text": prompt},
             ])
 
-        inputs = self.tokenizer(query, return_tensors="pt")
+        conv = [
+            {"from": "system", "value": "You are a helpful assistant."},
+            {"from": "human", "value": query},
+        ]
         device = next(self.model.parameters()).device
-        moved = {}
-        for key, value in inputs.items():
-            value = value.to(device)
-            if torch.is_floating_point(value):
-                value = value.to(self.dtype)
-            moved[key] = value
-        inputs = moved
+        input_ids = self.tokenizer.apply_chat_template(
+            conv,
+            add_generation_prompt=True,
+            return_tensors="pt",
+        ).to(device)
 
         with torch.no_grad():
             print("  Generating...", flush=True)
             output_ids = self.model.generate(
-                **inputs,
+                input_ids,
                 max_new_tokens=self.max_new_tokens,
                 do_sample=False,
+                num_beams=1,
+                temperature=1.0,
+                top_p=1.0,
+                use_cache=True,
             )
             print("  Generation complete.", flush=True)
 
         raw = self.tokenizer.decode(
-            output_ids[0][inputs["input_ids"].shape[1]:],
+            output_ids[0][input_ids.shape[1]:],
             skip_special_tokens=True
         ).strip()
 

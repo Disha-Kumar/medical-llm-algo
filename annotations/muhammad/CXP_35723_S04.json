@@ -1,0 +1,21 @@
+{
+    "annotator_id": "muhammad",
+    "case_id": "CXP_35723_S04",
+    "timestamp": "2026-05-24T02:31:34",
+    "models_reviewed": [
+        "biovil_t",
+        "gpt4o",
+        "llava_med",
+        "qwen2_vl"
+    ],
+    "tier1_label_flip": "Y",
+    "tier1_label_flip_label": "yes -- label flipped in at least one variant",
+    "tier2_confidence_change": "B",
+    "tier2_confidence_change_label": "both  -- dropped in some variants, increased in others",
+    "tier3_explanation_shift": "Y",
+    "tier3_explanation_shift_label": "yes -- explanation shifted meaningfully",
+    "failure_cause": "B",
+    "failure_cause_label": "both",
+    "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pleural effusion vs ground truth edema). GPT-4o flipped heavily on image perturbations (36 flips) with some text flips (8). GPT-4o baseline was already wrong (said pleural effusion vs ground truth edema). LLaVA-Med unstable across both image (20 flips) and text (14 flips). Qwen2-VL flipped heavily on image perturbations (30 flips) with some text flips (14)"
+}

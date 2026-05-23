@@ -1,0 +1,21 @@
+{
+    "annotator_id": "muhammad",
+    "case_id": "CXP_28494_S01",
+    "timestamp": "2026-05-24T02:31:34",
+    "models_reviewed": [
+        "biovil_t",
+        "gpt4o",
+        "llava_med",
+        "qwen2_vl"
+    ],
+    "tier1_label_flip": "P",
+    "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
+    "tier2_confidence_change": "B",
+    "tier2_confidence_change_label": "both  -- dropped in some variants, increased in others",
+    "tier3_explanation_shift": "P",
+    "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
+    "failure_cause": "B",
+    "failure_cause_label": "both",
+    "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, pacemaker_v2",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pleural other vs ground truth lung lesion). GPT-4o flipped heavily on image perturbations (20 flips) with some text flips (8). LLaVA-Med flipped heavily on image perturbations (30 flips) with some text flips (14). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth lung lesion). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (6). Qwen2-VL baseline was already wrong (said no finding vs ground truth lung lesion)"
+}

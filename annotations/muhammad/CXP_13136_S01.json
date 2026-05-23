@@ -1,19 +1,21 @@
 {
-  "annotator_id": "muhammad",
-  "case_id": "CXP_13136_S01",
-  "timestamp": "2026-05-20T10:25:13",
-  "models_reviewed": [
-    "gpt4o",
-    "qwen2 vl"
-  ],
-  "tier1_label_flip": "P",
-  "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
-  "tier2_confidence_change": "B",
-  "tier2_confidence_change_label": "both  -- dropped in some variants, increased in others",
-  "tier3_explanation_shift": "P",
-  "tier3_explanation_shift_label": "partial -- shifted in some variants only",
-  "failure_cause": "B",
-  "failure_cause_label": "both",
-  "trigger_perturbations": "pacemaker_v3, contradiction_v2, watermark_v2, jpeg_v1, jpeg_v3",
-  "notes": "GPT-4o flipped heavily on image perturbations (9 flips) with some text flips (3). GPT-4o baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum). Qwen2-VL unstable across both image (2 flips) and text (2 flips) perturbations. Qwen2-VL baseline was already wrong (said Cardiomegaly vs ground truth enlarged cardiomediastinum)"
+    "annotator_id": "muhammad",
+    "case_id": "CXP_13136_S01",
+    "timestamp": "2026-05-24T02:31:34",
+    "models_reviewed": [
+        "biovil_t",
+        "gpt4o",
+        "llava_med",
+        "qwen2_vl"
+    ],
+    "tier1_label_flip": "P",
+    "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
+    "tier2_confidence_change": "B",
+    "tier2_confidence_change_label": "both  -- dropped in some variants, increased in others",
+    "tier3_explanation_shift": "P",
+    "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
+    "failure_cause": "B",
+    "failure_cause_label": "both",
+    "trigger_perturbations": "contradiction_v2, demographic_v1, paraphrase_v3, chest_tube_v1, demographic_v2",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said fracture vs ground truth enlarged cardiomediastinum). GPT-4o flipped heavily on image perturbations (24 flips) with some text flips (6). GPT-4o baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). LLaVA-Med baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum). Qwen2-VL unstable across both image (2 flips) and text (2 flips). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth enlarged cardiomediastinum)"
 }

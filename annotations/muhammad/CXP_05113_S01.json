@@ -1,0 +1,21 @@
+{
+    "annotator_id": "muhammad",
+    "case_id": "CXP_05113_S01",
+    "timestamp": "2026-05-24T02:31:34",
+    "models_reviewed": [
+        "biovil_t",
+        "gpt4o",
+        "llava_med",
+        "qwen2_vl"
+    ],
+    "tier1_label_flip": "P",
+    "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
+    "tier2_confidence_change": "B",
+    "tier2_confidence_change_label": "both  -- dropped in some variants, increased in others",
+    "tier3_explanation_shift": "P",
+    "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
+    "failure_cause": "B",
+    "failure_cause_label": "both",
+    "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v3",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said support devices vs ground truth atelectasis). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med flipped heavily on image perturbations (36 flips) with some text flips (14). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth atelectasis). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase)"
+}

@@ -1,19 +1,21 @@
 {
-  "annotator_id": "muhammad",
-  "case_id": "CXP_11401_S01",
-  "timestamp": "2026-05-20T10:23:29",
-  "models_reviewed": [
-    "gpt4o",
-    "qwen2 vl"
-  ],
-  "tier1_label_flip": "P",
-  "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
-  "tier2_confidence_change": "D",
-  "tier2_confidence_change_label": "drop  -- confidence decreased meaningfully",
-  "tier3_explanation_shift": "P",
-  "tier3_explanation_shift_label": "partial -- shifted in some variants only",
-  "failure_cause": "B",
-  "failure_cause_label": "both",
-  "trigger_perturbations": "contradiction_v2, jpeg_v2, demographic_v1, demographic_v2, contradiction_v1",
-  "notes": "GPT-4o unstable across both image (1 flips) and text (1 flips) perturbations. GPT-4o baseline was already wrong (said support devices vs ground truth enlarged cardiomediastinum). Qwen2-VL stable on all image perturbations but flipped on text conditions (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said Low lung volumes vs ground truth enlarged cardiomediastinum"
+    "annotator_id": "muhammad",
+    "case_id": "CXP_11401_S01",
+    "timestamp": "2026-05-24T02:31:34",
+    "models_reviewed": [
+        "biovil_t",
+        "gpt4o",
+        "llava_med",
+        "qwen2_vl"
+    ],
+    "tier1_label_flip": "P",
+    "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
+    "tier2_confidence_change": "D",
+    "tier2_confidence_change_label": "dropped -- confidence dropped noticeably",
+    "tier3_explanation_shift": "P",
+    "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
+    "failure_cause": "B",
+    "failure_cause_label": "both",
+    "trigger_perturbations": "demographic_v2, contradiction_v1, paraphrase_v3, contradiction_v2, demographic_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). GPT-4o stable on image perturbations but flipped on text (contradiction). GPT-4o baseline was already wrong (said support devices vs ground truth enlarged cardiomediastinum). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). LLaVA-Med baseline was already wrong (said lung opacity vs ground truth enlarged cardiomediastinum). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said lung opacity vs ground truth enlarged cardiomediastinum)"
 }

@@ -74,7 +74,13 @@ class CheXAgentPipeline(MedicalVLM):
 
         inputs = self.tokenizer(query, return_tensors="pt")
         device = next(self.model.parameters()).device
-        inputs = {k: v.to(device) for k, v in inputs.items()}
+        moved = {}
+        for key, value in inputs.items():
+            value = value.to(device)
+            if torch.is_floating_point(value):
+                value = value.to(self.dtype)
+            moved[key] = value
+        inputs = moved
 
         with torch.no_grad():
             print("  Generating...", flush=True)

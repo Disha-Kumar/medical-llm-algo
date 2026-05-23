@@ -1,0 +1,27 @@
+condition,category,BioViL-T (86M),Qwen2-VL (2B),LLaVA-Med (7B),GPT-4o (~200B)
+chest_drain_v1,Image,0.0,0.1005,0.2496,0.0928
+chest_drain_v2,Image,0.0,0.1065,0.2511,0.1218
+chest_drain_v3,Image,0.0,0.102,0.242,0.0898
+chest_tube_v1,Image,0.0,0.1324,0.2557,0.1187
+chest_tube_v2,Image,0.0,0.1172,0.2496,0.137
+chest_tube_v3,Image,0.0,0.1279,0.242,0.1416
+contradiction_v1,Text,0.9498,0.7291,0.7945,0.8584
+contradiction_v2,Text,0.9209,0.8737,0.93,0.8843
+demographic_v1,Text,0.9589,0.691,0.8752,0.8889
+demographic_v2,Text,0.9224,0.6895,0.8828,0.9269
+ecg_leads_v1,Image,0.0,0.102,0.2557,0.0989
+ecg_leads_v2,Image,0.0,0.1187,0.2451,0.0883
+ecg_leads_v3,Image,0.0,0.1157,0.242,0.105
+jpeg_v1,Image,0.0,0.0868,0.2177,0.1096
+jpeg_v2,Image,0.0,0.0944,0.2527,0.0944
+jpeg_v3,Image,0.0,0.0989,0.2588,0.0807
+negative_control,Control,0.0,0.0989,0.2344,0.0791
+pacemaker_v1,Image,0.0,0.1431,0.2481,0.0913
+pacemaker_v2,Image,0.0,0.1111,0.2648,0.0807
+pacemaker_v3,Image,0.0,0.175,0.2268,0.0868
+paraphrase_v1,Text,0.2725,0.4231,0.4886,0.2268
+paraphrase_v2,Text,0.2755,0.3714,0.5068,0.2146
+paraphrase_v3,Text,0.2816,0.4033,0.5053,0.2116
+watermark_v1,Image,0.0,0.1126,0.2222,0.0974
+watermark_v2,Image,0.0,0.1065,0.2572,0.0898
+watermark_v3,Image,0.0,0.1142,0.2527,0.0868

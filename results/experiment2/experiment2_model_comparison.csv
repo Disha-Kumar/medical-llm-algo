@@ -1,0 +1,5 @@
+model,display_name,param_count,param_label,n_cases,n_perturbations,accuracy,flip_rate,avg_scs,avg_conf_delta,hallucination_rate,parse_fail_rate,avg_baseline_confidence,neg_control_flip_rate,image_only_accuracy,text_only_accuracy,image_flip_rate,text_flip_rate,control_flip_rate
+biovil_t,BioViL-T (86M),86000000,86M,657,6742,0.3607,0.4465,0.9935,0.0091,0.0599,0.0009,0.119,0.0,0.3607,0.3607,0.0,0.6545,0.0
+qwen2_vl,Qwen2-VL (2B),2000000000,2B,657,17082,0.4003,0.2441,0.9909,0.0502,0.3589,0.0,0.9393,0.0989,0.0837,0.4262,0.1147,0.5973,0.0989
+llava_med,LLaVA-Med (7B),7000000000,7B,657,17082,0.3729,0.3712,0.9877,0.1157,0.1579,0.0,0.7682,0.2344,0.0761,0.3668,0.2463,0.7119,0.2344
+gpt4o,GPT-4o (~200B),200000000000,200B,657,17082,0.6195,0.2347,0.9708,0.0967,0.2084,0.1116,0.8479,0.0791,0.0989,0.6317,0.1006,0.6017,0.0791

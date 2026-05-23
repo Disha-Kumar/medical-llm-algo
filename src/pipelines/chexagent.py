@@ -11,7 +11,8 @@ class CheXAgentPipeline(MedicalVLM):
 
     def __init__(self, device: str = "auto", mode: str = "image_text"):
         self.mode = mode
-        self.dtype = torch.bfloat16
+        dtype_name = os.environ.get("CHEXAGENT_DTYPE", "float32").lower()
+        self.dtype = torch.bfloat16 if dtype_name in {"bf16", "bfloat16"} else torch.float32
         self.max_new_tokens = int(os.environ.get("CHEXAGENT_MAX_NEW_TOKENS", "200"))
 
         print(

@@ -1,0 +1,56 @@
+case_id,model,has_flip,diag_4k,diag_8k,diag_16k,flip_4k_8k,flip_8k_16k,flip_4k_16k,conf_4k,conf_8k,conf_16k,ground_truth
+CXP_57422_S01,biovil_t,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.1206,0.1206,0.1206,enlarged cardiomediastinum
+CXP_15996_S05,biovil_t,No,pleural other,pleural other,pleural other,No,No,No,0.1114,0.1114,0.1114,enlarged cardiomediastinum
+CXP_29589_S02,biovil_t,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.1031,0.1031,0.1031,enlarged cardiomediastinum
+CXP_09342_S01,biovil_t,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.1159,0.1159,0.1159,enlarged cardiomediastinum
+CXP_01023_S01,biovil_t,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.1416,0.1416,0.1416,enlarged cardiomediastinum
+CXP_61843_S01,biovil_t,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.1040,0.1040,0.1040,enlarged cardiomediastinum
+CXP_01894_S01,biovil_t,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.1270,0.1270,0.1270,enlarged cardiomediastinum
+CXP_16879_S01,biovil_t,No,lung lesion,lung lesion,lung lesion,No,No,No,0.1130,0.1130,0.1130,enlarged cardiomediastinum
+CXP_08740_S13,biovil_t,No,pleural other,pleural other,pleural other,No,No,No,0.1158,0.1158,0.1158,enlarged cardiomediastinum
+CXP_22838_S01,biovil_t,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.1199,0.1199,0.1199,enlarged cardiomediastinum
+CXP_57422_S01,biovil_t,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.1206,0.1206,0.1206,enlarged cardiomediastinum
+CXP_15996_S05,biovil_t,No,pleural other,pleural other,pleural other,No,No,No,0.1114,0.1114,0.1114,enlarged cardiomediastinum
+CXP_29589_S02,biovil_t,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.1031,0.1031,0.1031,enlarged cardiomediastinum
+CXP_09342_S01,biovil_t,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.1159,0.1159,0.1159,enlarged cardiomediastinum
+CXP_01023_S01,biovil_t,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.1416,0.1416,0.1416,enlarged cardiomediastinum
+CXP_61843_S01,biovil_t,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.1040,0.1040,0.1040,enlarged cardiomediastinum
+CXP_01894_S01,biovil_t,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.1270,0.1270,0.1270,enlarged cardiomediastinum
+CXP_16879_S01,biovil_t,No,lung lesion,lung lesion,lung lesion,No,No,No,0.1130,0.1130,0.1130,enlarged cardiomediastinum
+CXP_08740_S13,biovil_t,No,pleural other,pleural other,pleural other,No,No,No,0.1158,0.1158,0.1158,enlarged cardiomediastinum
+CXP_22838_S01,biovil_t,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.1199,0.1199,0.1199,enlarged cardiomediastinum
+CXP_26583_S01,biovil_t,No,fracture,fracture,fracture,No,No,No,0.1039,0.1039,0.1039,enlarged cardiomediastinum
+CXP_09238_S01,biovil_t,No,edema,edema,edema,No,No,No,0.1159,0.1159,0.1159,enlarged cardiomediastinum
+CXP_15457_S01,biovil_t,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.1260,0.1260,0.1260,enlarged cardiomediastinum
+CXP_23784_S01,biovil_t,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.1116,0.1116,0.1116,enlarged cardiomediastinum
+CXP_16456_S01,biovil_t,No,pneumonia,pneumonia,pneumonia,No,No,No,0.1158,0.1158,0.1158,enlarged cardiomediastinum
+CXP_27677_S01,biovil_t,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.1060,0.1060,0.1060,enlarged cardiomediastinum
+CXP_10504_S01,biovil_t,No,fracture,fracture,fracture,No,No,No,0.1129,0.1129,0.1129,enlarged cardiomediastinum
+CXP_06994_S05,biovil_t,No,pleural effusion,pleural effusion,pleural effusion,No,No,No,0.1121,0.1121,0.1121,enlarged cardiomediastinum
+CXP_33078_S02,biovil_t,No,pneumothorax,pneumothorax,pneumothorax,No,No,No,0.0997,0.0997,0.0997,enlarged cardiomediastinum
+CXP_29049_S01,biovil_t,No,fracture,fracture,fracture,No,No,No,0.1075,0.1075,0.1075,enlarged cardiomediastinum
+CXP_57422_S01,gpt4o_openrouter,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.9000,0.9000,0.9000,enlarged cardiomediastinum
+CXP_15996_S05,gpt4o_openrouter,No,support devices,support devices,support devices,No,No,No,1.0000,1.0000,1.0000,enlarged cardiomediastinum
+CXP_29589_S02,gpt4o_openrouter,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.9000,0.9000,0.9000,enlarged cardiomediastinum
+CXP_09342_S01,gpt4o_openrouter,No,edema,edema,edema,No,No,No,0.7000,0.7000,0.7000,enlarged cardiomediastinum
+CXP_01023_S01,gpt4o_openrouter,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.7000,0.7000,0.7000,enlarged cardiomediastinum
+CXP_61843_S01,gpt4o_openrouter,No,pleural effusion,pleural effusion,pleural effusion,No,No,No,0.6000,0.6000,0.6000,enlarged cardiomediastinum
+CXP_01894_S01,gpt4o_openrouter,No,fracture,fracture,fracture,No,No,No,0.9000,0.9000,0.9000,enlarged cardiomediastinum
+CXP_16879_S01,gpt4o_openrouter,No,no finding,no finding,no finding,No,No,No,0.8000,0.8000,0.8000,enlarged cardiomediastinum
+CXP_08740_S13,gpt4o_openrouter,No,support devices,support devices,support devices,No,No,No,0.9000,0.9000,0.9000,enlarged cardiomediastinum
+CXP_22838_S01,gpt4o_openrouter,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.9000,0.9000,0.9000,enlarged cardiomediastinum
+CXP_26583_S01,gpt4o_openrouter,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.7000,0.7000,0.7000,enlarged cardiomediastinum
+CXP_09238_S01,gpt4o_openrouter,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.8000,0.8000,0.8000,enlarged cardiomediastinum
+CXP_15457_S01,gpt4o_openrouter,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.7000,0.7000,0.7000,enlarged cardiomediastinum
+CXP_23784_S01,gpt4o_openrouter,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.8000,0.8000,0.8000,enlarged cardiomediastinum
+CXP_16456_S01,gpt4o_openrouter,Yes,cardiomegaly,support devices,cardiomegaly,Yes,Yes,No,0.7000,0.9000,0.7000,enlarged cardiomediastinum
+CXP_27677_S01,gpt4o_openrouter,No,pleural effusion,pleural effusion,pleural effusion,No,No,No,0.8000,0.8000,0.8000,enlarged cardiomediastinum
+CXP_10504_S01,gpt4o_openrouter,Yes,enlarged cardiomediastinum,support devices,support devices,Yes,No,Yes,0.7000,0.9000,0.9000,enlarged cardiomediastinum
+CXP_06994_S05,gpt4o_openrouter,No,pleural effusion,pleural effusion,pleural effusion,No,No,No,0.8000,0.8000,0.8000,enlarged cardiomediastinum
+CXP_33078_S02,gpt4o_openrouter,No,support devices,support devices,support devices,No,No,No,1.0000,0.9000,1.0000,enlarged cardiomediastinum
+CXP_29049_S01,gpt4o_openrouter,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.8000,0.8000,0.8000,enlarged cardiomediastinum
+CXP_57422_S01,gpt4o_openrouter,No,cardiomegaly,cardiomegaly,cardiomegaly,No,No,No,0.9000,0.9000,0.9000,enlarged cardiomediastinum
+CXP_15996_S05,gpt4o_openrouter,No,support devices,support devices,support devices,No,No,No,1.0000,1.0000,1.0000,enlarged cardiomediastinum
+CXP_29589_S02,gpt4o_openrouter,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.9000,0.9000,0.9000,enlarged cardiomediastinum
+CXP_09342_S01,gpt4o_openrouter,No,edema,edema,edema,No,No,No,0.7000,0.7000,0.7000,enlarged cardiomediastinum
+CXP_01023_S01,gpt4o_openrouter,No,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,No,No,0.7000,0.7000,0.7000,enlarged cardiomediastinum

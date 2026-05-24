@@ -1,948 +1,1804 @@
-QUALITATIVE CASE STUDIES
-20 Cases Demonstrating Spurious Diagnosis Flips in Medical VLMs
-======================================================================
-
-Selection criteria: cases where at least one model produced a correct
-diagnosis on the unperturbed baseline but changed its diagnosis when
-a non-clinical perturbation was applied. Cases ranked by number of
-models affected and total flips observed.
-
-======================================================================
-CASE 1: CXP_35723_S04
-Ground truth diagnosis: edema
-
-  BioViL-T
-    Baseline: pleural effusion (INCORRECT, confidence 0.11125500500202179)
-    Result: Flipped on 12/16 perturbation conditions.
-      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v3
-      Changed to: no finding, edema, enlarged cardiomediastinum, fracture
-
-  Qwen2-VL
-    Baseline: edema (CORRECT, confidence 0.9)
-    Result: Flipped on 46/52 perturbation conditions.
-      Image perturbations (30 flips): watermark_v1, watermark_v2, watermark_v3, chest_tube_v1, chest_tube_v2, chest_tube_v3
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: edema (CORRECT, confidence 0.5)
-    Result: Flipped on 36/52 perturbation conditions.
-      Image perturbations (20 flips): watermark_v1, jpeg_v2, chest_tube_v2, chest_drain_v2, ecg_leads_v1, ecg_leads_v2
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: no finding, lung opacity, atelectasis
-
-  GPT-4o
-    Baseline: pleural effusion (INCORRECT, confidence 0.9)
-    Result: Flipped on 46/52 perturbation conditions.
-      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: parse_failed, edema, consolidation, support devices
-
-  CheXagent
-    Baseline: edema (CORRECT, confidence 0.763)
-    Result: Flipped on 6/52 perturbation conditions.
-      Text perturbations (6 flips): demographic_v1, contradiction_v1, contradiction_v2, demographic_v1, contradiction_v1, contradiction_v2
-      Changed to: enlarged cardiomediastinum, lung opacity, consolidation
-
-  NARRATIVE
-  LLaVA-Med correctly diagnosed edema at 0.5 confidence but was fragile across both modalities, flipping on 20 image and 14 text perturbations to diagnoses including no finding, lung opacity.
-  LLaVA-Med also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  CheXagent correctly diagnosed edema at 0.763 confidence but changed its diagnosis to enlarged cardiomediastinum, lung opacity when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  Qwen2-VL correctly diagnosed edema at 0.9 confidence but was fragile across both modalities, flipping on 30 image and 14 text perturbations to diagnoses including lung opacity, cardiomegaly.
-  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  GPT-4o was already incorrect on baseline, diagnosing pleural effusion instead of edema.
-  BioViL-T was already incorrect on baseline, diagnosing pleural effusion instead of edema.
-  Clinical implication: in a deployed system, a patient with edema could receive an incorrect diagnosis of no finding simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 2: CXP_48027_S01
-Ground truth diagnosis: pneumothorax
-
-  BioViL-T
-    Baseline: enlarged cardiomediastinum (INCORRECT, confidence 0.10954520106315613)
-    Result: Flipped on 12/16 perturbation conditions.
-      Text perturbations (12 flips): demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
-      Changed to: pneumothorax, fracture, atelectasis
-
-  Qwen2-VL
-    Baseline: pneumothorax (CORRECT, confidence 0.9)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: atelectasis (INCORRECT, confidence 0.7)
-    Result: Flipped on 42/52 perturbation conditions.
-      Image perturbations (30 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v1
-      Text perturbations (10 flips): contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3, contradiction_v1
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: pneumothorax, no finding, lung opacity, cardiomegaly
-
-  GPT-4o
-    Baseline: pneumothorax (CORRECT, confidence 0.6)
-    Result: Flipped on 14/52 perturbation conditions.
-      Image perturbations (6 flips): jpeg_v1, ecg_leads_v1, ecg_leads_v2, jpeg_v1, ecg_leads_v1, ecg_leads_v2
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: parse_failed, consolidation, support devices
-
-  CheXagent
-    Baseline: pneumothorax (CORRECT, confidence 0.876)
-    Result: Flipped on 52/52 perturbation conditions.
-      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: no finding, atelectasis
-
-  NARRATIVE
-  GPT-4o correctly diagnosed pneumothorax at 0.6 confidence but was fragile across both modalities, flipping on 6 image and 8 text perturbations to diagnoses including parse_failed, consolidation.
-  CheXagent correctly diagnosed pneumothorax at 0.876 confidence but was fragile across both modalities, flipping on 36 image and 14 text perturbations to diagnoses including no finding, atelectasis.
-  CheXagent also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  Qwen2-VL correctly diagnosed pneumothorax at 0.9 confidence but changed its diagnosis to lung opacity, cardiomegaly when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  LLaVA-Med was already incorrect on baseline, diagnosing atelectasis instead of pneumothorax.
-  BioViL-T was already incorrect on baseline, diagnosing enlarged cardiomediastinum instead of pneumothorax.
-  Clinical implication: in a deployed system, a patient with pneumothorax could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 3: CXP_51922_S01
-Ground truth diagnosis: lung lesion
-
-  BioViL-T
-    Baseline: lung opacity (INCORRECT, confidence 0.11159928888082504)
-    Result: Flipped on 14/16 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: no finding, enlarged cardiomediastinum, fracture, pneumonia
-
-  Qwen2-VL
-    Baseline: lung opacity (INCORRECT, confidence 1.0)
-    Result: Flipped on 8/52 perturbation conditions.
-      Image perturbations (2 flips): pacemaker_v1, pacemaker_v1
-      Text perturbations (6 flips): demographic_v1, demographic_v2, contradiction_v1, demographic_v1, demographic_v2, contradiction_v1
-      Changed to: cardiomegaly
-
-  LLaVA-Med
-    Baseline: lung lesion (CORRECT, confidence 0.95)
-    Result: Flipped on 46/52 perturbation conditions.
-      Image perturbations (34 flips): watermark_v1, watermark_v2, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1
-      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, demographic_v1
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: enlarged cardiomediastinum, no finding, lung opacity, atelectasis
-
-  GPT-4o
-    Baseline: lung lesion (CORRECT, confidence 0.9)
-    Result: Flipped on 10/52 perturbation conditions.
-      Image perturbations (2 flips): chest_tube_v2, chest_tube_v2
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: parse_failed, consolidation, support devices
-
-  CheXagent
-    Baseline: lung lesion (CORRECT, confidence 0.768)
-    Result: Flipped on 46/52 perturbation conditions.
-      Image perturbations (32 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v3
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: no finding, edema, lung opacity, atelectasis
-
-  NARRATIVE
-  GPT-4o correctly diagnosed lung lesion at 0.9 confidence but was fragile across both modalities, flipping on 2 image and 8 text perturbations to diagnoses including parse_failed, consolidation.
-  LLaVA-Med correctly diagnosed lung lesion at 0.95 confidence but was fragile across both modalities, flipping on 34 image and 10 text perturbations to diagnoses including enlarged cardiomediastinum, no finding.
-  LLaVA-Med also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  CheXagent correctly diagnosed lung lesion at 0.768 confidence but was fragile across both modalities, flipping on 32 image and 12 text perturbations to diagnoses including no finding, edema.
-  CheXagent also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  Qwen2-VL was already incorrect on baseline, diagnosing lung opacity instead of lung lesion.
-  BioViL-T was already incorrect on baseline, diagnosing lung opacity instead of lung lesion.
-  Clinical implication: in a deployed system, a patient with lung lesion could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 4: CXP_16463_S02
-Ground truth diagnosis: pneumothorax
-
-  BioViL-T
-    Baseline: pneumothorax (CORRECT, confidence 0.13573841750621796)
-    Result: Flipped on 8/16 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: enlarged cardiomediastinum, fracture, atelectasis
-
-  Qwen2-VL
-    Baseline: pneumothorax (CORRECT, confidence 1.0)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: atelectasis (INCORRECT, confidence 0.7)
-    Result: Flipped on 40/52 perturbation conditions.
-      Image perturbations (30 flips): watermark_v1, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1
-      Text perturbations (10 flips): contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3, contradiction_v1
-      Changed to: no finding, pneumothorax, enlarged cardiomediastinum, cardiomegaly
-
-  GPT-4o
-    Baseline: pneumothorax (CORRECT, confidence 0.9)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: consolidation, support devices
-
-  CheXagent
-    Baseline: pneumothorax (CORRECT, confidence 0.847)
-    Result: Flipped on 50/52 perturbation conditions.
-      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: no finding, edema, lung lesion
-
-  NARRATIVE
-  GPT-4o correctly diagnosed pneumothorax at 0.9 confidence but changed its diagnosis to consolidation, support devices when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  CheXagent correctly diagnosed pneumothorax at 0.847 confidence but was fragile across both modalities, flipping on 36 image and 14 text perturbations to diagnoses including no finding, edema.
-  Qwen2-VL correctly diagnosed pneumothorax at 1.0 confidence but changed its diagnosis to lung opacity, cardiomegaly when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  BioViL-T correctly diagnosed pneumothorax at 0.13573841750621796 confidence but changed its diagnosis to enlarged cardiomediastinum, fracture when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  LLaVA-Med was already incorrect on baseline, diagnosing atelectasis instead of pneumothorax.
-  Clinical implication: in a deployed system, a patient with pneumothorax could receive an incorrect diagnosis of consolidation simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 5: CXP_28377_S01
-Ground truth diagnosis: edema
-
-  BioViL-T
-    Baseline: consolidation (INCORRECT, confidence 0.0950438380241394)
-    Result: Flipped on 14/16 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: enlarged cardiomediastinum, fracture, cardiomegaly, atelectasis
-
-  Qwen2-VL
-    Baseline: edema (CORRECT, confidence 0.8)
-    Result: Flipped on 50/52 perturbation conditions.
-      Image perturbations (34 flips): watermark_v1, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: atelectasis (INCORRECT, confidence 0.7)
-    Result: Flipped on 50/52 perturbation conditions.
-      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (12 flips): demographic_v1, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: no finding, lung opacity, cardiomegaly
-
-  GPT-4o
-    Baseline: edema (CORRECT, confidence 0.7)
-    Result: Flipped on 10/52 perturbation conditions.
-      Image perturbations (2 flips): jpeg_v2, jpeg_v2
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: parse_failed, lung opacity, support devices
-
-  CheXagent
-    Baseline: edema (CORRECT, confidence 0.813)
-    Result: Stable across all 52 perturbation conditions.
-
-  NARRATIVE
-  GPT-4o correctly diagnosed edema at 0.7 confidence but was fragile across both modalities, flipping on 2 image and 8 text perturbations to diagnoses including parse_failed, lung opacity.
-  Qwen2-VL correctly diagnosed edema at 0.8 confidence but was fragile across both modalities, flipping on 34 image and 14 text perturbations to diagnoses including lung opacity, cardiomegaly.
-  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  CheXagent correctly diagnosed edema and remained stable across all 52 perturbation conditions.
-  LLaVA-Med was already incorrect on baseline, diagnosing atelectasis instead of edema.
-  BioViL-T was already incorrect on baseline, diagnosing consolidation instead of edema.
-  Clinical implication: in a deployed system, a patient with edema could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 6: CXP_24169_S01
-Ground truth diagnosis: enlarged cardiomediastinum
-
-  BioViL-T
-    Baseline: enlarged cardiomediastinum (CORRECT, confidence 0.11391167342662811)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, demographic_v2, contradiction_v1
-      Changed to: fracture, atelectasis
-
-  Qwen2-VL
-    Baseline: enlarged cardiomediastinum (CORRECT, confidence 1.0)
-    Result: Flipped on 46/52 perturbation conditions.
-      Image perturbations (30 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v1
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: pneumothorax, lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: no finding (INCORRECT, confidence 0.5)
-    Result: Flipped on 6/52 perturbation conditions.
-      Text perturbations (6 flips): demographic_v1, demographic_v2, contradiction_v2, demographic_v1, demographic_v2, contradiction_v2
-      Changed to: atelectasis, lung opacity
-
-  GPT-4o
-    Baseline: enlarged cardiomediastinum (CORRECT, confidence 0.6)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: parse_failed, consolidation, support devices
-
-  CheXagent
-    Baseline: enlarged cardiomediastinum (CORRECT, confidence 0.906)
-    Result: Flipped on 44/52 perturbation conditions.
-      Image perturbations (28 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v1
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: fracture, lung opacity, atelectasis
-
-  NARRATIVE
-  GPT-4o correctly diagnosed enlarged cardiomediastinum at 0.6 confidence but changed its diagnosis to parse_failed, consolidation when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  CheXagent correctly diagnosed enlarged cardiomediastinum at 0.906 confidence but was fragile across both modalities, flipping on 28 image and 14 text perturbations to diagnoses including fracture, lung opacity.
-  CheXagent also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  Qwen2-VL correctly diagnosed enlarged cardiomediastinum at 1.0 confidence but was fragile across both modalities, flipping on 30 image and 14 text perturbations to diagnoses including pneumothorax, lung opacity.
-  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  BioViL-T correctly diagnosed enlarged cardiomediastinum at 0.11391167342662811 confidence but changed its diagnosis to fracture, atelectasis when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  LLaVA-Med was already incorrect on baseline, diagnosing no finding instead of enlarged cardiomediastinum.
-  Clinical implication: in a deployed system, a patient with enlarged cardiomediastinum could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 7: CXP_41573_S02
-Ground truth diagnosis: pleural effusion
-
-  BioViL-T
-    Baseline: pleural effusion (CORRECT, confidence 0.10874854773283005)
-    Result: Flipped on 10/16 perturbation conditions.
-      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, demographic_v1
-      Changed to: enlarged cardiomediastinum, fracture, cardiomegaly, atelectasis
-
-  Qwen2-VL
-    Baseline: pleural effusion (CORRECT, confidence 1.0)
-    Result: Flipped on 36/52 perturbation conditions.
-      Image perturbations (22 flips): watermark_v1, watermark_v2, watermark_v3, chest_tube_v2, chest_tube_v3, chest_drain_v1
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: pleural effusion (CORRECT, confidence 0.8)
-    Result: Flipped on 14/52 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: no finding, atelectasis, lung opacity
-
-  GPT-4o
-    Baseline: pleural effusion (CORRECT, confidence 0.9)
-    Result: Flipped on 10/52 perturbation conditions.
-      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v2, demographic_v1
-      Changed to: consolidation, support devices
-
-  CheXagent
-    Baseline: lung lesion (INCORRECT, confidence 0.813)
-    Result: Flipped on 40/52 perturbation conditions.
-      Image perturbations (24 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v3, chest_tube_v1, chest_tube_v2
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: no finding, atelectasis, pneumothorax, enlarged cardiomediastinum
-
-  NARRATIVE
-  GPT-4o correctly diagnosed pleural effusion at 0.9 confidence but changed its diagnosis to consolidation, support devices when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  LLaVA-Med correctly diagnosed pleural effusion at 0.8 confidence but changed its diagnosis to no finding, atelectasis when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  Qwen2-VL correctly diagnosed pleural effusion at 1.0 confidence but was fragile across both modalities, flipping on 22 image and 14 text perturbations to diagnoses including lung opacity, cardiomegaly.
-  BioViL-T correctly diagnosed pleural effusion at 0.10874854773283005 confidence but changed its diagnosis to enlarged cardiomediastinum, fracture when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  CheXagent was already incorrect on baseline, diagnosing lung lesion instead of pleural effusion.
-  Clinical implication: in a deployed system, a patient with pleural effusion could receive an incorrect diagnosis of consolidation simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 8: CXP_00023_S02
-Ground truth diagnosis: pleural effusion
-
-  BioViL-T
-    Baseline: pleural effusion (CORRECT, confidence 0.12458112090826035)
-    Result: Flipped on 8/16 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: enlarged cardiomediastinum, fracture, atelectasis
-
-  Qwen2-VL
-    Baseline: pleural effusion (CORRECT, confidence 1.0)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: pleural effusion (CORRECT, confidence 0.8)
-    Result: Flipped on 24/52 perturbation conditions.
-      Image perturbations (10 flips): watermark_v3, jpeg_v2, chest_tube_v1, chest_drain_v3, ecg_leads_v2, watermark_v3
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: no finding, edema, lung opacity, cardiomegaly
-
-  GPT-4o
-    Baseline: pleural effusion (CORRECT, confidence 0.9)
-    Result: Flipped on 10/52 perturbation conditions.
-      Image perturbations (4 flips): watermark_v1, chest_tube_v2, watermark_v1, chest_tube_v2
-      Text perturbations (6 flips): demographic_v2, contradiction_v1, contradiction_v2, demographic_v2, contradiction_v1, contradiction_v2
-      Changed to: parse_failed, no finding, lung opacity
-
-  CheXagent
-    Baseline: pleural effusion (CORRECT, confidence 0.847)
-    Result: Flipped on 50/52 perturbation conditions.
-      Image perturbations (34 flips): watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: pneumothorax, lung opacity, lung lesion, cardiomegaly
-
-  NARRATIVE
-  GPT-4o correctly diagnosed pleural effusion at 0.9 confidence but was fragile across both modalities, flipping on 4 image and 6 text perturbations to diagnoses including parse_failed, no finding.
-  LLaVA-Med correctly diagnosed pleural effusion at 0.8 confidence but was fragile across both modalities, flipping on 10 image and 14 text perturbations to diagnoses including no finding, edema.
-  CheXagent correctly diagnosed pleural effusion at 0.847 confidence but was fragile across both modalities, flipping on 34 image and 14 text perturbations to diagnoses including pneumothorax, lung opacity.
-  CheXagent also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  Qwen2-VL correctly diagnosed pleural effusion at 1.0 confidence but changed its diagnosis to lung opacity, cardiomegaly when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  BioViL-T correctly diagnosed pleural effusion at 0.12458112090826035 confidence but changed its diagnosis to enlarged cardiomediastinum, fracture when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  Clinical implication: in a deployed system, a patient with pleural effusion could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 9: CXP_29589_S02
-Ground truth diagnosis: enlarged cardiomediastinum
-
-  BioViL-T
-    Baseline: cardiomegaly (INCORRECT, confidence 0.1031455397605896)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: no finding, enlarged cardiomediastinum, fracture, pneumonia
-
-  Qwen2-VL
-    Baseline: cardiomegaly (INCORRECT, confidence 1.0)
-    Result: Flipped on 2/52 perturbation conditions.
-      Text perturbations (2 flips): contradiction_v2, contradiction_v2
-      Changed to: lung opacity
-
-  LLaVA-Med
-    Baseline: lung opacity (INCORRECT, confidence 0.5)
-    Result: Flipped on 42/52 perturbation conditions.
-      Image perturbations (30 flips): watermark_v2, watermark_v3, jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v2
-      Text perturbations (10 flips): demographic_v1, contradiction_v1, paraphrase_v1, paraphrase_v2, paraphrase_v3, demographic_v1
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: edema, enlarged cardiomediastinum, no finding
-
-  GPT-4o
-    Baseline: enlarged cardiomediastinum (CORRECT, confidence 0.9)
-    Result: Flipped on 36/52 perturbation conditions.
-      Image perturbations (26 flips): watermark_v1, jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v2, chest_drain_v1
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: parse_failed, lung opacity, support devices
-
-  CheXagent
-    Baseline: no finding (INCORRECT, confidence 0)
-    Result: Flipped on 52/52 perturbation conditions.
-      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: enlarged cardiomediastinum, cardiomegaly
-
-  NARRATIVE
-  GPT-4o correctly diagnosed enlarged cardiomediastinum at 0.9 confidence but was fragile across both modalities, flipping on 26 image and 8 text perturbations to diagnoses including parse_failed, lung opacity.
-  GPT-4o also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  LLaVA-Med was already incorrect on baseline, diagnosing lung opacity instead of enlarged cardiomediastinum.
-  CheXagent was already incorrect on baseline, diagnosing no finding instead of enlarged cardiomediastinum.
-  Qwen2-VL was already incorrect on baseline, diagnosing cardiomegaly instead of enlarged cardiomediastinum.
-  BioViL-T was already incorrect on baseline, diagnosing cardiomegaly instead of enlarged cardiomediastinum.
-  Clinical implication: in a deployed system, a patient with enlarged cardiomediastinum could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 10: CXP_03141_S01
-Ground truth diagnosis: lung opacity
-
-  BioViL-T
-    Baseline: fracture (INCORRECT, confidence 0.1165441945195198)
-    Result: Flipped on 6/16 perturbation conditions.
-      Text perturbations (6 flips): demographic_v1, contradiction_v1, contradiction_v2, demographic_v1, contradiction_v1, contradiction_v2
-      Changed to: enlarged cardiomediastinum, no finding, pneumonia
-
-  Qwen2-VL
-    Baseline: lung opacity (CORRECT, confidence 1.0)
-    Result: Flipped on 46/52 perturbation conditions.
-      Image perturbations (32 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1, paraphrase_v2, paraphrase_v3
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: atelectasis, cardiomegaly
-
-  LLaVA-Med
-    Baseline: lung opacity (CORRECT, confidence 0.6)
-    Result: Flipped on 30/52 perturbation conditions.
-      Image perturbations (24 flips): watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v3, chest_drain_v1
-      Text perturbations (6 flips): demographic_v1, demographic_v2, contradiction_v1, demographic_v1, demographic_v2, contradiction_v1
-      Changed to: no finding, atelectasis, consolidation
-
-  GPT-4o
-    Baseline: lung opacity (CORRECT, confidence 0.8)
-    Result: Flipped on 22/52 perturbation conditions.
-      Image perturbations (14 flips): jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v2, chest_tube_v3, ecg_leads_v2
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: parse_failed, no finding, consolidation
-
-  CheXagent
-    Baseline: lung opacity (CORRECT, confidence 0.759)
-    Result: Flipped on 4/52 perturbation conditions.
-      Image perturbations (4 flips): pacemaker_v2, pacemaker_v3, pacemaker_v2, pacemaker_v3
-      Changed to: lung lesion
-
-  NARRATIVE
-  GPT-4o correctly diagnosed lung opacity at 0.8 confidence but was fragile across both modalities, flipping on 14 image and 8 text perturbations to diagnoses including parse_failed, no finding.
-  LLaVA-Med correctly diagnosed lung opacity at 0.6 confidence but was fragile across both modalities, flipping on 24 image and 6 text perturbations to diagnoses including no finding, atelectasis.
-  CheXagent correctly diagnosed lung opacity at 0.759 confidence but changed its diagnosis to lung lesion when non-clinical image artifacts were added (pacemaker). These artifacts have no diagnostic significance, yet they altered the clinical conclusion.
-  Qwen2-VL correctly diagnosed lung opacity at 1.0 confidence but was fragile across both modalities, flipping on 32 image and 12 text perturbations to diagnoses including atelectasis, cardiomegaly.
-  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  BioViL-T was already incorrect on baseline, diagnosing fracture instead of lung opacity.
-  Clinical implication: in a deployed system, a patient with lung opacity could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 11: CXP_51689_S01
-Ground truth diagnosis: edema
-
-  BioViL-T
-    Baseline: edema (CORRECT, confidence 0.1550639122724533)
-    Result: Flipped on 8/16 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: no finding, enlarged cardiomediastinum, fracture, cardiomegaly
-
-  Qwen2-VL
-    Baseline: lung opacity (INCORRECT, confidence 0.9)
-    Result: Flipped on 44/52 perturbation conditions.
-      Image perturbations (30 flips): watermark_v1, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1
-      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1, paraphrase_v2, paraphrase_v3
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: pleural effusion, edema, cardiomegaly
-
-  LLaVA-Med
-    Baseline: enlarged cardiomediastinum (INCORRECT, confidence 0.9)
-    Result: Flipped on 52/52 perturbation conditions.
-      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: edema, no finding, atelectasis, pleural effusion
-
-  GPT-4o
-    Baseline: edema (CORRECT, confidence 0.9)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: parse_failed, consolidation, support devices
-
-  CheXagent
-    Baseline: edema (CORRECT, confidence 0.774)
-    Result: Flipped on 6/52 perturbation conditions.
-      Text perturbations (6 flips): demographic_v1, demographic_v2, contradiction_v2, demographic_v1, demographic_v2, contradiction_v2
-      Changed to: lung opacity
-
-  NARRATIVE
-  GPT-4o correctly diagnosed edema at 0.9 confidence but changed its diagnosis to parse_failed, consolidation when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  CheXagent correctly diagnosed edema at 0.774 confidence but changed its diagnosis to lung opacity when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  BioViL-T correctly diagnosed edema at 0.1550639122724533 confidence but changed its diagnosis to no finding, enlarged cardiomediastinum when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  LLaVA-Med was already incorrect on baseline, diagnosing enlarged cardiomediastinum instead of edema.
-  Qwen2-VL was already incorrect on baseline, diagnosing lung opacity instead of edema.
-  Clinical implication: in a deployed system, a patient with edema could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 12: CXP_49831_S06
-Ground truth diagnosis: no finding
-
-  BioViL-T
-    Baseline: lung lesion (INCORRECT, confidence 0.11043492704629898)
-    Result: Flipped on 14/16 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: enlarged cardiomediastinum, fracture, lung opacity, atelectasis
-
-  Qwen2-VL
-    Baseline: lung opacity (INCORRECT, confidence 1.0)
-    Result: Flipped on 46/52 perturbation conditions.
-      Image perturbations (32 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: no finding, cardiomegaly
-
-  LLaVA-Med
-    Baseline: enlarged cardiomediastinum (INCORRECT, confidence 0.9)
-    Result: Flipped on 48/52 perturbation conditions.
-      Image perturbations (32 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v1
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: no finding, edema, atelectasis, cardiomegaly
-
-  GPT-4o
-    Baseline: support devices (INCORRECT, confidence 0.9)
-    Result: Flipped on 14/52 perturbation conditions.
-      Image perturbations (6 flips): chest_tube_v1, ecg_leads_v1, pacemaker_v1, chest_tube_v1, ecg_leads_v1, pacemaker_v1
-      Text perturbations (6 flips): demographic_v2, contradiction_v1, paraphrase_v1, demographic_v2, contradiction_v1, paraphrase_v1
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: parse_failed, lung opacity
-
-  CheXagent
-    Baseline: no finding (CORRECT, confidence 0.619)
-    Result: Flipped on 14/52 perturbation conditions.
-      Image perturbations (2 flips): chest_drain_v1, chest_drain_v1
-      Text perturbations (12 flips): demographic_v1, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
-      Changed to: edema, enlarged cardiomediastinum, fracture
-
-  NARRATIVE
-  CheXagent correctly diagnosed no finding at 0.619 confidence but was fragile across both modalities, flipping on 2 image and 12 text perturbations to diagnoses including edema, enlarged cardiomediastinum.
-  GPT-4o was already incorrect on baseline, diagnosing support devices instead of no finding.
-  LLaVA-Med was already incorrect on baseline, diagnosing enlarged cardiomediastinum instead of no finding.
-  Qwen2-VL was already incorrect on baseline, diagnosing lung opacity instead of no finding.
-  BioViL-T was already incorrect on baseline, diagnosing lung lesion instead of no finding.
-  Clinical implication: in a deployed system, a patient with no finding could receive an incorrect diagnosis of edema simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 13: CXP_12846_S02
-Ground truth diagnosis: lung opacity
-
-  BioViL-T
-    Baseline: lung lesion (INCORRECT, confidence 0.1086861789226532)
-    Result: Flipped on 14/16 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: enlarged cardiomediastinum, fracture, lung opacity, atelectasis
-
-  Qwen2-VL
-    Baseline: pneumonia (INCORRECT, confidence 0.9)
-    Result: Flipped on 38/52 perturbation conditions.
-      Image perturbations (28 flips): watermark_v1, watermark_v2, watermark_v3, chest_tube_v1, chest_tube_v2, chest_tube_v3
-      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, demographic_v1
-      Changed to: atelectasis, lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: cardiomegaly (INCORRECT, confidence 0.8)
-    Result: Flipped on 36/52 perturbation conditions.
-      Image perturbations (20 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v3, chest_tube_v1
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: no finding, atelectasis, edema, enlarged cardiomediastinum
-
-  GPT-4o
-    Baseline: lung opacity (CORRECT, confidence 0.8)
-    Result: Flipped on 22/52 perturbation conditions.
-      Image perturbations (16 flips): watermark_v1, jpeg_v2, chest_tube_v1, chest_tube_v2, chest_drain_v1, chest_drain_v2
-      Text perturbations (6 flips): demographic_v1, demographic_v2, contradiction_v1, demographic_v1, demographic_v2, contradiction_v1
-      Changed to: no finding, parse_failed, atelectasis, support devices
-
-  CheXagent
-    Baseline: lung opacity (CORRECT, confidence 0.647)
-    Result: Flipped on 16/52 perturbation conditions.
-      Image perturbations (16 flips): watermark_v2, watermark_v3, chest_tube_v1, chest_tube_v3, chest_drain_v1, chest_drain_v2
-      Changed to: lung lesion
-
-  NARRATIVE
-  GPT-4o correctly diagnosed lung opacity at 0.8 confidence but was fragile across both modalities, flipping on 16 image and 6 text perturbations to diagnoses including no finding, parse_failed.
-  CheXagent correctly diagnosed lung opacity at 0.647 confidence but changed its diagnosis to lung lesion when non-clinical image artifacts were added (watermark, ecg_leads, chest_tube). These artifacts have no diagnostic significance, yet they altered the clinical conclusion.
-  LLaVA-Med was already incorrect on baseline, diagnosing cardiomegaly instead of lung opacity.
-  Qwen2-VL was already incorrect on baseline, diagnosing pneumonia instead of lung opacity.
-  BioViL-T was already incorrect on baseline, diagnosing lung lesion instead of lung opacity.
-  Clinical implication: in a deployed system, a patient with lung opacity could receive an incorrect diagnosis of no finding simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 14: CXP_01528_S01
-Ground truth diagnosis: consolidation
-
-  BioViL-T
-    Baseline: lung lesion (INCORRECT, confidence 0.1077289879322052)
-    Result: Flipped on 14/16 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: no finding, enlarged cardiomediastinum, fracture, pneumonia
-
-  Qwen2-VL
-    Baseline: consolidation (CORRECT, confidence 1.0)
-    Result: Flipped on 10/52 perturbation conditions.
-      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v2, demographic_v1
-      Changed to: lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: lung opacity (INCORRECT, confidence 0.6)
-    Result: Flipped on 44/52 perturbation conditions.
-      Image perturbations (32 flips): watermark_v1, watermark_v2, jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v2
-      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1, paraphrase_v2, demographic_v1
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: lung lesion, no finding, consolidation, atelectasis
-
-  GPT-4o
-    Baseline: consolidation (CORRECT, confidence 0.9)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: parse_failed, no finding, lung opacity
-
-  CheXagent
-    Baseline: consolidation (CORRECT, confidence 0.79)
-    Result: Flipped on 38/52 perturbation conditions.
-      Image perturbations (32 flips): watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1, chest_tube_v2
-      Text perturbations (6 flips): demographic_v1, contradiction_v1, contradiction_v2, demographic_v1, contradiction_v1, contradiction_v2
-      Changed to: lung opacity, lung lesion
-
-  NARRATIVE
-  GPT-4o correctly diagnosed consolidation at 0.9 confidence but changed its diagnosis to parse_failed, no finding when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  CheXagent correctly diagnosed consolidation at 0.79 confidence but was fragile across both modalities, flipping on 32 image and 6 text perturbations to diagnoses including lung opacity, lung lesion.
-  Qwen2-VL correctly diagnosed consolidation at 1.0 confidence but changed its diagnosis to lung opacity, cardiomegaly when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  LLaVA-Med was already incorrect on baseline, diagnosing lung opacity instead of consolidation.
-  BioViL-T was already incorrect on baseline, diagnosing lung lesion instead of consolidation.
-  Clinical implication: in a deployed system, a patient with consolidation could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 15: CXP_06662_S02
-Ground truth diagnosis: lung opacity
-
-  BioViL-T
-    Baseline: consolidation (INCORRECT, confidence 0.09366641193628311)
-    Result: Flipped on 14/16 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: no finding, atelectasis, enlarged cardiomediastinum, fracture
-
-  Qwen2-VL
-    Baseline: pneumonia (INCORRECT, confidence 0.9)
-    Result: Flipped on 50/52 perturbation conditions.
-      Image perturbations (34 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: atelectasis, lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: atelectasis (INCORRECT, confidence 0.9)
-    Result: Flipped on 46/52 perturbation conditions.
-      Image perturbations (30 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v1
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: no finding, lung opacity, cardiomegaly
-
-  GPT-4o
-    Baseline: atelectasis (INCORRECT, confidence 0.8)
-    Result: Flipped on 14/52 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: parse_failed, no finding, lung opacity, consolidation
-
-  CheXagent
-    Baseline: lung opacity (CORRECT, confidence 0.703)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: edema
-
-  NARRATIVE
-  CheXagent correctly diagnosed lung opacity at 0.703 confidence but changed its diagnosis to edema when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  GPT-4o was already incorrect on baseline, diagnosing atelectasis instead of lung opacity.
-  LLaVA-Med was already incorrect on baseline, diagnosing atelectasis instead of lung opacity.
-  Qwen2-VL was already incorrect on baseline, diagnosing pneumonia instead of lung opacity.
-  BioViL-T was already incorrect on baseline, diagnosing consolidation instead of lung opacity.
-  Clinical implication: in a deployed system, a patient with lung opacity could receive an incorrect diagnosis of edema simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 16: CXP_02098_S02
-Ground truth diagnosis: pneumothorax
-
-  BioViL-T
-    Baseline: pneumothorax (CORRECT, confidence 0.11653903871774673)
-    Result: Flipped on 8/16 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: enlarged cardiomediastinum, fracture, atelectasis
-
-  Qwen2-VL
-    Baseline: pneumothorax (CORRECT, confidence 0.9)
-    Result: Flipped on 40/52 perturbation conditions.
-      Image perturbations (26 flips): watermark_v2, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1, chest_tube_v2
-      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v3
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: lung opacity, cardiomegaly, pleural effusion
-
-  LLaVA-Med
-    Baseline: no finding (INCORRECT, confidence 0.5)
-    Result: Flipped on 20/52 perturbation conditions.
-      Image perturbations (8 flips): watermark_v3, chest_tube_v2, chest_drain_v3, pacemaker_v1, watermark_v3, chest_tube_v2
-      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
-      Changed to: pneumothorax, atelectasis, lung opacity
-
-  GPT-4o
-    Baseline: pneumothorax (CORRECT, confidence 0.9)
-    Result: Flipped on 14/52 perturbation conditions.
-      Image perturbations (6 flips): chest_tube_v2, chest_tube_v3, pacemaker_v2, chest_tube_v2, chest_tube_v3, pacemaker_v2
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: parse_failed, no finding
-
-  CheXagent
-    Baseline: lung opacity (INCORRECT, confidence 0.804)
-    Result: Flipped on 30/52 perturbation conditions.
-      Image perturbations (16 flips): watermark_v1, watermark_v2, watermark_v3, chest_tube_v2, ecg_leads_v2, ecg_leads_v3
-      Text perturbations (12 flips): demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: pneumothorax, lung lesion
-
-  NARRATIVE
-  GPT-4o correctly diagnosed pneumothorax at 0.9 confidence but was fragile across both modalities, flipping on 6 image and 8 text perturbations to diagnoses including parse_failed, no finding.
-  Qwen2-VL correctly diagnosed pneumothorax at 0.9 confidence but was fragile across both modalities, flipping on 26 image and 12 text perturbations to diagnoses including lung opacity, cardiomegaly.
-  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  BioViL-T correctly diagnosed pneumothorax at 0.11653903871774673 confidence but changed its diagnosis to enlarged cardiomediastinum, fracture when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  LLaVA-Med was already incorrect on baseline, diagnosing no finding instead of pneumothorax.
-  CheXagent was already incorrect on baseline, diagnosing lung opacity instead of pneumothorax.
-  Clinical implication: in a deployed system, a patient with pneumothorax could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 17: CXP_55262_S01
-Ground truth diagnosis: consolidation
-
-  BioViL-T
-    Baseline: consolidation (CORRECT, confidence 0.09016789495944977)
-    Result: Flipped on 14/16 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: no finding, enlarged cardiomediastinum, fracture, pneumonia
-
-  Qwen2-VL
-    Baseline: pneumonia (INCORRECT, confidence 1.0)
-    Result: Flipped on 10/52 perturbation conditions.
-      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v3, demographic_v1
-      Changed to: lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: consolidation (CORRECT, confidence 0.85)
-    Result: Flipped on 36/52 perturbation conditions.
-      Image perturbations (22 flips): watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v2, chest_tube_v3
-      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v3
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: no finding, enlarged cardiomediastinum, pneumonia, lung lesion
-
-  GPT-4o
-    Baseline: pneumonia (INCORRECT, confidence 0.9)
-    Result: Flipped on 14/52 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: parse_failed, no finding, consolidation
-
-  CheXagent
-    Baseline: no finding (INCORRECT, confidence 0.639)
-    Result: Flipped on 48/52 perturbation conditions.
-      Image perturbations (34 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: enlarged cardiomediastinum, lung opacity
-
-  NARRATIVE
-  LLaVA-Med correctly diagnosed consolidation at 0.85 confidence but was fragile across both modalities, flipping on 22 image and 12 text perturbations to diagnoses including no finding, enlarged cardiomediastinum.
-  LLaVA-Med also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  BioViL-T correctly diagnosed consolidation at 0.09016789495944977 confidence but changed its diagnosis to no finding, enlarged cardiomediastinum when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  GPT-4o was already incorrect on baseline, diagnosing pneumonia instead of consolidation.
-  CheXagent was already incorrect on baseline, diagnosing no finding instead of consolidation.
-  Qwen2-VL was already incorrect on baseline, diagnosing pneumonia instead of consolidation.
-  Clinical implication: in a deployed system, a patient with consolidation could receive an incorrect diagnosis of no finding simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 18: CXP_48748_S01
-Ground truth diagnosis: edema
-
-  BioViL-T
-    Baseline: edema (CORRECT, confidence 0.14985089004039764)
-    Result: Flipped on 8/16 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: enlarged cardiomediastinum, fracture, atelectasis
-
-  Qwen2-VL
-    Baseline: edema (CORRECT, confidence 1.0)
-    Result: Flipped on 50/52 perturbation conditions.
-      Image perturbations (34 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: pneumothorax, lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: edema (CORRECT, confidence 0.6)
-    Result: Flipped on 26/52 perturbation conditions.
-      Image perturbations (18 flips): watermark_v3, jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v2, chest_drain_v3
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: no finding, lung opacity, cardiomegaly
-
-  GPT-4o
-    Baseline: edema (CORRECT, confidence 0.9)
-    Result: Flipped on 8/52 perturbation conditions.
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: consolidation, support devices
-
-  CheXagent
-    Baseline: edema (CORRECT, confidence 0.814)
-    Result: Stable across all 52 perturbation conditions.
-
-  NARRATIVE
-  GPT-4o correctly diagnosed edema at 0.9 confidence but changed its diagnosis to consolidation, support devices when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  LLaVA-Med correctly diagnosed edema at 0.6 confidence but was fragile across both modalities, flipping on 18 image and 8 text perturbations to diagnoses including no finding, lung opacity.
-  Qwen2-VL correctly diagnosed edema at 1.0 confidence but was fragile across both modalities, flipping on 34 image and 14 text perturbations to diagnoses including pneumothorax, lung opacity.
-  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  BioViL-T correctly diagnosed edema at 0.14985089004039764 confidence but changed its diagnosis to enlarged cardiomediastinum, fracture when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
-  CheXagent correctly diagnosed edema and remained stable across all 52 perturbation conditions.
-  Clinical implication: in a deployed system, a patient with edema could receive an incorrect diagnosis of consolidation simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 19: CXP_30502_S01
-Ground truth diagnosis: edema
-
-  BioViL-T
-    Baseline: pneumonia (INCORRECT, confidence 0.10361438989639282)
-    Result: Flipped on 14/16 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: atelectasis, enlarged cardiomediastinum, fracture, consolidation
-
-  Qwen2-VL
-    Baseline: pleural effusion (INCORRECT, confidence 1.0)
-    Result: Flipped on 44/52 perturbation conditions.
-      Image perturbations (28 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, chest_tube_v1
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: edema, lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: fracture (INCORRECT, confidence 0.95)
-    Result: Flipped on 18/52 perturbation conditions.
-      Image perturbations (4 flips): chest_drain_v1, chest_drain_v2, chest_drain_v1, chest_drain_v2
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: no finding, edema, atelectasis, pleural effusion
-
-  GPT-4o
-    Baseline: edema (CORRECT, confidence 0.9)
-    Result: Flipped on 12/52 perturbation conditions.
-      Image perturbations (4 flips): watermark_v3, ecg_leads_v1, watermark_v3, ecg_leads_v1
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Changed to: parse_failed, consolidation, support devices
-
-  CheXagent
-    Baseline: consolidation (INCORRECT, confidence 0.732)
-    Result: Flipped on 42/52 perturbation conditions.
-      Image perturbations (28 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: edema, no finding
-
-  NARRATIVE
-  GPT-4o correctly diagnosed edema at 0.9 confidence but was fragile across both modalities, flipping on 4 image and 8 text perturbations to diagnoses including parse_failed, consolidation.
-  LLaVA-Med was already incorrect on baseline, diagnosing fracture instead of edema.
-  CheXagent was already incorrect on baseline, diagnosing consolidation instead of edema.
-  Qwen2-VL was already incorrect on baseline, diagnosing pleural effusion instead of edema.
-  BioViL-T was already incorrect on baseline, diagnosing pneumonia instead of edema.
-  Clinical implication: in a deployed system, a patient with edema could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
-
-======================================================================
-CASE 20: CXP_02566_S02
-Ground truth diagnosis: pleural other
-
-  BioViL-T
-    Baseline: lung lesion (INCORRECT, confidence 0.12973429262638092)
-    Result: Flipped on 14/16 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: enlarged cardiomediastinum, fracture, atelectasis
-
-  Qwen2-VL
-    Baseline: no finding (INCORRECT, confidence 1.0)
-    Result: Flipped on 14/52 perturbation conditions.
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Changed to: lung opacity, cardiomegaly
-
-  LLaVA-Med
-    Baseline: cardiomegaly (INCORRECT, confidence 0.8)
-    Result: Flipped on 44/52 perturbation conditions.
-      Image perturbations (28 flips): watermark_v1, watermark_v2, jpeg_v2, jpeg_v3, chest_tube_v1, chest_tube_v2
-      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: enlarged cardiomediastinum, no finding, lung opacity, atelectasis
-
-  GPT-4o
-    Baseline: pleural other (CORRECT, confidence 0.7)
-    Result: Flipped on 26/52 perturbation conditions.
-      Image perturbations (16 flips): watermark_v1, jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v3, pacemaker_v1
-      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
-      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
-      Changed to: parse_failed, no finding, lung opacity, support devices
-
-  CheXagent
-    Baseline: no finding (INCORRECT, confidence 0.72)
-    Result: Flipped on 32/52 perturbation conditions.
-      Image perturbations (26 flips): jpeg_v2, jpeg_v3, chest_tube_v1, chest_tube_v2, chest_tube_v3, chest_drain_v1
-      Text perturbations (6 flips): demographic_v1, contradiction_v1, contradiction_v2, demographic_v1, contradiction_v1, contradiction_v2
-      Changed to: edema, fracture
-
-  NARRATIVE
-  GPT-4o correctly diagnosed pleural other at 0.7 confidence but was fragile across both modalities, flipping on 16 image and 8 text perturbations to diagnoses including parse_failed, no finding.
-  GPT-4o also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
-  LLaVA-Med was already incorrect on baseline, diagnosing cardiomegaly instead of pleural other.
-  CheXagent was already incorrect on baseline, diagnosing no finding instead of pleural other.
-  Qwen2-VL was already incorrect on baseline, diagnosing no finding instead of pleural other.
-  BioViL-T was already incorrect on baseline, diagnosing lung lesion instead of pleural other.
-  Clinical implication: in a deployed system, a patient with pleural other could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+Qualitative Case Studies
+Spurious Diagnosis Flips in Medical Vision-Language Models
+
+This document presents 20 cases selected from 657 CheXpert Plus evaluations
+where at least one model produced a correct diagnosis on the unperturbed
+baseline but changed that diagnosis when a non-clinical perturbation was
+applied. Cases are ranked by the severity and breadth of spurious behavior:
+cases where more models flipped, where correct diagnoses were abandoned,
+and where models disagreed with each other receive the highest priority.
+
+
+Case 1: CXP_35723_S04
+Ground truth: edema
+
+    BioViL-T
+    Baseline diagnosis: pleural effusion (incorrect, confidence 0.11125500500202179)
+    This model changed its diagnosis on 12 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, pneumonia.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to edema.
+
+    Qwen2-VL
+    Baseline diagnosis: edema (correct, confidence 0.9)
+    This model changed its diagnosis on 46 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    LLaVA-Med
+    Baseline diagnosis: edema (correct, confidence 0.5)
+    This model changed its diagnosis on 36 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to no finding.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to no finding.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis, lung opacity.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to no finding.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: edema (correct, confidence 0.763)
+    This model changed its diagnosis on 6 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to consolidation.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, lung opacity.
+
+    GPT-4o
+    Baseline diagnosis: pleural effusion (incorrect, confidence 0.9)
+    This model changed its diagnosis on 46 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to edema.
+    When JPEG compression artifact was applied, the model changed its diagnosis to edema.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to edema.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to edema.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to edema.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to edema.
+    When patient demographic information injection was applied, the model changed its diagnosis to support devices, parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, consolidation.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    Analysis
+
+    LLaVA-Med correctly identified edema at 0.5 confidence but proved fragile
+    across both modalities, flipping on 20 image and
+    14 text perturbations (69% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that LLaVA-Med's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    CheXagent correctly identified edema at 0.763 confidence. However, 12% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    Qwen2-VL correctly identified edema at 0.9 confidence but proved fragile
+    across both modalities, flipping on 30 image and
+    14 text perturbations (88% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that Qwen2-VL's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    GPT-4o diagnosed pleural effusion on the unperturbed baseline, which does not match
+    the ground truth of edema. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed pleural effusion on the unperturbed baseline, which does not match
+    the ground truth of edema. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, LLaVA-Med had the correct diagnosis (edema) but changed it to
+    no finding due to a non-clinical perturbation. Missed pulmonary edema in a heart failure patient means diuretics are not administered. Fluid continues to accumulate in the lungs, risking acute respiratory distress.
+    CheXagent, Qwen2-VL also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 2: CXP_48027_S01
+Ground truth: pneumothorax
+
+    BioViL-T
+    Baseline diagnosis: enlarged cardiomediastinum (incorrect, confidence 0.10954520106315613)
+    This model changed its diagnosis on 12 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to atelectasis, pneumothorax.
+
+    Qwen2-VL
+    Baseline diagnosis: pneumothorax (correct, confidence 0.9)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity.
+
+    LLaVA-Med
+    Baseline diagnosis: atelectasis (incorrect, confidence 0.7)
+    This model changed its diagnosis on 42 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to pneumothorax, cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to pneumothorax, cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to pneumothorax, cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to no finding.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: pneumothorax (correct, confidence 0.876)
+    This model changed its diagnosis on 52 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to no finding.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to no finding.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, atelectasis.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to atelectasis, no finding.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    GPT-4o
+    Baseline diagnosis: pneumothorax (correct, confidence 0.6)
+    This model changed its diagnosis on 14 of 52 perturbation conditions.
+    When JPEG compression artifact was applied, the model changed its diagnosis to parse_failed.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to parse_failed.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, consolidation.
+
+    Analysis
+
+    GPT-4o correctly identified pneumothorax at 0.6 confidence but proved fragile
+    across both modalities, flipping on 6 image and
+    8 text perturbations (27% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    CheXagent correctly identified pneumothorax at 0.876 confidence but proved fragile
+    across both modalities, flipping on 36 image and
+    14 text perturbations (100% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that CheXagent's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    Qwen2-VL correctly identified pneumothorax at 0.9 confidence. However, 15% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    LLaVA-Med diagnosed atelectasis on the unperturbed baseline, which does not match
+    the ground truth of pneumothorax. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed enlarged cardiomediastinum on the unperturbed baseline, which does not match
+    the ground truth of pneumothorax. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (pneumothorax) but changed it to
+    support devices due to a non-clinical perturbation. The actual condition (pneumothorax) is misidentified as support devices, leading to a management plan designed for support devices rather than the treatment required for pneumothorax. This misalignment between diagnosis and treatment can delay recovery and introduce complications from inappropriate therapy.
+    CheXagent, Qwen2-VL also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 3: CXP_51922_S01
+Ground truth: lung lesion
+
+    BioViL-T
+    Baseline diagnosis: lung opacity (incorrect, confidence 0.11159928888082504)
+    This model changed its diagnosis on 14 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, pneumonia.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to fracture.
+
+    Qwen2-VL
+    Baseline diagnosis: lung opacity (incorrect, confidence 1.0)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to cardiomegaly.
+
+    LLaVA-Med
+    Baseline diagnosis: lung lesion (correct, confidence 0.95)
+    This model changed its diagnosis on 46 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to lung opacity.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding, lung opacity.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to no finding, lung opacity.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to no finding, lung opacity.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to no finding, lung opacity.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to no finding, lung opacity.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis, enlarged cardiomediastinum.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: lung lesion (correct, confidence 0.768)
+    This model changed its diagnosis on 46 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to lung opacity.
+    When JPEG compression artifact was applied, the model changed its diagnosis to atelectasis, edema.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to no finding, edema.
+    When patient demographic information injection was applied, the model changed its diagnosis to no finding, edema.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, edema.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to edema.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    GPT-4o
+    Baseline diagnosis: lung lesion (correct, confidence 0.9)
+    This model changed its diagnosis on 10 of 52 perturbation conditions.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to support devices.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, consolidation.
+
+    Analysis
+
+    GPT-4o correctly identified lung lesion at 0.9 confidence but proved fragile
+    across both modalities, flipping on 2 image and
+    8 text perturbations (19% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    LLaVA-Med correctly identified lung lesion at 0.95 confidence but proved fragile
+    across both modalities, flipping on 34 image and
+    10 text perturbations (88% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that LLaVA-Med's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    CheXagent correctly identified lung lesion at 0.768 confidence but proved fragile
+    across both modalities, flipping on 32 image and
+    12 text perturbations (88% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that CheXagent's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    Qwen2-VL diagnosed lung opacity on the unperturbed baseline, which does not match
+    the ground truth of lung lesion. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed lung opacity on the unperturbed baseline, which does not match
+    the ground truth of lung lesion. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (lung lesion) but changed it to
+    support devices due to a non-clinical perturbation. The actual condition (lung lesion) is misidentified as support devices, leading to a management plan designed for support devices rather than the treatment required for lung lesion. This misalignment between diagnosis and treatment can delay recovery and introduce complications from inappropriate therapy.
+    LLaVA-Med, CheXagent also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 4: CXP_16463_S02
+Ground truth: pneumothorax
+
+    BioViL-T
+    Baseline diagnosis: pneumothorax (correct, confidence 0.13573841750621796)
+    This model changed its diagnosis on 8 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+
+    Qwen2-VL
+    Baseline diagnosis: pneumothorax (correct, confidence 1.0)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+
+    LLaVA-Med
+    Baseline diagnosis: atelectasis (incorrect, confidence 0.7)
+    This model changed its diagnosis on 40 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to pneumothorax, enlarged cardiomediastinum.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding, pneumothorax, cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to pneumothorax, enlarged cardiomediastinum.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to no finding, pneumothorax.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to pneumothorax.
+
+    CheXagent
+    Baseline diagnosis: pneumothorax (correct, confidence 0.847)
+    This model changed its diagnosis on 50 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to edema.
+    When JPEG compression artifact was applied, the model changed its diagnosis to edema.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to no finding, edema.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to edema.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to edema, lung lesion.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to edema, lung lesion.
+    When patient demographic information injection was applied, the model changed its diagnosis to edema.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, edema.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to edema.
+
+    GPT-4o
+    Baseline diagnosis: pneumothorax (correct, confidence 0.9)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to support devices.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, consolidation.
+
+    Analysis
+
+    GPT-4o correctly identified pneumothorax at 0.9 confidence. However, 15% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    CheXagent correctly identified pneumothorax at 0.847 confidence but proved fragile
+    across both modalities, flipping on 36 image and
+    14 text perturbations (96% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    Qwen2-VL correctly identified pneumothorax at 1.0 confidence. However, 15% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    BioViL-T correctly identified pneumothorax at 0.13573841750621796 confidence. However, 50% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    LLaVA-Med diagnosed atelectasis on the unperturbed baseline, which does not match
+    the ground truth of pneumothorax. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (pneumothorax) but changed it to
+    support devices due to a non-clinical perturbation. The actual condition (pneumothorax) is misidentified as support devices, leading to a management plan designed for support devices rather than the treatment required for pneumothorax. This misalignment between diagnosis and treatment can delay recovery and introduce complications from inappropriate therapy.
+    CheXagent, Qwen2-VL, BioViL-T also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 5: CXP_28377_S01
+Ground truth: edema
+
+    BioViL-T
+    Baseline diagnosis: consolidation (incorrect, confidence 0.0950438380241394)
+    This model changed its diagnosis on 14 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to enlarged cardiomediastinum, cardiomegaly.
+
+    Qwen2-VL
+    Baseline diagnosis: edema (correct, confidence 0.8)
+    This model changed its diagnosis on 50 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    LLaVA-Med
+    Baseline diagnosis: atelectasis (incorrect, confidence 0.7)
+    This model changed its diagnosis on 50 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When patient demographic information injection was applied, the model changed its diagnosis to no finding.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: edema (correct, confidence 0.813)
+    This model remained stable across all 52 perturbation conditions,
+    maintaining its baseline diagnosis regardless of changes to the image or text.
+
+    GPT-4o
+    Baseline diagnosis: edema (correct, confidence 0.7)
+    This model changed its diagnosis on 10 of 52 perturbation conditions.
+    When JPEG compression artifact was applied, the model changed its diagnosis to parse_failed.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, lung opacity.
+
+    Analysis
+
+    GPT-4o correctly identified edema at 0.7 confidence but proved fragile
+    across both modalities, flipping on 2 image and
+    8 text perturbations (19% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    Qwen2-VL correctly identified edema at 0.8 confidence but proved fragile
+    across both modalities, flipping on 34 image and
+    14 text perturbations (96% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that Qwen2-VL's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    CheXagent correctly identified edema and maintained this diagnosis across all
+    52 perturbation conditions, demonstrating robustness on this case.
+
+    LLaVA-Med diagnosed atelectasis on the unperturbed baseline, which does not match
+    the ground truth of edema. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed consolidation on the unperturbed baseline, which does not match
+    the ground truth of edema. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (edema) but changed it to
+    support devices due to a non-clinical perturbation. The actual condition (edema) is misidentified as support devices, leading to a management plan designed for support devices rather than the treatment required for edema. This misalignment between diagnosis and treatment can delay recovery and introduce complications from inappropriate therapy.
+    Qwen2-VL also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+    CheXagent remained stable, showing that robustness
+    on this case is achievable but not guaranteed across models.
+
+    ------------------------------------------------------------
+
+Case 6: CXP_24169_S01
+Ground truth: enlarged cardiomediastinum
+
+    BioViL-T
+    Baseline diagnosis: enlarged cardiomediastinum (correct, confidence 0.11391167342662811)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to fracture.
+
+    Qwen2-VL
+    Baseline diagnosis: enlarged cardiomediastinum (correct, confidence 1.0)
+    This model changed its diagnosis on 46 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to pneumothorax, cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    LLaVA-Med
+    Baseline diagnosis: no finding (incorrect, confidence 0.5)
+    This model changed its diagnosis on 6 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity.
+
+    CheXagent
+    Baseline diagnosis: enlarged cardiomediastinum (correct, confidence 0.906)
+    This model changed its diagnosis on 44 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to fracture.
+    When JPEG compression artifact was applied, the model changed its diagnosis to fracture.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to fracture.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to fracture.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to fracture.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to fracture.
+    When patient demographic information injection was applied, the model changed its diagnosis to fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to fracture.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    GPT-4o
+    Baseline diagnosis: enlarged cardiomediastinum (correct, confidence 0.6)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to support devices, parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, consolidation.
+
+    Analysis
+
+    GPT-4o correctly identified enlarged cardiomediastinum at 0.6 confidence. However, 15% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    CheXagent correctly identified enlarged cardiomediastinum at 0.906 confidence but proved fragile
+    across both modalities, flipping on 28 image and
+    14 text perturbations (85% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that CheXagent's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    Qwen2-VL correctly identified enlarged cardiomediastinum at 1.0 confidence but proved fragile
+    across both modalities, flipping on 30 image and
+    14 text perturbations (88% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that Qwen2-VL's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    BioViL-T correctly identified enlarged cardiomediastinum at 0.11391167342662811 confidence. However, 15% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were clinical note paraphrasing (meaning preserved), contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    LLaVA-Med diagnosed no finding on the unperturbed baseline, which does not match
+    the ground truth of enlarged cardiomediastinum. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (enlarged cardiomediastinum) but changed it to
+    support devices due to a non-clinical perturbation. Attributing mediastinal widening to support devices means potential aortic pathology is ignored entirely.
+    CheXagent, Qwen2-VL, BioViL-T also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 7: CXP_41573_S02
+Ground truth: pleural effusion
+
+    BioViL-T
+    Baseline diagnosis: pleural effusion (correct, confidence 0.10874854773283005)
+    This model changed its diagnosis on 10 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+
+    Qwen2-VL
+    Baseline diagnosis: pleural effusion (correct, confidence 1.0)
+    This model changed its diagnosis on 36 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+
+    LLaVA-Med
+    Baseline diagnosis: pleural effusion (correct, confidence 0.8)
+    This model changed its diagnosis on 14 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to no finding.
+
+    CheXagent
+    Baseline diagnosis: lung lesion (incorrect, confidence 0.813)
+    This model changed its diagnosis on 40 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to pneumothorax.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to atelectasis, lung opacity, enlarged cardiomediastinum.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to pneumothorax, lung opacity.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to pneumothorax.
+    When patient demographic information injection was applied, the model changed its diagnosis to pneumothorax.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, pneumothorax.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to pneumothorax, consolidation.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    GPT-4o
+    Baseline diagnosis: pleural effusion (correct, confidence 0.9)
+    This model changed its diagnosis on 10 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to support devices.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, consolidation.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to support devices.
+
+    Analysis
+
+    GPT-4o correctly identified pleural effusion at 0.9 confidence. However, 19% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were clinical note paraphrasing (meaning preserved), contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    LLaVA-Med correctly identified pleural effusion at 0.8 confidence. However, 27% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were clinical note paraphrasing (meaning preserved), contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    Qwen2-VL correctly identified pleural effusion at 1.0 confidence but proved fragile
+    across both modalities, flipping on 22 image and
+    14 text perturbations (69% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    BioViL-T correctly identified pleural effusion at 0.10874854773283005 confidence. However, 62% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were clinical note paraphrasing (meaning preserved), contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    CheXagent diagnosed lung lesion on the unperturbed baseline, which does not match
+    the ground truth of pleural effusion. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (pleural effusion) but changed it to
+    support devices due to a non-clinical perturbation. The actual condition (pleural effusion) is misidentified as support devices, leading to a management plan designed for support devices rather than the treatment required for pleural effusion. This misalignment between diagnosis and treatment can delay recovery and introduce complications from inappropriate therapy.
+    LLaVA-Med, Qwen2-VL, BioViL-T also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 8: CXP_00023_S02
+Ground truth: pleural effusion
+
+    BioViL-T
+    Baseline diagnosis: pleural effusion (correct, confidence 0.12458112090826035)
+    This model changed its diagnosis on 8 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+
+    Qwen2-VL
+    Baseline diagnosis: pleural effusion (correct, confidence 1.0)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity.
+
+    LLaVA-Med
+    Baseline diagnosis: pleural effusion (correct, confidence 0.8)
+    This model changed its diagnosis on 24 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to edema.
+    When JPEG compression artifact was applied, the model changed its diagnosis to edema.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to edema.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to edema.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to edema.
+    When patient demographic information injection was applied, the model changed its diagnosis to no finding, cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to edema.
+
+    CheXagent
+    Baseline diagnosis: pleural effusion (correct, confidence 0.847)
+    This model changed its diagnosis on 50 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to pneumothorax, cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to lung opacity, cardiomegaly, lung lesion.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to pneumothorax, lung lesion.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to pneumothorax, lung lesion.
+    When patient demographic information injection was applied, the model changed its diagnosis to lung lesion.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to pneumothorax.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to pneumothorax.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    GPT-4o
+    Baseline diagnosis: pleural effusion (correct, confidence 0.9)
+    This model changed its diagnosis on 10 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to parse_failed.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+
+    Analysis
+
+    GPT-4o correctly identified pleural effusion at 0.9 confidence but proved fragile
+    across both modalities, flipping on 4 image and
+    6 text perturbations (19% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    LLaVA-Med correctly identified pleural effusion at 0.8 confidence but proved fragile
+    across both modalities, flipping on 10 image and
+    14 text perturbations (46% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    CheXagent correctly identified pleural effusion at 0.847 confidence but proved fragile
+    across both modalities, flipping on 34 image and
+    14 text perturbations (96% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that CheXagent's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    Qwen2-VL correctly identified pleural effusion at 1.0 confidence. However, 15% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    BioViL-T correctly identified pleural effusion at 0.12458112090826035 confidence. However, 50% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (pleural effusion) but changed it to
+    no finding due to a non-clinical perturbation. Missed pleural effusion can lead to progressive respiratory compromise. Large effusions require drainage; leaving them undetected risks respiratory failure and missed underlying malignancy.
+    LLaVA-Med, CheXagent, Qwen2-VL, BioViL-T also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 9: CXP_29589_S02
+Ground truth: enlarged cardiomediastinum
+
+    BioViL-T
+    Baseline diagnosis: cardiomegaly (incorrect, confidence 0.1031455397605896)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, pneumonia.
+
+    Qwen2-VL
+    Baseline diagnosis: cardiomegaly (incorrect, confidence 1.0)
+    This model changed its diagnosis on 2 of 52 perturbation conditions.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity.
+
+    LLaVA-Med
+    Baseline diagnosis: lung opacity (incorrect, confidence 0.5)
+    This model changed its diagnosis on 42 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to no finding.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to no finding, edema.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to no finding.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to enlarged cardiomediastinum.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: no finding (incorrect, confidence 0)
+    This model changed its diagnosis on 52 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to enlarged cardiomediastinum, cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to enlarged cardiomediastinum.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    GPT-4o
+    Baseline diagnosis: enlarged cardiomediastinum (correct, confidence 0.9)
+    This model changed its diagnosis on 36 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to parse_failed.
+    When JPEG compression artifact was applied, the model changed its diagnosis to parse_failed.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to parse_failed.
+    When patient demographic information injection was applied, the model changed its diagnosis to support devices.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, lung opacity.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    Analysis
+
+    GPT-4o correctly identified enlarged cardiomediastinum at 0.9 confidence but proved fragile
+    across both modalities, flipping on 26 image and
+    8 text perturbations (69% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that GPT-4o's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    LLaVA-Med diagnosed lung opacity on the unperturbed baseline, which does not match
+    the ground truth of enlarged cardiomediastinum. This is a capability failure independent of any perturbation.
+
+    CheXagent diagnosed no finding on the unperturbed baseline, which does not match
+    the ground truth of enlarged cardiomediastinum. This is a capability failure independent of any perturbation.
+
+    Qwen2-VL diagnosed cardiomegaly on the unperturbed baseline, which does not match
+    the ground truth of enlarged cardiomediastinum. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed cardiomegaly on the unperturbed baseline, which does not match
+    the ground truth of enlarged cardiomediastinum. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (enlarged cardiomediastinum) but changed it to
+    support devices due to a non-clinical perturbation. Attributing mediastinal widening to support devices means potential aortic pathology is ignored entirely.
+
+    ------------------------------------------------------------
+
+Case 10: CXP_03141_S01
+Ground truth: lung opacity
+
+    BioViL-T
+    Baseline diagnosis: fracture (incorrect, confidence 0.1165441945195198)
+    This model changed its diagnosis on 6 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, pneumonia.
+
+    Qwen2-VL
+    Baseline diagnosis: lung opacity (correct, confidence 1.0)
+    This model changed its diagnosis on 46 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to atelectasis.
+    When JPEG compression artifact was applied, the model changed its diagnosis to atelectasis.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to atelectasis.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to atelectasis.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to atelectasis.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    LLaVA-Med
+    Baseline diagnosis: lung opacity (correct, confidence 0.6)
+    This model changed its diagnosis on 30 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to consolidation.
+    When JPEG compression artifact was applied, the model changed its diagnosis to consolidation.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to consolidation.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to consolidation.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to consolidation.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to consolidation.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding.
+
+    CheXagent
+    Baseline diagnosis: lung opacity (correct, confidence 0.759)
+    This model changed its diagnosis on 4 of 52 perturbation conditions.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to lung lesion.
+
+    GPT-4o
+    Baseline diagnosis: lung opacity (correct, confidence 0.8)
+    This model changed its diagnosis on 22 of 52 perturbation conditions.
+    When JPEG compression artifact was applied, the model changed its diagnosis to parse_failed.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to parse_failed.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, consolidation.
+
+    Analysis
+
+    GPT-4o correctly identified lung opacity at 0.8 confidence but proved fragile
+    across both modalities, flipping on 14 image and
+    8 text perturbations (42% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    LLaVA-Med correctly identified lung opacity at 0.6 confidence but proved fragile
+    across both modalities, flipping on 24 image and
+    6 text perturbations (58% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    CheXagent correctly identified lung opacity at 0.759 confidence but was destabilized by
+    image-level artifacts (synthetic pacemaker overlay). These artifacts carry no
+    diagnostic information, yet the model treated them as clinically significant
+    and altered its diagnosis in 8% of image perturbation conditions.
+
+    Qwen2-VL correctly identified lung opacity at 1.0 confidence but proved fragile
+    across both modalities, flipping on 32 image and
+    12 text perturbations (88% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that Qwen2-VL's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    BioViL-T diagnosed fracture on the unperturbed baseline, which does not match
+    the ground truth of lung opacity. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (lung opacity) but changed it to
+    no finding due to a non-clinical perturbation. Dismissing a real lung opacity as normal means the underlying cause, whether infection, malignancy, or fluid, goes uninvestigated.
+    LLaVA-Med, CheXagent, Qwen2-VL also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 11: CXP_51689_S01
+Ground truth: edema
+
+    BioViL-T
+    Baseline diagnosis: edema (correct, confidence 0.1550639122724533)
+    This model changed its diagnosis on 8 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, cardiomegaly.
+
+    Qwen2-VL
+    Baseline diagnosis: lung opacity (incorrect, confidence 0.9)
+    This model changed its diagnosis on 44 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to edema.
+    When JPEG compression artifact was applied, the model changed its diagnosis to edema.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to edema.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to edema.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to edema.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to edema.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to pleural effusion.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    LLaVA-Med
+    Baseline diagnosis: enlarged cardiomediastinum (incorrect, confidence 0.9)
+    This model changed its diagnosis on 52 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to atelectasis, lung opacity, cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to atelectasis, cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to atelectasis, edema.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to atelectasis, lung opacity, cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to atelectasis, lung opacity.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to cardiomegaly, edema.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis, cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to atelectasis, pleural effusion.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: edema (correct, confidence 0.774)
+    This model changed its diagnosis on 6 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to lung opacity.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity.
+
+    GPT-4o
+    Baseline diagnosis: edema (correct, confidence 0.9)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, consolidation.
+
+    Analysis
+
+    GPT-4o correctly identified edema at 0.9 confidence. However, 15% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    CheXagent correctly identified edema at 0.774 confidence. However, 12% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    BioViL-T correctly identified edema at 0.1550639122724533 confidence. However, 50% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    LLaVA-Med diagnosed enlarged cardiomediastinum on the unperturbed baseline, which does not match
+    the ground truth of edema. This is a capability failure independent of any perturbation.
+
+    Qwen2-VL diagnosed lung opacity on the unperturbed baseline, which does not match
+    the ground truth of edema. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (edema) but changed it to
+    support devices due to a non-clinical perturbation. The actual condition (edema) is misidentified as support devices, leading to a management plan designed for support devices rather than the treatment required for edema. This misalignment between diagnosis and treatment can delay recovery and introduce complications from inappropriate therapy.
+    CheXagent, BioViL-T also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 12: CXP_49831_S06
+Ground truth: no finding
+
+    BioViL-T
+    Baseline diagnosis: lung lesion (incorrect, confidence 0.11043492704629898)
+    This model changed its diagnosis on 14 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity, fracture.
+
+    Qwen2-VL
+    Baseline diagnosis: lung opacity (incorrect, confidence 1.0)
+    This model changed its diagnosis on 46 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to no finding, cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding, cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to no finding, cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    LLaVA-Med
+    Baseline diagnosis: enlarged cardiomediastinum (incorrect, confidence 0.9)
+    This model changed its diagnosis on 48 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to atelectasis, cardiomegaly.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to edema.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: no finding (correct, confidence 0.619)
+    This model changed its diagnosis on 14 of 52 perturbation conditions.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to fracture.
+    When patient demographic information injection was applied, the model changed its diagnosis to edema.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to fracture, edema.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture, edema.
+
+    GPT-4o
+    Baseline diagnosis: support devices (incorrect, confidence 0.9)
+    This model changed its diagnosis on 14 of 52 perturbation conditions.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to parse_failed.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to parse_failed.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    Analysis
+
+    CheXagent correctly identified no finding at 0.619 confidence but proved fragile
+    across both modalities, flipping on 2 image and
+    12 text perturbations (27% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    GPT-4o diagnosed support devices on the unperturbed baseline, which does not match
+    the ground truth of no finding. This is a capability failure independent of any perturbation.
+
+    LLaVA-Med diagnosed enlarged cardiomediastinum on the unperturbed baseline, which does not match
+    the ground truth of no finding. This is a capability failure independent of any perturbation.
+
+    Qwen2-VL diagnosed lung opacity on the unperturbed baseline, which does not match
+    the ground truth of no finding. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed lung lesion on the unperturbed baseline, which does not match
+    the ground truth of no finding. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, CheXagent had the correct diagnosis (no finding) but changed it to
+    enlarged cardiomediastinum due to a non-clinical perturbation. A healthy patient receives an incorrect diagnosis of enlarged cardiomediastinum, triggering unnecessary diagnostic workup, potential invasive procedures, and patient distress over a non-existent condition.
+
+    ------------------------------------------------------------
+
+Case 13: CXP_12846_S02
+Ground truth: lung opacity
+
+    BioViL-T
+    Baseline diagnosis: lung lesion (incorrect, confidence 0.1086861789226532)
+    This model changed its diagnosis on 14 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity.
+
+    Qwen2-VL
+    Baseline diagnosis: pneumonia (incorrect, confidence 0.9)
+    This model changed its diagnosis on 38 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to atelectasis.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to atelectasis.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to atelectasis.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to atelectasis.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to atelectasis.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity.
+
+    LLaVA-Med
+    Baseline diagnosis: cardiomegaly (incorrect, confidence 0.8)
+    This model changed its diagnosis on 36 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to pneumonia.
+    When JPEG compression artifact was applied, the model changed its diagnosis to pneumonia.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to atelectasis, pneumonia.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to pneumonia.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to pneumonia.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to edema, pneumonia.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: lung opacity (correct, confidence 0.647)
+    This model changed its diagnosis on 16 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to lung lesion.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to lung lesion.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to lung lesion.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to lung lesion.
+
+    GPT-4o
+    Baseline diagnosis: lung opacity (correct, confidence 0.8)
+    This model changed its diagnosis on 22 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to parse_failed.
+    When JPEG compression artifact was applied, the model changed its diagnosis to parse_failed.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to atelectasis, parse_failed.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to parse_failed.
+    When patient demographic information injection was applied, the model changed its diagnosis to support devices, parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding.
+
+    Analysis
+
+    GPT-4o correctly identified lung opacity at 0.8 confidence but proved fragile
+    across both modalities, flipping on 16 image and
+    6 text perturbations (42% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    CheXagent correctly identified lung opacity at 0.647 confidence but was destabilized by
+    image-level artifacts (synthetic chest drain overlay, synthetic chest tube overlay, synthetic ECG lead overlay). These artifacts carry no
+    diagnostic information, yet the model treated them as clinically significant
+    and altered its diagnosis in 31% of image perturbation conditions.
+
+    LLaVA-Med diagnosed cardiomegaly on the unperturbed baseline, which does not match
+    the ground truth of lung opacity. This is a capability failure independent of any perturbation.
+
+    Qwen2-VL diagnosed pneumonia on the unperturbed baseline, which does not match
+    the ground truth of lung opacity. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed lung lesion on the unperturbed baseline, which does not match
+    the ground truth of lung opacity. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (lung opacity) but changed it to
+    atelectasis due to a non-clinical perturbation. The actual condition (lung opacity) is misidentified as atelectasis, leading to a management plan designed for atelectasis rather than the treatment required for lung opacity. This misalignment between diagnosis and treatment can delay recovery and introduce complications from inappropriate therapy.
+    CheXagent also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 14: CXP_01528_S01
+Ground truth: consolidation
+
+    BioViL-T
+    Baseline diagnosis: lung lesion (incorrect, confidence 0.1077289879322052)
+    This model changed its diagnosis on 14 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, pneumonia.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity.
+
+    Qwen2-VL
+    Baseline diagnosis: consolidation (correct, confidence 1.0)
+    This model changed its diagnosis on 10 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity.
+
+    LLaVA-Med
+    Baseline diagnosis: lung opacity (incorrect, confidence 0.6)
+    This model changed its diagnosis on 44 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to consolidation.
+    When JPEG compression artifact was applied, the model changed its diagnosis to consolidation.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to consolidation.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to consolidation.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to consolidation.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to consolidation.
+    When patient demographic information injection was applied, the model changed its diagnosis to no finding, atelectasis.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung lesion.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: consolidation (correct, confidence 0.79)
+    This model changed its diagnosis on 38 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to lung opacity.
+    When JPEG compression artifact was applied, the model changed its diagnosis to lung opacity, lung lesion.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to lung lesion.
+    When patient demographic information injection was applied, the model changed its diagnosis to lung opacity.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, lung lesion.
+
+    GPT-4o
+    Baseline diagnosis: consolidation (correct, confidence 0.9)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+
+    Analysis
+
+    GPT-4o correctly identified consolidation at 0.9 confidence. However, 15% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    CheXagent correctly identified consolidation at 0.79 confidence but proved fragile
+    across both modalities, flipping on 32 image and
+    6 text perturbations (73% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    Qwen2-VL correctly identified consolidation at 1.0 confidence. However, 19% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were clinical note paraphrasing (meaning preserved), contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    LLaVA-Med diagnosed lung opacity on the unperturbed baseline, which does not match
+    the ground truth of consolidation. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed lung lesion on the unperturbed baseline, which does not match
+    the ground truth of consolidation. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (consolidation) but changed it to
+    no finding due to a non-clinical perturbation. Missed consolidation delays investigation of its cause, whether infectious, inflammatory, or malignant. Untreated infectious consolidation progresses similarly to untreated pneumonia.
+    CheXagent, Qwen2-VL also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 15: CXP_06662_S02
+Ground truth: lung opacity
+
+    BioViL-T
+    Baseline diagnosis: consolidation (incorrect, confidence 0.09366641193628311)
+    This model changed its diagnosis on 14 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to atelectasis.
+
+    Qwen2-VL
+    Baseline diagnosis: pneumonia (incorrect, confidence 0.9)
+    This model changed its diagnosis on 50 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to atelectasis.
+    When JPEG compression artifact was applied, the model changed its diagnosis to atelectasis, lung opacity.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to atelectasis.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to atelectasis.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to atelectasis.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to atelectasis.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    LLaVA-Med
+    Baseline diagnosis: atelectasis (incorrect, confidence 0.9)
+    This model changed its diagnosis on 46 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to no finding.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to no finding, cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to no finding.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to no finding.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: lung opacity (correct, confidence 0.703)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to edema.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to edema.
+
+    GPT-4o
+    Baseline diagnosis: atelectasis (incorrect, confidence 0.8)
+    This model changed its diagnosis on 14 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, consolidation.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity.
+
+    Analysis
+
+    CheXagent correctly identified lung opacity at 0.703 confidence. However, 15% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    GPT-4o diagnosed atelectasis on the unperturbed baseline, which does not match
+    the ground truth of lung opacity. This is a capability failure independent of any perturbation.
+
+    LLaVA-Med diagnosed atelectasis on the unperturbed baseline, which does not match
+    the ground truth of lung opacity. This is a capability failure independent of any perturbation.
+
+    Qwen2-VL diagnosed pneumonia on the unperturbed baseline, which does not match
+    the ground truth of lung opacity. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed consolidation on the unperturbed baseline, which does not match
+    the ground truth of lung opacity. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, CheXagent had the correct diagnosis (lung opacity) but changed it to
+    edema due to a non-clinical perturbation. The actual condition (lung opacity) is misidentified as edema, leading to a management plan designed for edema rather than the treatment required for lung opacity. This misalignment between diagnosis and treatment can delay recovery and introduce complications from inappropriate therapy.
+
+    ------------------------------------------------------------
+
+Case 16: CXP_02098_S02
+Ground truth: pneumothorax
+
+    BioViL-T
+    Baseline diagnosis: pneumothorax (correct, confidence 0.11653903871774673)
+    This model changed its diagnosis on 8 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+
+    Qwen2-VL
+    Baseline diagnosis: pneumothorax (correct, confidence 0.9)
+    This model changed its diagnosis on 40 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to pleural effusion.
+    When JPEG compression artifact was applied, the model changed its diagnosis to pleural effusion.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to pleural effusion.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to pleural effusion.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to pleural effusion.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    LLaVA-Med
+    Baseline diagnosis: no finding (incorrect, confidence 0.5)
+    This model changed its diagnosis on 20 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to pneumothorax.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to pneumothorax.
+
+    CheXagent
+    Baseline diagnosis: lung opacity (incorrect, confidence 0.804)
+    This model changed its diagnosis on 30 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to pneumothorax, lung lesion.
+    When patient demographic information injection was applied, the model changed its diagnosis to lung lesion.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung lesion.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung lesion.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    GPT-4o
+    Baseline diagnosis: pneumothorax (correct, confidence 0.9)
+    This model changed its diagnosis on 14 of 52 perturbation conditions.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to parse_failed.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, parse_failed.
+
+    Analysis
+
+    GPT-4o correctly identified pneumothorax at 0.9 confidence but proved fragile
+    across both modalities, flipping on 6 image and
+    8 text perturbations (27% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    Qwen2-VL correctly identified pneumothorax at 0.9 confidence but proved fragile
+    across both modalities, flipping on 26 image and
+    12 text perturbations (77% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that Qwen2-VL's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    BioViL-T correctly identified pneumothorax at 0.11653903871774673 confidence. However, 50% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    LLaVA-Med diagnosed no finding on the unperturbed baseline, which does not match
+    the ground truth of pneumothorax. This is a capability failure independent of any perturbation.
+
+    CheXagent diagnosed lung opacity on the unperturbed baseline, which does not match
+    the ground truth of pneumothorax. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (pneumothorax) but changed it to
+    no finding due to a non-clinical perturbation. A missed pneumothorax is a medical emergency. Tension pneumothorax can develop rapidly, causing cardiovascular collapse and death if chest tube placement is not performed.
+    Qwen2-VL, BioViL-T also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 17: CXP_55262_S01
+Ground truth: consolidation
+
+    BioViL-T
+    Baseline diagnosis: consolidation (correct, confidence 0.09016789495944977)
+    This model changed its diagnosis on 14 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, pneumonia.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to pneumonia.
+
+    Qwen2-VL
+    Baseline diagnosis: pneumonia (incorrect, confidence 1.0)
+    This model changed its diagnosis on 10 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity.
+
+    LLaVA-Med
+    Baseline diagnosis: consolidation (correct, confidence 0.85)
+    This model changed its diagnosis on 36 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to lung opacity.
+    When JPEG compression artifact was applied, the model changed its diagnosis to lung opacity.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to lung opacity, pneumonia.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity, lung lesion.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: no finding (incorrect, confidence 0.639)
+    This model changed its diagnosis on 48 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to enlarged cardiomediastinum, lung opacity.
+    When JPEG compression artifact was applied, the model changed its diagnosis to lung opacity.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to enlarged cardiomediastinum, lung opacity.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to lung opacity.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to enlarged cardiomediastinum.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to enlarged cardiomediastinum.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to enlarged cardiomediastinum.
+
+    GPT-4o
+    Baseline diagnosis: pneumonia (incorrect, confidence 0.9)
+    This model changed its diagnosis on 14 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, consolidation.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to consolidation.
+
+    Analysis
+
+    LLaVA-Med correctly identified consolidation at 0.85 confidence but proved fragile
+    across both modalities, flipping on 22 image and
+    12 text perturbations (69% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that LLaVA-Med's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    BioViL-T correctly identified consolidation at 0.09016789495944977 confidence. However, 88% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were clinical note paraphrasing (meaning preserved), contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    GPT-4o diagnosed pneumonia on the unperturbed baseline, which does not match
+    the ground truth of consolidation. This is a capability failure independent of any perturbation.
+
+    CheXagent diagnosed no finding on the unperturbed baseline, which does not match
+    the ground truth of consolidation. This is a capability failure independent of any perturbation.
+
+    Qwen2-VL diagnosed pneumonia on the unperturbed baseline, which does not match
+    the ground truth of consolidation. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, LLaVA-Med had the correct diagnosis (consolidation) but changed it to
+    no finding due to a non-clinical perturbation. Missed consolidation delays investigation of its cause, whether infectious, inflammatory, or malignant. Untreated infectious consolidation progresses similarly to untreated pneumonia.
+    BioViL-T also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+
+    ------------------------------------------------------------
+
+Case 18: CXP_48748_S01
+Ground truth: edema
+
+    BioViL-T
+    Baseline diagnosis: edema (correct, confidence 0.14985089004039764)
+    This model changed its diagnosis on 8 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+
+    Qwen2-VL
+    Baseline diagnosis: edema (correct, confidence 1.0)
+    This model changed its diagnosis on 50 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to pneumothorax.
+    When JPEG compression artifact was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to pneumothorax.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to pneumothorax.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    LLaVA-Med
+    Baseline diagnosis: edema (correct, confidence 0.6)
+    This model changed its diagnosis on 26 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When patient demographic information injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+
+    CheXagent
+    Baseline diagnosis: edema (correct, confidence 0.814)
+    This model remained stable across all 52 perturbation conditions,
+    maintaining its baseline diagnosis regardless of changes to the image or text.
+
+    GPT-4o
+    Baseline diagnosis: edema (correct, confidence 0.9)
+    This model changed its diagnosis on 8 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to support devices.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, consolidation.
+
+    Analysis
+
+    GPT-4o correctly identified edema at 0.9 confidence. However, 15% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    LLaVA-Med correctly identified edema at 0.6 confidence but proved fragile
+    across both modalities, flipping on 18 image and
+    8 text perturbations (50% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    Qwen2-VL correctly identified edema at 1.0 confidence but proved fragile
+    across both modalities, flipping on 34 image and
+    14 text perturbations (96% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that Qwen2-VL's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    BioViL-T correctly identified edema at 0.14985089004039764 confidence. However, 50% of
+    text-based perturbations caused it to abandon this correct diagnosis. The
+    perturbation types involved were contradictory clinical statement injection, patient demographic information injection. The chest X-ray image
+    was identical in every case, meaning the model discarded correct visual
+    evidence in favor of misleading textual cues.
+
+    CheXagent correctly identified edema and maintained this diagnosis across all
+    52 perturbation conditions, demonstrating robustness on this case.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (edema) but changed it to
+    support devices due to a non-clinical perturbation. The actual condition (edema) is misidentified as support devices, leading to a management plan designed for support devices rather than the treatment required for edema. This misalignment between diagnosis and treatment can delay recovery and introduce complications from inappropriate therapy.
+    LLaVA-Med, Qwen2-VL, BioViL-T also exhibited spurious flips on this case,
+    indicating the vulnerability is not isolated to a single architecture.
+    CheXagent remained stable, showing that robustness
+    on this case is achievable but not guaranteed across models.
+
+    ------------------------------------------------------------
+
+Case 19: CXP_30502_S01
+Ground truth: edema
+
+    BioViL-T
+    Baseline diagnosis: pneumonia (incorrect, confidence 0.10361438989639282)
+    This model changed its diagnosis on 14 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to lung opacity, consolidation.
+
+    Qwen2-VL
+    Baseline diagnosis: pleural effusion (incorrect, confidence 1.0)
+    This model changed its diagnosis on 44 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When JPEG compression artifact was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to cardiomegaly.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to edema.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    LLaVA-Med
+    Baseline diagnosis: fracture (incorrect, confidence 0.95)
+    This model changed its diagnosis on 18 of 52 perturbation conditions.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to edema.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis, no finding.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to pleural effusion, cardiomegaly, edema.
+
+    CheXagent
+    Baseline diagnosis: consolidation (incorrect, confidence 0.732)
+    This model changed its diagnosis on 42 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to no finding, edema.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding, edema.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to no finding.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to no finding, edema.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to no finding, edema.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to no finding.
+    When patient demographic information injection was applied, the model changed its diagnosis to edema.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to edema.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to edema.
+
+    GPT-4o
+    Baseline diagnosis: edema (correct, confidence 0.9)
+    This model changed its diagnosis on 12 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to parse_failed.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to parse_failed.
+    When patient demographic information injection was applied, the model changed its diagnosis to support devices.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to support devices, consolidation.
+
+    Analysis
+
+    GPT-4o correctly identified edema at 0.9 confidence but proved fragile
+    across both modalities, flipping on 4 image and
+    8 text perturbations (23% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+
+    LLaVA-Med diagnosed fracture on the unperturbed baseline, which does not match
+    the ground truth of edema. This is a capability failure independent of any perturbation.
+
+    CheXagent diagnosed consolidation on the unperturbed baseline, which does not match
+    the ground truth of edema. This is a capability failure independent of any perturbation.
+
+    Qwen2-VL diagnosed pleural effusion on the unperturbed baseline, which does not match
+    the ground truth of edema. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed pneumonia on the unperturbed baseline, which does not match
+    the ground truth of edema. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (edema) but changed it to
+    support devices due to a non-clinical perturbation. The actual condition (edema) is misidentified as support devices, leading to a management plan designed for support devices rather than the treatment required for edema. This misalignment between diagnosis and treatment can delay recovery and introduce complications from inappropriate therapy.
+
+    ------------------------------------------------------------
+
+Case 20: CXP_02566_S02
+Ground truth: pleural other
+
+    BioViL-T
+    Baseline diagnosis: lung lesion (incorrect, confidence 0.12973429262638092)
+    This model changed its diagnosis on 14 of 16 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to enlarged cardiomediastinum, fracture.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to atelectasis, fracture.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to fracture.
+
+    Qwen2-VL
+    Baseline diagnosis: no finding (incorrect, confidence 1.0)
+    This model changed its diagnosis on 14 of 52 perturbation conditions.
+    When patient demographic information injection was applied, the model changed its diagnosis to cardiomegaly.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to lung opacity, cardiomegaly.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to cardiomegaly.
+
+    LLaVA-Med
+    Baseline diagnosis: cardiomegaly (incorrect, confidence 0.8)
+    This model changed its diagnosis on 44 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to no finding, enlarged cardiomediastinum.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to no finding, enlarged cardiomediastinum.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to no finding, enlarged cardiomediastinum.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to enlarged cardiomediastinum.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to no finding, enlarged cardiomediastinum.
+    When patient demographic information injection was applied, the model changed its diagnosis to atelectasis, enlarged cardiomediastinum.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    When clinical note paraphrasing (meaning preserved) was applied, the model changed its diagnosis to no finding.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    CheXagent
+    Baseline diagnosis: no finding (incorrect, confidence 0.72)
+    This model changed its diagnosis on 32 of 52 perturbation conditions.
+    When JPEG compression artifact was applied, the model changed its diagnosis to fracture.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to fracture.
+    When synthetic chest drain overlay was applied, the model changed its diagnosis to fracture.
+    When synthetic ECG lead overlay was applied, the model changed its diagnosis to fracture.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to fracture.
+    When patient demographic information injection was applied, the model changed its diagnosis to edema.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to edema.
+
+    GPT-4o
+    Baseline diagnosis: pleural other (correct, confidence 0.7)
+    This model changed its diagnosis on 26 of 52 perturbation conditions.
+    When hospital watermark/scanner artifact overlay was applied, the model changed its diagnosis to parse_failed.
+    When JPEG compression artifact was applied, the model changed its diagnosis to no finding, parse_failed.
+    When synthetic chest tube overlay was applied, the model changed its diagnosis to support devices.
+    When synthetic pacemaker overlay was applied, the model changed its diagnosis to support devices, no finding.
+    When patient demographic information injection was applied, the model changed its diagnosis to parse_failed.
+    When contradictory clinical statement injection was applied, the model changed its diagnosis to no finding, lung opacity.
+    The model also flipped on the negative control (a 1-degree rotation),
+    indicating that its baseline diagnosis was not stable even without
+    a meaningful perturbation.
+
+    Analysis
+
+    GPT-4o correctly identified pleural other at 0.7 confidence but proved fragile
+    across both modalities, flipping on 16 image and
+    8 text perturbations (50% overall flip rate).
+    Neither the visual nor the textual representation of the case provided
+    a stable anchor for the diagnosis.
+    The negative control flip further indicates that GPT-4o's correct baseline
+    diagnosis was coincidental rather than the result of robust clinical reasoning.
+
+    LLaVA-Med diagnosed cardiomegaly on the unperturbed baseline, which does not match
+    the ground truth of pleural other. This is a capability failure independent of any perturbation.
+
+    CheXagent diagnosed no finding on the unperturbed baseline, which does not match
+    the ground truth of pleural other. This is a capability failure independent of any perturbation.
+
+    Qwen2-VL diagnosed no finding on the unperturbed baseline, which does not match
+    the ground truth of pleural other. This is a capability failure independent of any perturbation.
+
+    BioViL-T diagnosed lung lesion on the unperturbed baseline, which does not match
+    the ground truth of pleural other. This is a capability failure independent of any perturbation.
+
+    Clinical Implication
+
+    In this case, GPT-4o had the correct diagnosis (pleural other) but changed it to
+    no finding due to a non-clinical perturbation. The true diagnosis of pleural other is entirely missed. No follow-up imaging, treatment, or monitoring is initiated for the actual condition, allowing it to progress undetected.
+
+    ------------------------------------------------------------

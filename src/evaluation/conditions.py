@@ -58,6 +58,23 @@ CONDITIONS = {
         oracle_steps=5,
         description="Oracle sensitivity condition: five steps of ground-truth context.",
     ),
+    "window_4k": Condition(
+        name="window_4k",
+        mode="image_text",
+        description="Sliding window baseline (4K characters).",
+    ),
+
+    "window_8k": Condition(
+        name="window_8k",
+        mode="image_text",
+        description="Sliding window baseline (8K characters).",
+    ),
+
+    "window_16k": Condition(
+        name="window_16k",
+        mode="image_text",
+        description="Sliding window baseline (16K characters).",
+    ),
 }
 
 for perturbation_type, variant in IMAGE_CONDITIONS:
@@ -117,11 +134,19 @@ def get_condition(name: str) -> Condition:
 
 
 def apply_condition(case: dict, condition: Condition, registry=None) -> dict:
-    from src.perturbations.image_perturbations import apply_perturbation
-
     conditioned = dict(case)
     image = case["image"].copy().convert("RGB")
     text = case["text"]
+    
+     # 🔹 Sliding window baseline
+    if condition.name.startswith("window_"):
+        if condition.name == "window_4k":
+            text = text[:4000]
+        elif condition.name == "window_8k":
+            text = text[:8000]
+        elif condition.name == "window_16k":
+            text = text[:16000]
+
 
     if condition.image_perturbation != "none":
         img_gray = np.array(image.convert("L"))

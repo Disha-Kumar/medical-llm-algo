@@ -10,8 +10,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-import cv2
 import numpy as np
+import cv2
 from PIL import Image
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -51,6 +51,20 @@ DEFAULT_VARIANTS = [
     ("text",  "paraphrase",       "v1", False),
     ("text",  "paraphrase",       "v2", False),
     ("text",  "paraphrase",       "v3", False),
+    ("text", "formatting", "v1", False),
+    ("text", "formatting", "v2", False),
+    ("text", "formatting", "v3", False),
+
+    ("text", "null", "v1", False),
+    ("text", "null", "v2", False),
+    ("text", "null", "v3", False),
+
+    ("text_only", "none", "v1", False),
+    ("text_only", "none", "v2", False),
+    ("text_only", "none", "v3", False),
+    ("image_only", "none", "v1", False),
+    ("image_only", "none", "v2", False),
+    ("image_only", "none", "v3", False),
 ]
 
 
@@ -146,6 +160,47 @@ def generate_variants_for_case(case, output_dir, variants, dataset_name, dry_run
     for modality, perturb_type, variant, needs_pm in variants:
         perturb_label = _perturbation_label(perturb_type)
 
+    # ✅ ABLATION CASES (CORRECT PLACE)
+        if modality == "text_only":
+            perturbed_text = base_text
+
+            subdir = output_dir / "perturbed" / "text_only"
+            filename = f"{case_id}_text_only_{variant}"
+            out_path = subdir / f"{filename}.json"
+
+            if not dry_run:
+                subdir.mkdir(parents=True, exist_ok=True)
+                report = _make_report_json(
+                    case_id, "text_only", "none", variant, dataset_name,
+                    base_text, base_text, ground_truth,
+                    "Text only (no image)"
+                )
+                with open(out_path, "w") as f:
+                    json.dump(report, f, indent=2)
+
+            continue
+
+
+        elif modality == "image_only":
+            perturbed_text = ""
+
+            subdir = output_dir / "perturbed" / "image_only"
+            filename = f"{case_id}_image_only_{variant}"
+            out_path = subdir / f"{filename}.json"
+
+            if not dry_run:
+                subdir.mkdir(parents=True, exist_ok=True)
+                report = _make_report_json(
+                    case_id, "image_only", "none", variant, dataset_name,
+                    base_text, "", ground_truth,
+                    "Image only (no text)"
+                )
+                with open(out_path, "w") as f:
+                    json.dump(report, f, indent=2)
+
+            continue
+        
+        
         if modality == "image":
             if perturb_label == "drains":
                 filename = f"{case_id}_image_{perturb_label}_{perturb_type}_{variant}"

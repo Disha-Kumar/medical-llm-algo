@@ -137,8 +137,7 @@ class CheXAgentPipeline(MedicalVLM):
             return 0.5
 
         confidence = sum(probs) / len(probs)
-        confidence = max(0.0, min(1.0, confidence))
-
+        confidence = max(0.35, min(1.0, confidence))
         return round(confidence, 3)
 
     def _normalize_output(

@@ -37,23 +37,20 @@ class CheXAgentPipeline(MedicalVLM):
         print("CheXagent loaded.", flush=True)
 
     def _make_prompt(self, clinical_note: str) -> str:
-        note = clinical_note.strip()[:800] or "No clinical note provided."
+        note = clinical_note.strip()[:500] or "No clinical note provided."
         if self.mode == "image_only":
-            note = "No clinical note available. Use image findings only."
+            note = "Use the image only."
         elif self.mode == "text_only":
-            note = f"No image available. Use clinical note only. {note}"
+            note = f"Use the clinical note only: {note}"
         return (
-            f"You are an expert radiologist analyzing a chest X-ray for research.\n"
+            "Analyze this chest X-ray research case.\n"
             f"{note}\n\n"
-            f"Choose exactly one diagnosis from this list:\n"
-            f"enlarged cardiomediastinum, cardiomegaly, lung opacity, lung lesion, "
-            f"edema, consolidation, pneumonia, atelectasis, pneumothorax, "
-            f"pleural effusion, pleural other, fracture, support devices, no finding\n\n"
-            f"ONLY write one exact label. Do not describe findings in the DIAGNOSIS line.\n\n"
-            f"Respond in exactly this format:\n"
-            f"DIAGNOSIS: <one exact label from the list>\n"
-            f"CONFIDENCE: <number between 0.0 and 1.0>\n"
-            f"EXPLANATION: <one to two sentences citing specific findings>\n"
+            "Return exactly:\n"
+            "DIAGNOSIS: one of no finding, atelectasis, cardiomegaly, consolidation, edema, "
+            "pleural effusion, pneumonia, pneumothorax, enlarged cardiomediastinum, lung opacity, "
+            "lung lesion, pleural other, fracture, support devices\n"
+            "CONFIDENCE: a number from 0.0 to 1.0\n"
+            "EXPLANATION: one short sentence\n"
         )
 
     def predict(self, image: Image.Image, text: str,
@@ -89,6 +86,7 @@ class CheXAgentPipeline(MedicalVLM):
             output_ids = self.model.generate(
                 input_ids,
                 max_new_tokens=self.max_new_tokens,
+                min_new_tokens=10,
                 do_sample=False,
                 num_beams=1,
                 temperature=1.0,

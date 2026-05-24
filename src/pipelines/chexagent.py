@@ -27,7 +27,7 @@ LABELS_14 = [
 class CheXAgentPipeline(MedicalVLM):
     MODEL_ID = os.environ.get(
         "CHEXAGENT_MODEL_ID",
-        "StanfordAIMI/CheXagent-2-3b"
+        "StanfordAIMI/CheXagent-2-3b",
     )
 
     def __init__(self, device: str = "auto", mode: str = "image_text"):
@@ -35,7 +35,7 @@ class CheXAgentPipeline(MedicalVLM):
 
         dtype_name = os.environ.get(
             "CHEXAGENT_DTYPE",
-            "bfloat16"
+            "bfloat16",
         ).lower()
 
         if dtype_name in {"bf16", "bfloat16"}:
@@ -48,12 +48,13 @@ class CheXAgentPipeline(MedicalVLM):
         self.max_new_tokens = int(
             os.environ.get(
                 "CHEXAGENT_MAX_NEW_TOKENS",
-                "32"
+                "64",
             )
         )
 
         print(
-            f"CheXagent runtime: model={self.MODEL_ID}, "
+            f"CheXagent runtime: "
+            f"model={self.MODEL_ID}, "
             f"mode={self.mode}, "
             f"max_new_tokens={self.max_new_tokens}",
             flush=True,
@@ -90,50 +91,22 @@ class CheXAgentPipeline(MedicalVLM):
             note = f"No image available. {note}"
 
         return (
-            f"Chest X-ray classification task.\n"
+            "Chest X-ray analysis task.\n"
             f"{note}\n\n"
-            f"You MUST respond in EXACTLY this format:\n"
-            f"DIAGNOSIS: <one label>\n"
-            f"CONFIDENCE: <0.0 to 1.0>\n"
-            f"EXPLANATION: <one short sentence>\n\n"
-            f"Valid labels:\n"
-            f"enlarged cardiomediastinum\n"
-            f"cardiomegaly\n"
-            f"lung opacity\n"
-            f"lung lesion\n"
-            f"edema\n"
-            f"consolidation\n"
-            f"pneumonia\n"
-            f"atelectasis\n"
-            f"pneumothorax\n"
-            f"pleural effusion\n"
-            f"pleural other\n"
-            f"fracture\n"
-            f"support devices\n"
-            f"no finding\n\n"
-            f"Return ONLY one diagnosis label.\n"
-            f"Do not output multiple labels.\n"
-            f"Do not output markdown.\n"
-        )
-
-    def _normalize_output(self, raw: str) -> str:
-        raw_lower = raw.lower()
-
-        if "diagnosis:" in raw_lower:
-            return raw
-
-        for label in LABELS_14:
-            if label in raw_lower:
-                return (
-                    f"DIAGNOSIS: {label}\n"
-                    f"CONFIDENCE: 0.5\n"
-                    f"EXPLANATION: Label extracted from model output.\n"
-                )
-
-        return (
-            "DIAGNOSIS: no finding\n"
-            "CONFIDENCE: 0.0\n"
-            "EXPLANATION: Failed to extract label.\n"
+            "You MUST respond in EXACTLY this format:\n"
+            "DIAGNOSIS: <one label>\n"
+            "CONFIDENCE: <0.0 to 1.0>\n"
+            "EXPLANATION: <one sentence>\n\n"
+            "Valid labels: enlarged cardiomediastinum, "
+            "cardiomegaly, lung opacity, lung lesion, edema, "
+            "consolidation, pneumonia, atelectasis, "
+            "pneumothorax, pleural effusion, pleural other, "
+            "fracture, support devices, no finding\n\n"
+            "Example:\n"
+            "DIAGNOSIS: cardiomegaly\n"
+            "CONFIDENCE: 0.9\n"
+            "EXPLANATION: Cardiac silhouette is enlarged "
+            "beyond normal limits.\n"
         )
 
     def predict(
@@ -141,7 +114,7 @@ class CheXAgentPipeline(MedicalVLM):
         image: Image.Image,
         text: str,
         case_id: str,
-        ground_truth: str
+        ground_truth: str,
     ) -> ModelOutput:
 
         prompt = self._make_prompt(text)
@@ -157,12 +130,14 @@ class CheXAgentPipeline(MedicalVLM):
             else:
                 with tempfile.NamedTemporaryFile(
                     suffix=".png",
-                    delete=False
+                    delete=False,
                 ) as tmp:
 
-                    image.convert("RGB").resize((512, 512)).save(
+                    image.convert("RGB").resize(
+                        (512, 512)
+                    ).save(
                         tmp.name,
-                        format="PNG"
+                        format="PNG",
                     )
 
                     tmp_path = tmp.name
@@ -175,15 +150,17 @@ class CheXAgentPipeline(MedicalVLM):
             conv = [
                 {
                     "from": "system",
-                    "value": "You are a radiology assistant."
+                    "value": "You are a helpful radiology assistant.",
                 },
                 {
                     "from": "human",
-                    "value": query
+                    "value": query,
                 },
             ]
 
-            device = next(self.model.parameters()).device
+            device = next(
+                self.model.parameters()
+            ).device
 
             input_ids = self.tokenizer.apply_chat_template(
                 conv,
@@ -208,26 +185,52 @@ class CheXAgentPipeline(MedicalVLM):
                     pad_token_id=self.tokenizer.eos_token_id,
                 )
 
-                print("  Generation complete.", flush=True)
-
-            generated_ids = output_ids[0][input_ids.shape[1]:]
+                print(
+                    "  Generation complete.",
+                    flush=True,
+                )
 
             raw = self.tokenizer.decode(
-                generated_ids,
-                skip_special_tokens=True
+                output_ids[0][input_ids.shape[1]:],
+                skip_special_tokens=True,
             ).strip()
 
             raw = " ".join(raw.split())
 
-            print(f"  RAW: {repr(raw[:300])}", flush=True)
+            print(
+                f"  RAW: {repr(raw[:300])}",
+                flush=True,
+            )
 
-            raw = self._normalize_output(raw)
+            if "DIAGNOSIS:" not in raw:
+                raw_lower = raw.lower()
+
+                found = False
+
+                for label in LABELS_14:
+                    if label in raw_lower:
+                        raw = (
+                            f"DIAGNOSIS: {label}\n"
+                            f"CONFIDENCE: 0.5\n"
+                            f"EXPLANATION: "
+                            f"Label extracted from model output.\n"
+                        )
+
+                        found = True
+                        break
+
+                if not found:
+                    raw = (
+                        "DIAGNOSIS: no finding\n"
+                        "CONFIDENCE: 0.0\n"
+                        "EXPLANATION: Failed to extract label.\n"
+                    )
 
             return parse_output(
                 raw,
                 "chexagent",
                 case_id,
-                ground_truth
+                ground_truth,
             )
 
         finally:

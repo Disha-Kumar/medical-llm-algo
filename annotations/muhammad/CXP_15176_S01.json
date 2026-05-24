@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_15176_S01",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -16,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "contradiction_v1, demographic_v1, chest_tube_v1, chest_drain_v2, chest_drain_v3",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said fracture vs ground truth no finding). GPT-4o unstable across both image (12 flips) and text (6 flips). LLaVA-Med unstable across both image (14 flips) and text (8 flips). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth no finding)"
+    "trigger_perturbations": "contradiction_v1, demographic_v1, chest_tube_v1, chest_tube_v3, pacemaker_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said fracture vs ground truth no finding). chexagent flipped on image perturbations (chest tube, ecg leads, pacemaker) but stable on text. GPT-4o unstable across both image (12 flips) and text (6 flips). LLaVA-Med unstable across both image (14 flips) and text (8 flips). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth no finding)"
 }

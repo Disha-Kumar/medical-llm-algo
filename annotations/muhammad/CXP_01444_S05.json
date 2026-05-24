@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_01444_S05",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -16,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "demographic_v1, contradiction_v1, contradiction_v2, demographic_v2, chest_tube_v3",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pneumothorax vs ground truth pleural other). GPT-4o unstable across both image (16 flips) and text (8 flips). LLaVA-Med unstable across both image (18 flips) and text (12 flips). LLaVA-Med baseline was already wrong (said enlarged cardiomediastinum vs ground truth pleural other). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (6). Qwen2-VL baseline was already wrong (said pleural effusion vs ground truth pleural other)"
+    "trigger_perturbations": "demographic_v1, contradiction_v1, contradiction_v2, demographic_v2, watermark_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pneumothorax vs ground truth pleural other). chexagent flipped heavily on image perturbations (26 flips) with some text flips (8). chexagent baseline was already wrong (said lung lesion vs ground truth pleural other). GPT-4o unstable across both image (16 flips) and text (8 flips). LLaVA-Med unstable across both image (18 flips) and text (12 flips). LLaVA-Med baseline was already wrong (said enlarged cardiomediastinum vs ground truth pleural other). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (6). Qwen2-VL baseline was already wrong (said pleural effusion vs ground truth pleural other)"
 }

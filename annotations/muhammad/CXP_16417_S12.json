@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_16417_S12",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -16,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "contradiction_v2, demographic_v1, demographic_v2, contradiction_v1, jpeg_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). GPT-4o flipped mainly on text perturbations (8 flips) with some image flips (2). GPT-4o baseline was already wrong (said support devices vs ground truth pleural other). LLaVA-Med unstable across both image (20 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said edema vs ground truth pleural other). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth pleural other)"
+    "trigger_perturbations": "contradiction_v2, demographic_v1, demographic_v2, contradiction_v1, chest_tube_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). chexagent flipped on image perturbations (chest drain, chest tube, pacemaker) but stable on text. chexagent baseline was already wrong (said no finding vs ground truth pleural other). GPT-4o flipped mainly on text perturbations (8 flips) with some image flips (2). GPT-4o baseline was already wrong (said support devices vs ground truth pleural other). LLaVA-Med unstable across both image (20 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said edema vs ground truth pleural other). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth pleural other)"
 }

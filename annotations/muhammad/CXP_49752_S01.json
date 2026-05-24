@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_49752_S01",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -17,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, contradiction_v2, demographic_v2, paraphrase_v3, contradiction_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). GPT-4o baseline was already wrong (said support devices vs ground truth fracture). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). LLaVA-Med baseline was already wrong (said no finding vs ground truth fracture). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said no finding vs ground truth fracture)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). chexagent flipped on image perturbations (chest tube, jpeg) but stable on text. GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). GPT-4o baseline was already wrong (said support devices vs ground truth fracture). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). LLaVA-Med baseline was already wrong (said no finding vs ground truth fracture). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said no finding vs ground truth fracture)"
 }

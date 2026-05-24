@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_22504_S01",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -16,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "demographic_v1, contradiction_v2, pacemaker_v3, demographic_v2, watermark_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said fracture vs ground truth lung opacity). GPT-4o flipped heavily on image perturbations (16 flips) with some text flips (4). GPT-4o baseline was already wrong (said no finding vs ground truth lung opacity). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med baseline was already wrong (said no finding vs ground truth lung opacity). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (4). Qwen2-VL baseline was already wrong (said no finding vs ground truth lung opacity)"
+    "trigger_perturbations": "demographic_v1, contradiction_v2, pacemaker_v3, watermark_v2, chest_tube_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said fracture vs ground truth lung opacity). chexagent flipped on image perturbations (chest tube, pacemaker, watermark) but stable on text. chexagent baseline was already wrong (said no finding vs ground truth lung opacity). GPT-4o flipped heavily on image perturbations (16 flips) with some text flips (4). GPT-4o baseline was already wrong (said no finding vs ground truth lung opacity). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med baseline was already wrong (said no finding vs ground truth lung opacity). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (4). Qwen2-VL baseline was already wrong (said no finding vs ground truth lung opacity)"
 }

@@ -225,6 +225,232 @@
       }
     }
   },
+  "chexagent": {
+    "display_name": "CheXagent (8B)",
+    "param_count": 8000000000,
+    "param_label": "8B",
+    "n_cases": 657,
+    "n_perturbations": 17082,
+    "accuracy": 0.2876712328767123,
+    "flip_rate": 0.28374897552979744,
+    "avg_conf_delta": 0.045502927057721576,
+    "hallucination_rate": 0.0641025641025641,
+    "parse_fail_rate": 0.0,
+    "avg_baseline_conf": 0.7902039573820395,
+    "neg_control_flip_rate": 0.2009132420091324,
+    "avg_scs": 0.9834737385190957,
+    "image_only_accuracy": 0.2572298325722983,
+    "text_only_accuracy": 0.2846270928462709,
+    "cat_flip_rates": {
+      "Image": 0.26729240656181297,
+      "Control": 0.2009132420091324,
+      "Text": 0.3378995433789954
+    },
+    "per_condition": {
+      "watermark_v1": {
+        "flip_rate": 0.2207001522070015,
+        "n": 657,
+        "avg_conf_delta": 0.03753272450532724
+      },
+      "watermark_v2": {
+        "flip_rate": 0.2343987823439878,
+        "n": 657,
+        "avg_conf_delta": 0.03866362252663623
+      },
+      "watermark_v3": {
+        "flip_rate": 0.2207001522070015,
+        "n": 657,
+        "avg_conf_delta": 0.03597412480974125
+      },
+      "jpeg_v1": {
+        "flip_rate": 0.2724505327245053,
+        "n": 657,
+        "avg_conf_delta": 0.04642770167427702
+      },
+      "jpeg_v2": {
+        "flip_rate": 0.3211567732115677,
+        "n": 657,
+        "avg_conf_delta": 0.04991324200913242
+      },
+      "jpeg_v3": {
+        "flip_rate": 0.4642313546423135,
+        "n": 657,
+        "avg_conf_delta": 0.07330593607305935
+      },
+      "chest_tube_v1": {
+        "flip_rate": 0.2754946727549467,
+        "n": 657,
+        "avg_conf_delta": 0.047919330289193304
+      },
+      "chest_tube_v2": {
+        "flip_rate": 0.2222222222222222,
+        "n": 657,
+        "avg_conf_delta": 0.04048706240487063
+      },
+      "chest_tube_v3": {
+        "flip_rate": 0.2511415525114155,
+        "n": 657,
+        "avg_conf_delta": 0.04670776255707763
+      },
+      "chest_drain_v1": {
+        "flip_rate": 0.2085235920852359,
+        "n": 657,
+        "avg_conf_delta": 0.03633028919330289
+      },
+      "chest_drain_v2": {
+        "flip_rate": 0.2100456621004566,
+        "n": 657,
+        "avg_conf_delta": 0.03684627092846271
+      },
+      "chest_drain_v3": {
+        "flip_rate": 0.2222222222222222,
+        "n": 657,
+        "avg_conf_delta": 0.03829223744292238
+      },
+      "ecg_leads_v1": {
+        "flip_rate": 0.243531202435312,
+        "n": 657,
+        "avg_conf_delta": 0.04452511415525114
+      },
+      "ecg_leads_v2": {
+        "flip_rate": 0.2709284627092846,
+        "n": 657,
+        "avg_conf_delta": 0.04635464231354642
+      },
+      "ecg_leads_v3": {
+        "flip_rate": 0.2724505327245053,
+        "n": 657,
+        "avg_conf_delta": 0.04452511415525114
+      },
+      "pacemaker_v1": {
+        "flip_rate": 0.3028919330289193,
+        "n": 657,
+        "avg_conf_delta": 0.044616438356164384
+      },
+      "pacemaker_v2": {
+        "flip_rate": 0.2465753424657534,
+        "n": 657,
+        "avg_conf_delta": 0.037226788432267885
+      },
+      "pacemaker_v3": {
+        "flip_rate": 0.3515981735159817,
+        "n": 657,
+        "avg_conf_delta": 0.04431202435312024
+      },
+      "negative_control": {
+        "flip_rate": 0.2009132420091324,
+        "n": 657,
+        "avg_conf_delta": 0.035350076103500765
+      },
+      "demographic_v1": {
+        "flip_rate": 0.3485540334855403,
+        "n": 657,
+        "avg_conf_delta": 0.05278538812785388
+      },
+      "demographic_v2": {
+        "flip_rate": 0.3394216133942161,
+        "n": 657,
+        "avg_conf_delta": 0.05299695585996956
+      },
+      "contradiction_v1": {
+        "flip_rate": 0.3942161339421613,
+        "n": 657,
+        "avg_conf_delta": 0.058207001522070013
+      },
+      "contradiction_v2": {
+        "flip_rate": 0.3926940639269406,
+        "n": 657,
+        "avg_conf_delta": 0.05673363774733638
+      },
+      "paraphrase_v1": {
+        "flip_rate": 0.2983257229832572,
+        "n": 657,
+        "avg_conf_delta": 0.046254185692541853
+      },
+      "paraphrase_v2": {
+        "flip_rate": 0.2861491628614916,
+        "n": 657,
+        "avg_conf_delta": 0.04503957382039574
+      },
+      "paraphrase_v3": {
+        "flip_rate": 0.3059360730593607,
+        "n": 657,
+        "avg_conf_delta": 0.045748858447488584
+      }
+    },
+    "per_label": {
+      "no finding": {
+        "accuracy": 0.18,
+        "flip_rate": 0.30538461538461537,
+        "n_cases": 50
+      },
+      "support devices": {
+        "accuracy": 0.12,
+        "flip_rate": 0.2946153846153846,
+        "n_cases": 50
+      },
+      "fracture": {
+        "accuracy": 0.62,
+        "flip_rate": 0.23461538461538461,
+        "n_cases": 50
+      },
+      "lung opacity": {
+        "accuracy": 0.22,
+        "flip_rate": 0.3046153846153846,
+        "n_cases": 50
+      },
+      "lung lesion": {
+        "accuracy": 0.42857142857142855,
+        "flip_rate": 0.2645211930926217,
+        "n_cases": 49
+      },
+      "edema": {
+        "accuracy": 0.92,
+        "flip_rate": 0.07923076923076923,
+        "n_cases": 50
+      },
+      "cardiomegaly": {
+        "accuracy": 0.16,
+        "flip_rate": 0.3,
+        "n_cases": 50
+      },
+      "pleural effusion": {
+        "accuracy": 0.02,
+        "flip_rate": 0.30846153846153845,
+        "n_cases": 50
+      },
+      "pleural other": {
+        "accuracy": 0.0,
+        "flip_rate": 0.32,
+        "n_cases": 50
+      },
+      "pneumothorax": {
+        "accuracy": 0.6,
+        "flip_rate": 0.41,
+        "n_cases": 50
+      },
+      "pneumonia": {
+        "accuracy": 0.0,
+        "flip_rate": 0.2692307692307692,
+        "n_cases": 11
+      },
+      "atelectasis": {
+        "accuracy": 0.04,
+        "flip_rate": 0.22384615384615383,
+        "n_cases": 50
+      },
+      "enlarged cardiomediastinum": {
+        "accuracy": 0.36,
+        "flip_rate": 0.33,
+        "n_cases": 50
+      },
+      "consolidation": {
+        "accuracy": 0.1276595744680851,
+        "flip_rate": 0.3183306055646481,
+        "n_cases": 47
+      }
+    }
+  },
   "gpt4o": {
     "display_name": "GPT-4o (~200B)",
     "param_count": 200000000000,

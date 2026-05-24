@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_53604_S01",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -16,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "contradiction_v1, demographic_v1, demographic_v2, contradiction_v2, paraphrase_v3",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said lung opacity vs ground truth no finding). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). GPT-4o baseline was already wrong (said support devices vs ground truth no finding). LLaVA-Med unstable across both image (10 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth no finding). Qwen2-VL unstable across both image (2 flips) and text (2 flips). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth no finding)"
+    "trigger_perturbations": "contradiction_v1, demographic_v2, demographic_v1, contradiction_v2, paraphrase_v3",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said lung opacity vs ground truth no finding). chexagent unstable across both image (4 flips) and text (4 flips). chexagent baseline was already wrong (said support devices vs ground truth no finding). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). GPT-4o baseline was already wrong (said support devices vs ground truth no finding). LLaVA-Med unstable across both image (10 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth no finding). Qwen2-VL unstable across both image (2 flips) and text (2 flips). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth no finding)"
 }

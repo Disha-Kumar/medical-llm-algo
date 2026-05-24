@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_22444_S01",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -17,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "contradiction_v2, demographic_v1, demographic_v2, contradiction_v1, paraphrase_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said fracture vs ground truth atelectasis). GPT-4o unstable across both image (4 flips) and text (8 flips). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said fracture vs ground truth atelectasis). chexagent flipped on image perturbations (jpeg) but stable on text. chexagent baseline was already wrong (said no finding vs ground truth atelectasis). GPT-4o unstable across both image (4 flips) and text (8 flips). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase)"
 }

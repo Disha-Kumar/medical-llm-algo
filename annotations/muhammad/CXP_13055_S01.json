@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_13055_S01",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -16,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "demographic_v1, contradiction_v2, demographic_v2, contradiction_v1, paraphrase_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said lung lesion vs ground truth atelectasis). GPT-4o unstable across both image (10 flips) and text (6 flips). GPT-4o baseline was already wrong (said no finding vs ground truth atelectasis). LLaVA-Med unstable across both image (4 flips) and text (4 flips). LLaVA-Med baseline was already wrong (said no finding vs ground truth atelectasis). Qwen2-VL unstable across both image (8 flips) and text (14 flips). Qwen2-VL baseline was already wrong (said no finding vs ground truth atelectasis)"
+    "trigger_perturbations": "demographic_v1, contradiction_v2, demographic_v2, pacemaker_v3, contradiction_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said lung lesion vs ground truth atelectasis). chexagent flipped on image perturbations (pacemaker) but stable on text. chexagent baseline was already wrong (said fracture vs ground truth atelectasis). GPT-4o unstable across both image (10 flips) and text (6 flips). GPT-4o baseline was already wrong (said no finding vs ground truth atelectasis). LLaVA-Med unstable across both image (4 flips) and text (4 flips). LLaVA-Med baseline was already wrong (said no finding vs ground truth atelectasis). Qwen2-VL unstable across both image (8 flips) and text (14 flips). Qwen2-VL baseline was already wrong (said no finding vs ground truth atelectasis)"
 }

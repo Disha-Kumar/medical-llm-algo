@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_16879_S01",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -16,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "demographic_v1, contradiction_v2, demographic_v2, contradiction_v1, paraphrase_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said lung lesion vs ground truth enlarged cardiomediastinum). GPT-4o flipped heavily on image perturbations (10 flips) with some text flips (4). GPT-4o baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum). LLaVA-Med unstable across both image (16 flips) and text (14 flips). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum)"
+    "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v2, contradiction_v1, paraphrase_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said lung lesion vs ground truth enlarged cardiomediastinum). chexagent unstable across both image (2 flips) and text (2 flips). GPT-4o flipped heavily on image perturbations (10 flips) with some text flips (4). GPT-4o baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum). LLaVA-Med unstable across both image (16 flips) and text (14 flips). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum)"
 }

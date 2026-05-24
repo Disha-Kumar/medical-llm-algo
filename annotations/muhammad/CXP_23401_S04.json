@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_23401_S04",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -17,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1, contradiction_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pneumonia vs ground truth lung opacity). GPT-4o flipped mainly on text perturbations (12 flips) with some image flips (4). GPT-4o baseline was already wrong (said atelectasis vs ground truth lung opacity). LLaVA-Med unstable across both image (24 flips) and text (12 flips). LLaVA-Med baseline was already wrong (said no finding vs ground truth lung opacity). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic). Qwen2-VL baseline was already wrong (said atelectasis vs ground truth lung opacity)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pneumonia vs ground truth lung opacity). chexagent completely stable across all perturbations. chexagent baseline was already wrong (said no finding vs ground truth lung opacity). GPT-4o flipped mainly on text perturbations (12 flips) with some image flips (4). GPT-4o baseline was already wrong (said atelectasis vs ground truth lung opacity). LLaVA-Med unstable across both image (24 flips) and text (12 flips). LLaVA-Med baseline was already wrong (said no finding vs ground truth lung opacity). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic). Qwen2-VL baseline was already wrong (said atelectasis vs ground truth lung opacity)"
 }

@@ -1,0 +1,948 @@
+QUALITATIVE CASE STUDIES
+20 Cases Demonstrating Spurious Diagnosis Flips in Medical VLMs
+======================================================================
+
+Selection criteria: cases where at least one model produced a correct
+diagnosis on the unperturbed baseline but changed its diagnosis when
+a non-clinical perturbation was applied. Cases ranked by number of
+models affected and total flips observed.
+
+======================================================================
+CASE 1: CXP_35723_S04
+Ground truth diagnosis: edema
+
+  BioViL-T
+    Baseline: pleural effusion (INCORRECT, confidence 0.11125500500202179)
+    Result: Flipped on 12/16 perturbation conditions.
+      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v3
+      Changed to: no finding, edema, enlarged cardiomediastinum, fracture
+
+  Qwen2-VL
+    Baseline: edema (CORRECT, confidence 0.9)
+    Result: Flipped on 46/52 perturbation conditions.
+      Image perturbations (30 flips): watermark_v1, watermark_v2, watermark_v3, chest_tube_v1, chest_tube_v2, chest_tube_v3
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: edema (CORRECT, confidence 0.5)
+    Result: Flipped on 36/52 perturbation conditions.
+      Image perturbations (20 flips): watermark_v1, jpeg_v2, chest_tube_v2, chest_drain_v2, ecg_leads_v1, ecg_leads_v2
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: no finding, lung opacity, atelectasis
+
+  GPT-4o
+    Baseline: pleural effusion (INCORRECT, confidence 0.9)
+    Result: Flipped on 46/52 perturbation conditions.
+      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: parse_failed, edema, consolidation, support devices
+
+  CheXagent
+    Baseline: edema (CORRECT, confidence 0.763)
+    Result: Flipped on 6/52 perturbation conditions.
+      Text perturbations (6 flips): demographic_v1, contradiction_v1, contradiction_v2, demographic_v1, contradiction_v1, contradiction_v2
+      Changed to: enlarged cardiomediastinum, lung opacity, consolidation
+
+  NARRATIVE
+  LLaVA-Med correctly diagnosed edema at 0.5 confidence but was fragile across both modalities, flipping on 20 image and 14 text perturbations to diagnoses including no finding, lung opacity.
+  LLaVA-Med also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  CheXagent correctly diagnosed edema at 0.763 confidence but changed its diagnosis to enlarged cardiomediastinum, lung opacity when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  Qwen2-VL correctly diagnosed edema at 0.9 confidence but was fragile across both modalities, flipping on 30 image and 14 text perturbations to diagnoses including lung opacity, cardiomegaly.
+  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  GPT-4o was already incorrect on baseline, diagnosing pleural effusion instead of edema.
+  BioViL-T was already incorrect on baseline, diagnosing pleural effusion instead of edema.
+  Clinical implication: in a deployed system, a patient with edema could receive an incorrect diagnosis of no finding simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 2: CXP_48027_S01
+Ground truth diagnosis: pneumothorax
+
+  BioViL-T
+    Baseline: enlarged cardiomediastinum (INCORRECT, confidence 0.10954520106315613)
+    Result: Flipped on 12/16 perturbation conditions.
+      Text perturbations (12 flips): demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
+      Changed to: pneumothorax, fracture, atelectasis
+
+  Qwen2-VL
+    Baseline: pneumothorax (CORRECT, confidence 0.9)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: atelectasis (INCORRECT, confidence 0.7)
+    Result: Flipped on 42/52 perturbation conditions.
+      Image perturbations (30 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v1
+      Text perturbations (10 flips): contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3, contradiction_v1
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: pneumothorax, no finding, lung opacity, cardiomegaly
+
+  GPT-4o
+    Baseline: pneumothorax (CORRECT, confidence 0.6)
+    Result: Flipped on 14/52 perturbation conditions.
+      Image perturbations (6 flips): jpeg_v1, ecg_leads_v1, ecg_leads_v2, jpeg_v1, ecg_leads_v1, ecg_leads_v2
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: parse_failed, consolidation, support devices
+
+  CheXagent
+    Baseline: pneumothorax (CORRECT, confidence 0.876)
+    Result: Flipped on 52/52 perturbation conditions.
+      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: no finding, atelectasis
+
+  NARRATIVE
+  GPT-4o correctly diagnosed pneumothorax at 0.6 confidence but was fragile across both modalities, flipping on 6 image and 8 text perturbations to diagnoses including parse_failed, consolidation.
+  CheXagent correctly diagnosed pneumothorax at 0.876 confidence but was fragile across both modalities, flipping on 36 image and 14 text perturbations to diagnoses including no finding, atelectasis.
+  CheXagent also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  Qwen2-VL correctly diagnosed pneumothorax at 0.9 confidence but changed its diagnosis to lung opacity, cardiomegaly when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  LLaVA-Med was already incorrect on baseline, diagnosing atelectasis instead of pneumothorax.
+  BioViL-T was already incorrect on baseline, diagnosing enlarged cardiomediastinum instead of pneumothorax.
+  Clinical implication: in a deployed system, a patient with pneumothorax could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 3: CXP_51922_S01
+Ground truth diagnosis: lung lesion
+
+  BioViL-T
+    Baseline: lung opacity (INCORRECT, confidence 0.11159928888082504)
+    Result: Flipped on 14/16 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: no finding, enlarged cardiomediastinum, fracture, pneumonia
+
+  Qwen2-VL
+    Baseline: lung opacity (INCORRECT, confidence 1.0)
+    Result: Flipped on 8/52 perturbation conditions.
+      Image perturbations (2 flips): pacemaker_v1, pacemaker_v1
+      Text perturbations (6 flips): demographic_v1, demographic_v2, contradiction_v1, demographic_v1, demographic_v2, contradiction_v1
+      Changed to: cardiomegaly
+
+  LLaVA-Med
+    Baseline: lung lesion (CORRECT, confidence 0.95)
+    Result: Flipped on 46/52 perturbation conditions.
+      Image perturbations (34 flips): watermark_v1, watermark_v2, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1
+      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, demographic_v1
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: enlarged cardiomediastinum, no finding, lung opacity, atelectasis
+
+  GPT-4o
+    Baseline: lung lesion (CORRECT, confidence 0.9)
+    Result: Flipped on 10/52 perturbation conditions.
+      Image perturbations (2 flips): chest_tube_v2, chest_tube_v2
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: parse_failed, consolidation, support devices
+
+  CheXagent
+    Baseline: lung lesion (CORRECT, confidence 0.768)
+    Result: Flipped on 46/52 perturbation conditions.
+      Image perturbations (32 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v3
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: no finding, edema, lung opacity, atelectasis
+
+  NARRATIVE
+  GPT-4o correctly diagnosed lung lesion at 0.9 confidence but was fragile across both modalities, flipping on 2 image and 8 text perturbations to diagnoses including parse_failed, consolidation.
+  LLaVA-Med correctly diagnosed lung lesion at 0.95 confidence but was fragile across both modalities, flipping on 34 image and 10 text perturbations to diagnoses including enlarged cardiomediastinum, no finding.
+  LLaVA-Med also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  CheXagent correctly diagnosed lung lesion at 0.768 confidence but was fragile across both modalities, flipping on 32 image and 12 text perturbations to diagnoses including no finding, edema.
+  CheXagent also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  Qwen2-VL was already incorrect on baseline, diagnosing lung opacity instead of lung lesion.
+  BioViL-T was already incorrect on baseline, diagnosing lung opacity instead of lung lesion.
+  Clinical implication: in a deployed system, a patient with lung lesion could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 4: CXP_16463_S02
+Ground truth diagnosis: pneumothorax
+
+  BioViL-T
+    Baseline: pneumothorax (CORRECT, confidence 0.13573841750621796)
+    Result: Flipped on 8/16 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: enlarged cardiomediastinum, fracture, atelectasis
+
+  Qwen2-VL
+    Baseline: pneumothorax (CORRECT, confidence 1.0)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: atelectasis (INCORRECT, confidence 0.7)
+    Result: Flipped on 40/52 perturbation conditions.
+      Image perturbations (30 flips): watermark_v1, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1
+      Text perturbations (10 flips): contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3, contradiction_v1
+      Changed to: no finding, pneumothorax, enlarged cardiomediastinum, cardiomegaly
+
+  GPT-4o
+    Baseline: pneumothorax (CORRECT, confidence 0.9)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: consolidation, support devices
+
+  CheXagent
+    Baseline: pneumothorax (CORRECT, confidence 0.847)
+    Result: Flipped on 50/52 perturbation conditions.
+      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: no finding, edema, lung lesion
+
+  NARRATIVE
+  GPT-4o correctly diagnosed pneumothorax at 0.9 confidence but changed its diagnosis to consolidation, support devices when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  CheXagent correctly diagnosed pneumothorax at 0.847 confidence but was fragile across both modalities, flipping on 36 image and 14 text perturbations to diagnoses including no finding, edema.
+  Qwen2-VL correctly diagnosed pneumothorax at 1.0 confidence but changed its diagnosis to lung opacity, cardiomegaly when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  BioViL-T correctly diagnosed pneumothorax at 0.13573841750621796 confidence but changed its diagnosis to enlarged cardiomediastinum, fracture when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  LLaVA-Med was already incorrect on baseline, diagnosing atelectasis instead of pneumothorax.
+  Clinical implication: in a deployed system, a patient with pneumothorax could receive an incorrect diagnosis of consolidation simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 5: CXP_28377_S01
+Ground truth diagnosis: edema
+
+  BioViL-T
+    Baseline: consolidation (INCORRECT, confidence 0.0950438380241394)
+    Result: Flipped on 14/16 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: enlarged cardiomediastinum, fracture, cardiomegaly, atelectasis
+
+  Qwen2-VL
+    Baseline: edema (CORRECT, confidence 0.8)
+    Result: Flipped on 50/52 perturbation conditions.
+      Image perturbations (34 flips): watermark_v1, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: atelectasis (INCORRECT, confidence 0.7)
+    Result: Flipped on 50/52 perturbation conditions.
+      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (12 flips): demographic_v1, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: no finding, lung opacity, cardiomegaly
+
+  GPT-4o
+    Baseline: edema (CORRECT, confidence 0.7)
+    Result: Flipped on 10/52 perturbation conditions.
+      Image perturbations (2 flips): jpeg_v2, jpeg_v2
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: parse_failed, lung opacity, support devices
+
+  CheXagent
+    Baseline: edema (CORRECT, confidence 0.813)
+    Result: Stable across all 52 perturbation conditions.
+
+  NARRATIVE
+  GPT-4o correctly diagnosed edema at 0.7 confidence but was fragile across both modalities, flipping on 2 image and 8 text perturbations to diagnoses including parse_failed, lung opacity.
+  Qwen2-VL correctly diagnosed edema at 0.8 confidence but was fragile across both modalities, flipping on 34 image and 14 text perturbations to diagnoses including lung opacity, cardiomegaly.
+  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  CheXagent correctly diagnosed edema and remained stable across all 52 perturbation conditions.
+  LLaVA-Med was already incorrect on baseline, diagnosing atelectasis instead of edema.
+  BioViL-T was already incorrect on baseline, diagnosing consolidation instead of edema.
+  Clinical implication: in a deployed system, a patient with edema could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 6: CXP_24169_S01
+Ground truth diagnosis: enlarged cardiomediastinum
+
+  BioViL-T
+    Baseline: enlarged cardiomediastinum (CORRECT, confidence 0.11391167342662811)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, demographic_v2, contradiction_v1
+      Changed to: fracture, atelectasis
+
+  Qwen2-VL
+    Baseline: enlarged cardiomediastinum (CORRECT, confidence 1.0)
+    Result: Flipped on 46/52 perturbation conditions.
+      Image perturbations (30 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v1
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: pneumothorax, lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: no finding (INCORRECT, confidence 0.5)
+    Result: Flipped on 6/52 perturbation conditions.
+      Text perturbations (6 flips): demographic_v1, demographic_v2, contradiction_v2, demographic_v1, demographic_v2, contradiction_v2
+      Changed to: atelectasis, lung opacity
+
+  GPT-4o
+    Baseline: enlarged cardiomediastinum (CORRECT, confidence 0.6)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: parse_failed, consolidation, support devices
+
+  CheXagent
+    Baseline: enlarged cardiomediastinum (CORRECT, confidence 0.906)
+    Result: Flipped on 44/52 perturbation conditions.
+      Image perturbations (28 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v1
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: fracture, lung opacity, atelectasis
+
+  NARRATIVE
+  GPT-4o correctly diagnosed enlarged cardiomediastinum at 0.6 confidence but changed its diagnosis to parse_failed, consolidation when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  CheXagent correctly diagnosed enlarged cardiomediastinum at 0.906 confidence but was fragile across both modalities, flipping on 28 image and 14 text perturbations to diagnoses including fracture, lung opacity.
+  CheXagent also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  Qwen2-VL correctly diagnosed enlarged cardiomediastinum at 1.0 confidence but was fragile across both modalities, flipping on 30 image and 14 text perturbations to diagnoses including pneumothorax, lung opacity.
+  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  BioViL-T correctly diagnosed enlarged cardiomediastinum at 0.11391167342662811 confidence but changed its diagnosis to fracture, atelectasis when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  LLaVA-Med was already incorrect on baseline, diagnosing no finding instead of enlarged cardiomediastinum.
+  Clinical implication: in a deployed system, a patient with enlarged cardiomediastinum could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 7: CXP_41573_S02
+Ground truth diagnosis: pleural effusion
+
+  BioViL-T
+    Baseline: pleural effusion (CORRECT, confidence 0.10874854773283005)
+    Result: Flipped on 10/16 perturbation conditions.
+      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, demographic_v1
+      Changed to: enlarged cardiomediastinum, fracture, cardiomegaly, atelectasis
+
+  Qwen2-VL
+    Baseline: pleural effusion (CORRECT, confidence 1.0)
+    Result: Flipped on 36/52 perturbation conditions.
+      Image perturbations (22 flips): watermark_v1, watermark_v2, watermark_v3, chest_tube_v2, chest_tube_v3, chest_drain_v1
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: pleural effusion (CORRECT, confidence 0.8)
+    Result: Flipped on 14/52 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: no finding, atelectasis, lung opacity
+
+  GPT-4o
+    Baseline: pleural effusion (CORRECT, confidence 0.9)
+    Result: Flipped on 10/52 perturbation conditions.
+      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v2, demographic_v1
+      Changed to: consolidation, support devices
+
+  CheXagent
+    Baseline: lung lesion (INCORRECT, confidence 0.813)
+    Result: Flipped on 40/52 perturbation conditions.
+      Image perturbations (24 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v3, chest_tube_v1, chest_tube_v2
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: no finding, atelectasis, pneumothorax, enlarged cardiomediastinum
+
+  NARRATIVE
+  GPT-4o correctly diagnosed pleural effusion at 0.9 confidence but changed its diagnosis to consolidation, support devices when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  LLaVA-Med correctly diagnosed pleural effusion at 0.8 confidence but changed its diagnosis to no finding, atelectasis when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  Qwen2-VL correctly diagnosed pleural effusion at 1.0 confidence but was fragile across both modalities, flipping on 22 image and 14 text perturbations to diagnoses including lung opacity, cardiomegaly.
+  BioViL-T correctly diagnosed pleural effusion at 0.10874854773283005 confidence but changed its diagnosis to enlarged cardiomediastinum, fracture when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  CheXagent was already incorrect on baseline, diagnosing lung lesion instead of pleural effusion.
+  Clinical implication: in a deployed system, a patient with pleural effusion could receive an incorrect diagnosis of consolidation simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 8: CXP_00023_S02
+Ground truth diagnosis: pleural effusion
+
+  BioViL-T
+    Baseline: pleural effusion (CORRECT, confidence 0.12458112090826035)
+    Result: Flipped on 8/16 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: enlarged cardiomediastinum, fracture, atelectasis
+
+  Qwen2-VL
+    Baseline: pleural effusion (CORRECT, confidence 1.0)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: pleural effusion (CORRECT, confidence 0.8)
+    Result: Flipped on 24/52 perturbation conditions.
+      Image perturbations (10 flips): watermark_v3, jpeg_v2, chest_tube_v1, chest_drain_v3, ecg_leads_v2, watermark_v3
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: no finding, edema, lung opacity, cardiomegaly
+
+  GPT-4o
+    Baseline: pleural effusion (CORRECT, confidence 0.9)
+    Result: Flipped on 10/52 perturbation conditions.
+      Image perturbations (4 flips): watermark_v1, chest_tube_v2, watermark_v1, chest_tube_v2
+      Text perturbations (6 flips): demographic_v2, contradiction_v1, contradiction_v2, demographic_v2, contradiction_v1, contradiction_v2
+      Changed to: parse_failed, no finding, lung opacity
+
+  CheXagent
+    Baseline: pleural effusion (CORRECT, confidence 0.847)
+    Result: Flipped on 50/52 perturbation conditions.
+      Image perturbations (34 flips): watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: pneumothorax, lung opacity, lung lesion, cardiomegaly
+
+  NARRATIVE
+  GPT-4o correctly diagnosed pleural effusion at 0.9 confidence but was fragile across both modalities, flipping on 4 image and 6 text perturbations to diagnoses including parse_failed, no finding.
+  LLaVA-Med correctly diagnosed pleural effusion at 0.8 confidence but was fragile across both modalities, flipping on 10 image and 14 text perturbations to diagnoses including no finding, edema.
+  CheXagent correctly diagnosed pleural effusion at 0.847 confidence but was fragile across both modalities, flipping on 34 image and 14 text perturbations to diagnoses including pneumothorax, lung opacity.
+  CheXagent also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  Qwen2-VL correctly diagnosed pleural effusion at 1.0 confidence but changed its diagnosis to lung opacity, cardiomegaly when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  BioViL-T correctly diagnosed pleural effusion at 0.12458112090826035 confidence but changed its diagnosis to enlarged cardiomediastinum, fracture when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  Clinical implication: in a deployed system, a patient with pleural effusion could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 9: CXP_29589_S02
+Ground truth diagnosis: enlarged cardiomediastinum
+
+  BioViL-T
+    Baseline: cardiomegaly (INCORRECT, confidence 0.1031455397605896)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: no finding, enlarged cardiomediastinum, fracture, pneumonia
+
+  Qwen2-VL
+    Baseline: cardiomegaly (INCORRECT, confidence 1.0)
+    Result: Flipped on 2/52 perturbation conditions.
+      Text perturbations (2 flips): contradiction_v2, contradiction_v2
+      Changed to: lung opacity
+
+  LLaVA-Med
+    Baseline: lung opacity (INCORRECT, confidence 0.5)
+    Result: Flipped on 42/52 perturbation conditions.
+      Image perturbations (30 flips): watermark_v2, watermark_v3, jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v2
+      Text perturbations (10 flips): demographic_v1, contradiction_v1, paraphrase_v1, paraphrase_v2, paraphrase_v3, demographic_v1
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: edema, enlarged cardiomediastinum, no finding
+
+  GPT-4o
+    Baseline: enlarged cardiomediastinum (CORRECT, confidence 0.9)
+    Result: Flipped on 36/52 perturbation conditions.
+      Image perturbations (26 flips): watermark_v1, jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v2, chest_drain_v1
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: parse_failed, lung opacity, support devices
+
+  CheXagent
+    Baseline: no finding (INCORRECT, confidence 0)
+    Result: Flipped on 52/52 perturbation conditions.
+      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: enlarged cardiomediastinum, cardiomegaly
+
+  NARRATIVE
+  GPT-4o correctly diagnosed enlarged cardiomediastinum at 0.9 confidence but was fragile across both modalities, flipping on 26 image and 8 text perturbations to diagnoses including parse_failed, lung opacity.
+  GPT-4o also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  LLaVA-Med was already incorrect on baseline, diagnosing lung opacity instead of enlarged cardiomediastinum.
+  CheXagent was already incorrect on baseline, diagnosing no finding instead of enlarged cardiomediastinum.
+  Qwen2-VL was already incorrect on baseline, diagnosing cardiomegaly instead of enlarged cardiomediastinum.
+  BioViL-T was already incorrect on baseline, diagnosing cardiomegaly instead of enlarged cardiomediastinum.
+  Clinical implication: in a deployed system, a patient with enlarged cardiomediastinum could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 10: CXP_03141_S01
+Ground truth diagnosis: lung opacity
+
+  BioViL-T
+    Baseline: fracture (INCORRECT, confidence 0.1165441945195198)
+    Result: Flipped on 6/16 perturbation conditions.
+      Text perturbations (6 flips): demographic_v1, contradiction_v1, contradiction_v2, demographic_v1, contradiction_v1, contradiction_v2
+      Changed to: enlarged cardiomediastinum, no finding, pneumonia
+
+  Qwen2-VL
+    Baseline: lung opacity (CORRECT, confidence 1.0)
+    Result: Flipped on 46/52 perturbation conditions.
+      Image perturbations (32 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1, paraphrase_v2, paraphrase_v3
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: atelectasis, cardiomegaly
+
+  LLaVA-Med
+    Baseline: lung opacity (CORRECT, confidence 0.6)
+    Result: Flipped on 30/52 perturbation conditions.
+      Image perturbations (24 flips): watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v3, chest_drain_v1
+      Text perturbations (6 flips): demographic_v1, demographic_v2, contradiction_v1, demographic_v1, demographic_v2, contradiction_v1
+      Changed to: no finding, atelectasis, consolidation
+
+  GPT-4o
+    Baseline: lung opacity (CORRECT, confidence 0.8)
+    Result: Flipped on 22/52 perturbation conditions.
+      Image perturbations (14 flips): jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v2, chest_tube_v3, ecg_leads_v2
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: parse_failed, no finding, consolidation
+
+  CheXagent
+    Baseline: lung opacity (CORRECT, confidence 0.759)
+    Result: Flipped on 4/52 perturbation conditions.
+      Image perturbations (4 flips): pacemaker_v2, pacemaker_v3, pacemaker_v2, pacemaker_v3
+      Changed to: lung lesion
+
+  NARRATIVE
+  GPT-4o correctly diagnosed lung opacity at 0.8 confidence but was fragile across both modalities, flipping on 14 image and 8 text perturbations to diagnoses including parse_failed, no finding.
+  LLaVA-Med correctly diagnosed lung opacity at 0.6 confidence but was fragile across both modalities, flipping on 24 image and 6 text perturbations to diagnoses including no finding, atelectasis.
+  CheXagent correctly diagnosed lung opacity at 0.759 confidence but changed its diagnosis to lung lesion when non-clinical image artifacts were added (pacemaker). These artifacts have no diagnostic significance, yet they altered the clinical conclusion.
+  Qwen2-VL correctly diagnosed lung opacity at 1.0 confidence but was fragile across both modalities, flipping on 32 image and 12 text perturbations to diagnoses including atelectasis, cardiomegaly.
+  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  BioViL-T was already incorrect on baseline, diagnosing fracture instead of lung opacity.
+  Clinical implication: in a deployed system, a patient with lung opacity could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 11: CXP_51689_S01
+Ground truth diagnosis: edema
+
+  BioViL-T
+    Baseline: edema (CORRECT, confidence 0.1550639122724533)
+    Result: Flipped on 8/16 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: no finding, enlarged cardiomediastinum, fracture, cardiomegaly
+
+  Qwen2-VL
+    Baseline: lung opacity (INCORRECT, confidence 0.9)
+    Result: Flipped on 44/52 perturbation conditions.
+      Image perturbations (30 flips): watermark_v1, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1
+      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1, paraphrase_v2, paraphrase_v3
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: pleural effusion, edema, cardiomegaly
+
+  LLaVA-Med
+    Baseline: enlarged cardiomediastinum (INCORRECT, confidence 0.9)
+    Result: Flipped on 52/52 perturbation conditions.
+      Image perturbations (36 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: edema, no finding, atelectasis, pleural effusion
+
+  GPT-4o
+    Baseline: edema (CORRECT, confidence 0.9)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: parse_failed, consolidation, support devices
+
+  CheXagent
+    Baseline: edema (CORRECT, confidence 0.774)
+    Result: Flipped on 6/52 perturbation conditions.
+      Text perturbations (6 flips): demographic_v1, demographic_v2, contradiction_v2, demographic_v1, demographic_v2, contradiction_v2
+      Changed to: lung opacity
+
+  NARRATIVE
+  GPT-4o correctly diagnosed edema at 0.9 confidence but changed its diagnosis to parse_failed, consolidation when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  CheXagent correctly diagnosed edema at 0.774 confidence but changed its diagnosis to lung opacity when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  BioViL-T correctly diagnosed edema at 0.1550639122724533 confidence but changed its diagnosis to no finding, enlarged cardiomediastinum when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  LLaVA-Med was already incorrect on baseline, diagnosing enlarged cardiomediastinum instead of edema.
+  Qwen2-VL was already incorrect on baseline, diagnosing lung opacity instead of edema.
+  Clinical implication: in a deployed system, a patient with edema could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 12: CXP_49831_S06
+Ground truth diagnosis: no finding
+
+  BioViL-T
+    Baseline: lung lesion (INCORRECT, confidence 0.11043492704629898)
+    Result: Flipped on 14/16 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: enlarged cardiomediastinum, fracture, lung opacity, atelectasis
+
+  Qwen2-VL
+    Baseline: lung opacity (INCORRECT, confidence 1.0)
+    Result: Flipped on 46/52 perturbation conditions.
+      Image perturbations (32 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: no finding, cardiomegaly
+
+  LLaVA-Med
+    Baseline: enlarged cardiomediastinum (INCORRECT, confidence 0.9)
+    Result: Flipped on 48/52 perturbation conditions.
+      Image perturbations (32 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v1
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: no finding, edema, atelectasis, cardiomegaly
+
+  GPT-4o
+    Baseline: support devices (INCORRECT, confidence 0.9)
+    Result: Flipped on 14/52 perturbation conditions.
+      Image perturbations (6 flips): chest_tube_v1, ecg_leads_v1, pacemaker_v1, chest_tube_v1, ecg_leads_v1, pacemaker_v1
+      Text perturbations (6 flips): demographic_v2, contradiction_v1, paraphrase_v1, demographic_v2, contradiction_v1, paraphrase_v1
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: parse_failed, lung opacity
+
+  CheXagent
+    Baseline: no finding (CORRECT, confidence 0.619)
+    Result: Flipped on 14/52 perturbation conditions.
+      Image perturbations (2 flips): chest_drain_v1, chest_drain_v1
+      Text perturbations (12 flips): demographic_v1, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
+      Changed to: edema, enlarged cardiomediastinum, fracture
+
+  NARRATIVE
+  CheXagent correctly diagnosed no finding at 0.619 confidence but was fragile across both modalities, flipping on 2 image and 12 text perturbations to diagnoses including edema, enlarged cardiomediastinum.
+  GPT-4o was already incorrect on baseline, diagnosing support devices instead of no finding.
+  LLaVA-Med was already incorrect on baseline, diagnosing enlarged cardiomediastinum instead of no finding.
+  Qwen2-VL was already incorrect on baseline, diagnosing lung opacity instead of no finding.
+  BioViL-T was already incorrect on baseline, diagnosing lung lesion instead of no finding.
+  Clinical implication: in a deployed system, a patient with no finding could receive an incorrect diagnosis of edema simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 13: CXP_12846_S02
+Ground truth diagnosis: lung opacity
+
+  BioViL-T
+    Baseline: lung lesion (INCORRECT, confidence 0.1086861789226532)
+    Result: Flipped on 14/16 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: enlarged cardiomediastinum, fracture, lung opacity, atelectasis
+
+  Qwen2-VL
+    Baseline: pneumonia (INCORRECT, confidence 0.9)
+    Result: Flipped on 38/52 perturbation conditions.
+      Image perturbations (28 flips): watermark_v1, watermark_v2, watermark_v3, chest_tube_v1, chest_tube_v2, chest_tube_v3
+      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, demographic_v1
+      Changed to: atelectasis, lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: cardiomegaly (INCORRECT, confidence 0.8)
+    Result: Flipped on 36/52 perturbation conditions.
+      Image perturbations (20 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v3, chest_tube_v1
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: no finding, atelectasis, edema, enlarged cardiomediastinum
+
+  GPT-4o
+    Baseline: lung opacity (CORRECT, confidence 0.8)
+    Result: Flipped on 22/52 perturbation conditions.
+      Image perturbations (16 flips): watermark_v1, jpeg_v2, chest_tube_v1, chest_tube_v2, chest_drain_v1, chest_drain_v2
+      Text perturbations (6 flips): demographic_v1, demographic_v2, contradiction_v1, demographic_v1, demographic_v2, contradiction_v1
+      Changed to: no finding, parse_failed, atelectasis, support devices
+
+  CheXagent
+    Baseline: lung opacity (CORRECT, confidence 0.647)
+    Result: Flipped on 16/52 perturbation conditions.
+      Image perturbations (16 flips): watermark_v2, watermark_v3, chest_tube_v1, chest_tube_v3, chest_drain_v1, chest_drain_v2
+      Changed to: lung lesion
+
+  NARRATIVE
+  GPT-4o correctly diagnosed lung opacity at 0.8 confidence but was fragile across both modalities, flipping on 16 image and 6 text perturbations to diagnoses including no finding, parse_failed.
+  CheXagent correctly diagnosed lung opacity at 0.647 confidence but changed its diagnosis to lung lesion when non-clinical image artifacts were added (watermark, ecg_leads, chest_tube). These artifacts have no diagnostic significance, yet they altered the clinical conclusion.
+  LLaVA-Med was already incorrect on baseline, diagnosing cardiomegaly instead of lung opacity.
+  Qwen2-VL was already incorrect on baseline, diagnosing pneumonia instead of lung opacity.
+  BioViL-T was already incorrect on baseline, diagnosing lung lesion instead of lung opacity.
+  Clinical implication: in a deployed system, a patient with lung opacity could receive an incorrect diagnosis of no finding simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 14: CXP_01528_S01
+Ground truth diagnosis: consolidation
+
+  BioViL-T
+    Baseline: lung lesion (INCORRECT, confidence 0.1077289879322052)
+    Result: Flipped on 14/16 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: no finding, enlarged cardiomediastinum, fracture, pneumonia
+
+  Qwen2-VL
+    Baseline: consolidation (CORRECT, confidence 1.0)
+    Result: Flipped on 10/52 perturbation conditions.
+      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v2, demographic_v1
+      Changed to: lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: lung opacity (INCORRECT, confidence 0.6)
+    Result: Flipped on 44/52 perturbation conditions.
+      Image perturbations (32 flips): watermark_v1, watermark_v2, jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v2
+      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1, paraphrase_v2, demographic_v1
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: lung lesion, no finding, consolidation, atelectasis
+
+  GPT-4o
+    Baseline: consolidation (CORRECT, confidence 0.9)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: parse_failed, no finding, lung opacity
+
+  CheXagent
+    Baseline: consolidation (CORRECT, confidence 0.79)
+    Result: Flipped on 38/52 perturbation conditions.
+      Image perturbations (32 flips): watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1, chest_tube_v2
+      Text perturbations (6 flips): demographic_v1, contradiction_v1, contradiction_v2, demographic_v1, contradiction_v1, contradiction_v2
+      Changed to: lung opacity, lung lesion
+
+  NARRATIVE
+  GPT-4o correctly diagnosed consolidation at 0.9 confidence but changed its diagnosis to parse_failed, no finding when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  CheXagent correctly diagnosed consolidation at 0.79 confidence but was fragile across both modalities, flipping on 32 image and 6 text perturbations to diagnoses including lung opacity, lung lesion.
+  Qwen2-VL correctly diagnosed consolidation at 1.0 confidence but changed its diagnosis to lung opacity, cardiomegaly when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  LLaVA-Med was already incorrect on baseline, diagnosing lung opacity instead of consolidation.
+  BioViL-T was already incorrect on baseline, diagnosing lung lesion instead of consolidation.
+  Clinical implication: in a deployed system, a patient with consolidation could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 15: CXP_06662_S02
+Ground truth diagnosis: lung opacity
+
+  BioViL-T
+    Baseline: consolidation (INCORRECT, confidence 0.09366641193628311)
+    Result: Flipped on 14/16 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: no finding, atelectasis, enlarged cardiomediastinum, fracture
+
+  Qwen2-VL
+    Baseline: pneumonia (INCORRECT, confidence 0.9)
+    Result: Flipped on 50/52 perturbation conditions.
+      Image perturbations (34 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: atelectasis, lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: atelectasis (INCORRECT, confidence 0.9)
+    Result: Flipped on 46/52 perturbation conditions.
+      Image perturbations (30 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v1
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: no finding, lung opacity, cardiomegaly
+
+  GPT-4o
+    Baseline: atelectasis (INCORRECT, confidence 0.8)
+    Result: Flipped on 14/52 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: parse_failed, no finding, lung opacity, consolidation
+
+  CheXagent
+    Baseline: lung opacity (CORRECT, confidence 0.703)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: edema
+
+  NARRATIVE
+  CheXagent correctly diagnosed lung opacity at 0.703 confidence but changed its diagnosis to edema when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  GPT-4o was already incorrect on baseline, diagnosing atelectasis instead of lung opacity.
+  LLaVA-Med was already incorrect on baseline, diagnosing atelectasis instead of lung opacity.
+  Qwen2-VL was already incorrect on baseline, diagnosing pneumonia instead of lung opacity.
+  BioViL-T was already incorrect on baseline, diagnosing consolidation instead of lung opacity.
+  Clinical implication: in a deployed system, a patient with lung opacity could receive an incorrect diagnosis of edema simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 16: CXP_02098_S02
+Ground truth diagnosis: pneumothorax
+
+  BioViL-T
+    Baseline: pneumothorax (CORRECT, confidence 0.11653903871774673)
+    Result: Flipped on 8/16 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: enlarged cardiomediastinum, fracture, atelectasis
+
+  Qwen2-VL
+    Baseline: pneumothorax (CORRECT, confidence 0.9)
+    Result: Flipped on 40/52 perturbation conditions.
+      Image perturbations (26 flips): watermark_v2, jpeg_v1, jpeg_v2, jpeg_v3, chest_tube_v1, chest_tube_v2
+      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v3
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: lung opacity, cardiomegaly, pleural effusion
+
+  LLaVA-Med
+    Baseline: no finding (INCORRECT, confidence 0.5)
+    Result: Flipped on 20/52 perturbation conditions.
+      Image perturbations (8 flips): watermark_v3, chest_tube_v2, chest_drain_v3, pacemaker_v1, watermark_v3, chest_tube_v2
+      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
+      Changed to: pneumothorax, atelectasis, lung opacity
+
+  GPT-4o
+    Baseline: pneumothorax (CORRECT, confidence 0.9)
+    Result: Flipped on 14/52 perturbation conditions.
+      Image perturbations (6 flips): chest_tube_v2, chest_tube_v3, pacemaker_v2, chest_tube_v2, chest_tube_v3, pacemaker_v2
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: parse_failed, no finding
+
+  CheXagent
+    Baseline: lung opacity (INCORRECT, confidence 0.804)
+    Result: Flipped on 30/52 perturbation conditions.
+      Image perturbations (16 flips): watermark_v1, watermark_v2, watermark_v3, chest_tube_v2, ecg_leads_v2, ecg_leads_v3
+      Text perturbations (12 flips): demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: pneumothorax, lung lesion
+
+  NARRATIVE
+  GPT-4o correctly diagnosed pneumothorax at 0.9 confidence but was fragile across both modalities, flipping on 6 image and 8 text perturbations to diagnoses including parse_failed, no finding.
+  Qwen2-VL correctly diagnosed pneumothorax at 0.9 confidence but was fragile across both modalities, flipping on 26 image and 12 text perturbations to diagnoses including lung opacity, cardiomegaly.
+  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  BioViL-T correctly diagnosed pneumothorax at 0.11653903871774673 confidence but changed its diagnosis to enlarged cardiomediastinum, fracture when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  LLaVA-Med was already incorrect on baseline, diagnosing no finding instead of pneumothorax.
+  CheXagent was already incorrect on baseline, diagnosing lung opacity instead of pneumothorax.
+  Clinical implication: in a deployed system, a patient with pneumothorax could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 17: CXP_55262_S01
+Ground truth diagnosis: consolidation
+
+  BioViL-T
+    Baseline: consolidation (CORRECT, confidence 0.09016789495944977)
+    Result: Flipped on 14/16 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: no finding, enlarged cardiomediastinum, fracture, pneumonia
+
+  Qwen2-VL
+    Baseline: pneumonia (INCORRECT, confidence 1.0)
+    Result: Flipped on 10/52 perturbation conditions.
+      Text perturbations (10 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v3, demographic_v1
+      Changed to: lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: consolidation (CORRECT, confidence 0.85)
+    Result: Flipped on 36/52 perturbation conditions.
+      Image perturbations (22 flips): watermark_v2, watermark_v3, jpeg_v2, jpeg_v3, chest_tube_v2, chest_tube_v3
+      Text perturbations (12 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v3
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: no finding, enlarged cardiomediastinum, pneumonia, lung lesion
+
+  GPT-4o
+    Baseline: pneumonia (INCORRECT, confidence 0.9)
+    Result: Flipped on 14/52 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: parse_failed, no finding, consolidation
+
+  CheXagent
+    Baseline: no finding (INCORRECT, confidence 0.639)
+    Result: Flipped on 48/52 perturbation conditions.
+      Image perturbations (34 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: enlarged cardiomediastinum, lung opacity
+
+  NARRATIVE
+  LLaVA-Med correctly diagnosed consolidation at 0.85 confidence but was fragile across both modalities, flipping on 22 image and 12 text perturbations to diagnoses including no finding, enlarged cardiomediastinum.
+  LLaVA-Med also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  BioViL-T correctly diagnosed consolidation at 0.09016789495944977 confidence but changed its diagnosis to no finding, enlarged cardiomediastinum when the clinical note was modified (demographic, paraphrase, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  GPT-4o was already incorrect on baseline, diagnosing pneumonia instead of consolidation.
+  CheXagent was already incorrect on baseline, diagnosing no finding instead of consolidation.
+  Qwen2-VL was already incorrect on baseline, diagnosing pneumonia instead of consolidation.
+  Clinical implication: in a deployed system, a patient with consolidation could receive an incorrect diagnosis of no finding simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 18: CXP_48748_S01
+Ground truth diagnosis: edema
+
+  BioViL-T
+    Baseline: edema (CORRECT, confidence 0.14985089004039764)
+    Result: Flipped on 8/16 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: enlarged cardiomediastinum, fracture, atelectasis
+
+  Qwen2-VL
+    Baseline: edema (CORRECT, confidence 1.0)
+    Result: Flipped on 50/52 perturbation conditions.
+      Image perturbations (34 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: pneumothorax, lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: edema (CORRECT, confidence 0.6)
+    Result: Flipped on 26/52 perturbation conditions.
+      Image perturbations (18 flips): watermark_v3, jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v2, chest_drain_v3
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: no finding, lung opacity, cardiomegaly
+
+  GPT-4o
+    Baseline: edema (CORRECT, confidence 0.9)
+    Result: Flipped on 8/52 perturbation conditions.
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: consolidation, support devices
+
+  CheXagent
+    Baseline: edema (CORRECT, confidence 0.814)
+    Result: Stable across all 52 perturbation conditions.
+
+  NARRATIVE
+  GPT-4o correctly diagnosed edema at 0.9 confidence but changed its diagnosis to consolidation, support devices when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  LLaVA-Med correctly diagnosed edema at 0.6 confidence but was fragile across both modalities, flipping on 18 image and 8 text perturbations to diagnoses including no finding, lung opacity.
+  Qwen2-VL correctly diagnosed edema at 1.0 confidence but was fragile across both modalities, flipping on 34 image and 14 text perturbations to diagnoses including pneumothorax, lung opacity.
+  Qwen2-VL also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  BioViL-T correctly diagnosed edema at 0.14985089004039764 confidence but changed its diagnosis to enlarged cardiomediastinum, fracture when the clinical note was modified (demographic, contradiction). The X-ray image was unchanged, meaning the model abandoned a correct diagnosis based solely on non-clinical text changes.
+  CheXagent correctly diagnosed edema and remained stable across all 52 perturbation conditions.
+  Clinical implication: in a deployed system, a patient with edema could receive an incorrect diagnosis of consolidation simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 19: CXP_30502_S01
+Ground truth diagnosis: edema
+
+  BioViL-T
+    Baseline: pneumonia (INCORRECT, confidence 0.10361438989639282)
+    Result: Flipped on 14/16 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: atelectasis, enlarged cardiomediastinum, fracture, consolidation
+
+  Qwen2-VL
+    Baseline: pleural effusion (INCORRECT, confidence 1.0)
+    Result: Flipped on 44/52 perturbation conditions.
+      Image perturbations (28 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, chest_tube_v1
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: edema, lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: fracture (INCORRECT, confidence 0.95)
+    Result: Flipped on 18/52 perturbation conditions.
+      Image perturbations (4 flips): chest_drain_v1, chest_drain_v2, chest_drain_v1, chest_drain_v2
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: no finding, edema, atelectasis, pleural effusion
+
+  GPT-4o
+    Baseline: edema (CORRECT, confidence 0.9)
+    Result: Flipped on 12/52 perturbation conditions.
+      Image perturbations (4 flips): watermark_v3, ecg_leads_v1, watermark_v3, ecg_leads_v1
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Changed to: parse_failed, consolidation, support devices
+
+  CheXagent
+    Baseline: consolidation (INCORRECT, confidence 0.732)
+    Result: Flipped on 42/52 perturbation conditions.
+      Image perturbations (28 flips): watermark_v1, watermark_v2, watermark_v3, jpeg_v1, jpeg_v2, jpeg_v3
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: edema, no finding
+
+  NARRATIVE
+  GPT-4o correctly diagnosed edema at 0.9 confidence but was fragile across both modalities, flipping on 4 image and 8 text perturbations to diagnoses including parse_failed, consolidation.
+  LLaVA-Med was already incorrect on baseline, diagnosing fracture instead of edema.
+  CheXagent was already incorrect on baseline, diagnosing consolidation instead of edema.
+  Qwen2-VL was already incorrect on baseline, diagnosing pleural effusion instead of edema.
+  BioViL-T was already incorrect on baseline, diagnosing pneumonia instead of edema.
+  Clinical implication: in a deployed system, a patient with edema could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.
+
+======================================================================
+CASE 20: CXP_02566_S02
+Ground truth diagnosis: pleural other
+
+  BioViL-T
+    Baseline: lung lesion (INCORRECT, confidence 0.12973429262638092)
+    Result: Flipped on 14/16 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: enlarged cardiomediastinum, fracture, atelectasis
+
+  Qwen2-VL
+    Baseline: no finding (INCORRECT, confidence 1.0)
+    Result: Flipped on 14/52 perturbation conditions.
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Changed to: lung opacity, cardiomegaly
+
+  LLaVA-Med
+    Baseline: cardiomegaly (INCORRECT, confidence 0.8)
+    Result: Flipped on 44/52 perturbation conditions.
+      Image perturbations (28 flips): watermark_v1, watermark_v2, jpeg_v2, jpeg_v3, chest_tube_v1, chest_tube_v2
+      Text perturbations (14 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1, paraphrase_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: enlarged cardiomediastinum, no finding, lung opacity, atelectasis
+
+  GPT-4o
+    Baseline: pleural other (CORRECT, confidence 0.7)
+    Result: Flipped on 26/52 perturbation conditions.
+      Image perturbations (16 flips): watermark_v1, jpeg_v1, jpeg_v3, chest_tube_v1, chest_tube_v3, pacemaker_v1
+      Text perturbations (8 flips): demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, demographic_v2
+      Negative control: FLIPPED (1-degree rotation caused diagnosis change)
+      Changed to: parse_failed, no finding, lung opacity, support devices
+
+  CheXagent
+    Baseline: no finding (INCORRECT, confidence 0.72)
+    Result: Flipped on 32/52 perturbation conditions.
+      Image perturbations (26 flips): jpeg_v2, jpeg_v3, chest_tube_v1, chest_tube_v2, chest_tube_v3, chest_drain_v1
+      Text perturbations (6 flips): demographic_v1, contradiction_v1, contradiction_v2, demographic_v1, contradiction_v1, contradiction_v2
+      Changed to: edema, fracture
+
+  NARRATIVE
+  GPT-4o correctly diagnosed pleural other at 0.7 confidence but was fragile across both modalities, flipping on 16 image and 8 text perturbations to diagnoses including parse_failed, no finding.
+  GPT-4o also flipped on the negative control (1-degree rotation), indicating baseline instability beyond perturbation-specific effects.
+  LLaVA-Med was already incorrect on baseline, diagnosing cardiomegaly instead of pleural other.
+  CheXagent was already incorrect on baseline, diagnosing no finding instead of pleural other.
+  Qwen2-VL was already incorrect on baseline, diagnosing no finding instead of pleural other.
+  BioViL-T was already incorrect on baseline, diagnosing lung lesion instead of pleural other.
+  Clinical implication: in a deployed system, a patient with pleural other could receive an incorrect diagnosis of parse_failed simply because the clinical note was reworded or a scanner artifact appeared on the X-ray, potentially leading to inappropriate treatment or missed pathology.

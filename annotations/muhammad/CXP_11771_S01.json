@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_11771_S01",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -17,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "contradiction_v2, demographic_v1, demographic_v2, contradiction_v1, paraphrase_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pneumonia vs ground truth enlarged cardiomediastinum). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). GPT-4o baseline was already wrong (said pleural effusion vs ground truth enlarged cardiomediastinum). LLaVA-Med unstable across both image (18 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said pleural effusion vs ground truth enlarged cardiomediastinum). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth enlarged cardiomediastinum)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pneumonia vs ground truth enlarged cardiomediastinum). chexagent unstable across both image (10 flips) and text (14 flips). chexagent baseline was already wrong (said consolidation vs ground truth enlarged cardiomediastinum). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). GPT-4o baseline was already wrong (said pleural effusion vs ground truth enlarged cardiomediastinum). LLaVA-Med unstable across both image (18 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said pleural effusion vs ground truth enlarged cardiomediastinum). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth enlarged cardiomediastinum)"
 }

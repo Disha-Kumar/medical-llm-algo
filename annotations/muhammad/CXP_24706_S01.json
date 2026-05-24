@@ -1,9 +1,10 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_24706_S01",
-    "timestamp": "2026-05-24T02:31:34",
+    "timestamp": "2026-05-24T21:14:12",
     "models_reviewed": [
         "biovil_t",
+        "chexagent",
         "gpt4o",
         "llava_med",
         "qwen2_vl"
@@ -17,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, contradiction_v2, watermark_v1, jpeg_v2, chest_tube_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said fracture vs ground truth cardiomegaly). GPT-4o completely stable across all perturbations. GPT-4o baseline was already wrong (said None vs ground truth cardiomegaly). LLaVA-Med unstable across both image (18 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said enlarged cardiomediastinum vs ground truth cardiomegaly). Qwen2-VL flipped heavily on image perturbations (28 flips) with some text flips (12). Qwen2-VL baseline was already wrong (said lung opacity vs ground truth cardiomegaly)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said fracture vs ground truth cardiomegaly). chexagent completely stable across all perturbations. chexagent baseline was already wrong (said edema vs ground truth cardiomegaly). GPT-4o completely stable across all perturbations. GPT-4o baseline was already wrong (said None vs ground truth cardiomegaly). LLaVA-Med unstable across both image (18 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said enlarged cardiomediastinum vs ground truth cardiomegaly). Qwen2-VL flipped heavily on image perturbations (28 flips) with some text flips (12). Qwen2-VL baseline was already wrong (said lung opacity vs ground truth cardiomegaly)"
 }

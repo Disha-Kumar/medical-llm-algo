@@ -1,0 +1,21 @@
+case_id,diag_4k,diag_8k,diag_16k,flip,conf_4k,conf_8k,conf_16k,flip_4k_8k,flip_8k_16k,flip_4k_16k,ground_truth
+CXP_57422_S01,cardiomegaly,cardiomegaly,cardiomegaly,No,0.9,0.9,0.9,No,No,No,enlarged cardiomediastinum
+CXP_15996_S05,support devices,support devices,support devices,No,1.0,1.0,1.0,No,No,No,enlarged cardiomediastinum
+CXP_29589_S02,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,0.9,0.9,0.9,No,No,No,enlarged cardiomediastinum
+CXP_09342_S01,edema,edema,edema,No,0.7,0.7,0.7,No,No,No,enlarged cardiomediastinum
+CXP_01023_S01,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,0.7,0.7,0.7,No,No,No,enlarged cardiomediastinum
+CXP_61843_S01,pleural effusion,pleural effusion,pleural effusion,No,0.6,0.6,0.6,No,No,No,enlarged cardiomediastinum
+CXP_01894_S01,fracture,fracture,fracture,No,0.9,0.9,0.9,No,No,No,enlarged cardiomediastinum
+CXP_16879_S01,no finding,no finding,no finding,No,0.8,0.8,0.8,No,No,No,enlarged cardiomediastinum
+CXP_08740_S13,support devices,support devices,support devices,No,0.9,0.9,0.9,No,No,No,enlarged cardiomediastinum
+CXP_22838_S01,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,0.9,0.9,0.9,No,No,No,enlarged cardiomediastinum
+CXP_26583_S01,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,0.7,0.7,0.7,No,No,No,enlarged cardiomediastinum
+CXP_09238_S01,cardiomegaly,cardiomegaly,cardiomegaly,No,0.8,0.8,0.8,No,No,No,enlarged cardiomediastinum
+CXP_15457_S01,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,0.7,0.7,0.7,No,No,No,enlarged cardiomediastinum
+CXP_23784_S01,enlarged cardiomediastinum,enlarged cardiomediastinum,enlarged cardiomediastinum,No,0.8,0.8,0.8,No,No,No,enlarged cardiomediastinum
+CXP_16456_S01,cardiomegaly,support devices,cardiomegaly,Yes,0.7,0.9,0.7,Yes,Yes,No,enlarged cardiomediastinum
+CXP_27677_S01,pleural effusion,pleural effusion,pleural effusion,No,0.8,0.8,0.8,No,No,No,enlarged cardiomediastinum
+CXP_10504_S01,enlarged cardiomediastinum,support devices,support devices,Yes,0.7,0.9,0.9,Yes,No,Yes,enlarged cardiomediastinum
+CXP_06994_S05,pleural effusion,pleural effusion,pleural effusion,No,0.8,0.8,0.8,No,No,No,enlarged cardiomediastinum
+CXP_33078_S02,support devices,support devices,support devices,No,1.0,0.9,1.0,No,No,No,enlarged cardiomediastinum
+CXP_29049_S01,cardiomegaly,cardiomegaly,cardiomegaly,No,0.8,0.8,0.8,No,No,No,enlarged cardiomediastinum

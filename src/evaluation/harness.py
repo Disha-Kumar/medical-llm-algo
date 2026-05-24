@@ -141,8 +141,9 @@ def evaluate_triple(
         raw_response=raw_response,
     )
 
-    # edit cache pass and known failures
-    if result.status in ("PASS", "INCOMPLETE_OUTPUT", "PARSE_FAILED"):
+    # Cache only successful triples. Incomplete or parse-failed rows should be
+    # rerunnable after prompt/model fixes.
+    if result.status == "PASS":
         _save_cache(cache_file, result)
 
     return result

@@ -39,18 +39,19 @@ class CheXAgentPipeline(MedicalVLM):
     def _make_prompt(self, clinical_note: str) -> str:
         note = clinical_note.strip()[:500] or "No clinical note provided."
         if self.mode == "image_only":
-            note = "Use the image only."
+            return (
+                "Describe the chest X-ray in one sentence. "
+                "State the main radiographic finding, or say no acute cardiopulmonary process."
+            )
         elif self.mode == "text_only":
-            note = f"Use the clinical note only: {note}"
+            return (
+                "Based on the clinical note only, state the most likely CheXpert finding "
+                f"in one sentence.\nClinical note: {note}"
+            )
         return (
-            "Analyze this chest X-ray research case.\n"
-            f"{note}\n\n"
-            "Return exactly:\n"
-            "DIAGNOSIS: one of no finding, atelectasis, cardiomegaly, consolidation, edema, "
-            "pleural effusion, pneumonia, pneumothorax, enlarged cardiomediastinum, lung opacity, "
-            "lung lesion, pleural other, fracture, support devices\n"
-            "CONFIDENCE: a number from 0.0 to 1.0\n"
-            "EXPLANATION: one short sentence\n"
+            "Describe the chest X-ray in one sentence. "
+            "State the main radiographic finding, or say no acute cardiopulmonary process.\n"
+            f"Clinical note: {note}"
         )
 
     def predict(self, image: Image.Image, text: str,

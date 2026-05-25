@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_31472_S25",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "contradiction_v1, demographic_v1, demographic_v2, contradiction_v2, chest_tube_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pneumothorax vs ground truth no finding). chexagent unstable across both image (16 flips) and text (10 flips). chexagent baseline was already wrong (said edema vs ground truth no finding). GPT-4o unstable across both image (14 flips) and text (8 flips). GPT-4o baseline was already wrong (said pleural effusion vs ground truth no finding). LLaVA-Med flipped heavily on image perturbations (26 flips) with some text flips (4). LLaVA-Med baseline was already wrong (said atelectasis vs ground truth no finding). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said pneumothorax vs ground truth no finding)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pneumothorax vs ground truth no finding). chexagent unstable across both image (6 flips) and text (6 flips). chexagent baseline was already wrong (said edema vs ground truth no finding). GPT-4o unstable across both image (14 flips) and text (8 flips). GPT-4o baseline was already wrong (said pleural effusion vs ground truth no finding). LLaVA-Med flipped heavily on image perturbations (26 flips) with some text flips (4). LLaVA-Med baseline was already wrong (said atelectasis vs ground truth no finding). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said pneumothorax vs ground truth no finding)"
 }

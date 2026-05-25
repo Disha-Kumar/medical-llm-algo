@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_24949_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "contradiction_v2, paraphrase_v1, paraphrase_v2, paraphrase_v3, demographic_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pleural other vs ground truth enlarged cardiomediastinum). chexagent unstable across both image (6 flips) and text (8 flips). chexagent baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum). GPT-4o flipped mainly on text perturbations (14 flips) with some image flips (6). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). LLaVA-Med baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum). Qwen2-VL flipped heavily on image perturbations (36 flips) with some text flips (2). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth enlarged cardiomediastinum)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pleural other vs ground truth enlarged cardiomediastinum). chexagent unstable across both image (4 flips) and text (8 flips). chexagent baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum). GPT-4o flipped mainly on text perturbations (14 flips) with some image flips (6). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). LLaVA-Med baseline was already wrong (said no finding vs ground truth enlarged cardiomediastinum). Qwen2-VL flipped heavily on image perturbations (36 flips) with some text flips (2). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth enlarged cardiomediastinum)"
 }

@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_01241_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -17,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, jpeg_v3",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). chexagent unstable across both image (14 flips) and text (14 flips). chexagent baseline was already wrong (said lung lesion vs ground truth pleural other). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). GPT-4o baseline was already wrong (said pleural effusion vs ground truth pleural other). LLaVA-Med unstable across both image (20 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth pleural other). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic). Qwen2-VL baseline was already wrong (said pleural effusion vs ground truth pleural other)"
+    "trigger_perturbations": "demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, watermark_v2",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). chexagent unstable across both image (18 flips) and text (14 flips). chexagent baseline was already wrong (said lung lesion vs ground truth pleural other). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). GPT-4o baseline was already wrong (said pleural effusion vs ground truth pleural other). LLaVA-Med unstable across both image (20 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth pleural other). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic). Qwen2-VL baseline was already wrong (said pleural effusion vs ground truth pleural other)"
 }

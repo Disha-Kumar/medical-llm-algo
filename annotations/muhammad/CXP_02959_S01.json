@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_02959_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "contradiction_v2, demographic_v1, demographic_v2, contradiction_v1, paraphrase_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said lung lesion vs ground truth pleural other). chexagent flipped heavily on image perturbations (34 flips) with some text flips (14). chexagent baseline was already wrong (said consolidation vs ground truth pleural other). GPT-4o flipped mainly on text perturbations (10 flips) with some image flips (4). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). LLaVA-Med baseline was already wrong (said pleural effusion vs ground truth pleural other). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth pleural other)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said lung lesion vs ground truth pleural other). chexagent flipped heavily on image perturbations (36 flips) with some text flips (14). chexagent baseline was already wrong (said consolidation vs ground truth pleural other). GPT-4o flipped mainly on text perturbations (10 flips) with some image flips (4). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). LLaVA-Med baseline was already wrong (said pleural effusion vs ground truth pleural other). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth pleural other)"
 }

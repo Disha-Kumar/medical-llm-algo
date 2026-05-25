@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_06484_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -17,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pneumonia vs ground truth consolidation). chexagent flipped heavily on image perturbations (18 flips) with some text flips (4). chexagent baseline was already wrong (said lung opacity vs ground truth consolidation). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med flipped heavily on image perturbations (28 flips) with some text flips (12). LLaVA-Med baseline was already wrong (said edema vs ground truth consolidation). Qwen2-VL unstable across both image (4 flips) and text (2 flips). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth consolidation)"
+    "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, jpeg_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pneumonia vs ground truth consolidation). chexagent flipped on image perturbations (chest drain, chest tube, ecg leads, jpeg, pacemaker, watermark) but stable on text. chexagent baseline was already wrong (said lung opacity vs ground truth consolidation). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med flipped heavily on image perturbations (28 flips) with some text flips (12). LLaVA-Med baseline was already wrong (said edema vs ground truth consolidation). Qwen2-VL unstable across both image (4 flips) and text (2 flips). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth consolidation)"
 }

@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_10546_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -17,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "contradiction_v2, demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1",
+    "trigger_perturbations": "contradiction_v2, demographic_v1, demographic_v2, contradiction_v1, chest_tube_v1",
     "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). chexagent unstable across both image (2 flips) and text (2 flips). chexagent baseline was already wrong (said no finding vs ground truth pleural other). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med unstable across both image (14 flips) and text (8 flips). LLaVA-Med baseline was already wrong (said pleural effusion vs ground truth pleural other). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth pleural other)"
 }

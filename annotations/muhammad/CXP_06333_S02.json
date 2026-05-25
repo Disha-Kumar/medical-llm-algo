@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_06333_S02",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -17,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "demographic_v2, paraphrase_v2, paraphrase_v3, demographic_v1, contradiction_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said consolidation vs ground truth lung opacity). chexagent flipped mainly on text perturbations (8 flips) with some image flips (2). GPT-4o unstable across both image (18 flips) and text (14 flips). GPT-4o baseline was already wrong (said pneumonia vs ground truth lung opacity). LLaVA-Med flipped mainly on text perturbations (14 flips) with some image flips (6). LLaVA-Med baseline was already wrong (said pneumonia vs ground truth lung opacity). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said pneumonia vs ground truth lung opacity)"
+    "trigger_perturbations": "demographic_v2, contradiction_v1, paraphrase_v2, paraphrase_v3, demographic_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said consolidation vs ground truth lung opacity). chexagent flipped mainly on text perturbations (10 flips) with some image flips (4). GPT-4o unstable across both image (18 flips) and text (14 flips). GPT-4o baseline was already wrong (said pneumonia vs ground truth lung opacity). LLaVA-Med flipped mainly on text perturbations (14 flips) with some image flips (6). LLaVA-Med baseline was already wrong (said pneumonia vs ground truth lung opacity). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said pneumonia vs ground truth lung opacity)"
 }

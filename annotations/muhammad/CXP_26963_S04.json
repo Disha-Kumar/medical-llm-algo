@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_26963_S04",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -11,12 +11,12 @@
     ],
     "tier1_label_flip": "P",
     "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
-    "tier2_confidence_change": "D",
-    "tier2_confidence_change_label": "dropped -- confidence dropped noticeably",
+    "tier2_confidence_change": "B",
+    "tier2_confidence_change_label": "both  -- dropped in some variants, increased in others",
     "tier3_explanation_shift": "P",
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v2, contradiction_v1, paraphrase_v3",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). chexagent unstable across both image (8 flips) and text (14 flips). GPT-4o unstable across both image (4 flips) and text (8 flips). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med baseline was already wrong (said no finding vs ground truth lung lesion). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (6). Qwen2-VL baseline was already wrong (said no finding vs ground truth lung lesion)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). chexagent flipped on image perturbations (chest drain, chest tube, ecg leads, jpeg, pacemaker, watermark) but stable on text. chexagent baseline was already wrong (said no finding vs ground truth lung lesion). GPT-4o unstable across both image (4 flips) and text (8 flips). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med baseline was already wrong (said no finding vs ground truth lung lesion). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (6). Qwen2-VL baseline was already wrong (said no finding vs ground truth lung lesion)"
 }

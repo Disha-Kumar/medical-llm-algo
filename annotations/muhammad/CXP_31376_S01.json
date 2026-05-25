@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_31376_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, chest_tube_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pneumothorax vs ground truth consolidation). chexagent flipped heavily on image perturbations (22 flips) with some text flips (6). chexagent baseline was already wrong (said lung lesion vs ground truth consolidation). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med unstable across both image (12 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth consolidation). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pneumothorax vs ground truth consolidation). chexagent flipped heavily on image perturbations (20 flips) with some text flips (6). chexagent baseline was already wrong (said lung lesion vs ground truth consolidation). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med unstable across both image (12 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth consolidation). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic)"
 }

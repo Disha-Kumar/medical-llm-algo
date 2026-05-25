@@ -231,222 +231,222 @@
     "param_label": "8B",
     "n_cases": 657,
     "n_perturbations": 17082,
-    "accuracy": 0.2876712328767123,
-    "flip_rate": 0.28374897552979744,
-    "avg_conf_delta": 0.045502927057721576,
-    "hallucination_rate": 0.0641025641025641,
+    "accuracy": 0.2922374429223744,
+    "flip_rate": 0.2713382507903056,
+    "avg_conf_delta": 0.046297154899894624,
+    "hallucination_rate": 0.06386839948483784,
     "parse_fail_rate": 0.0,
-    "avg_baseline_conf": 0.7902039573820395,
-    "neg_control_flip_rate": 0.2009132420091324,
-    "avg_scs": 0.9834737385190957,
-    "image_only_accuracy": 0.2572298325722983,
-    "text_only_accuracy": 0.2846270928462709,
+    "avg_baseline_conf": 0.7965449010654491,
+    "neg_control_flip_rate": 0.1917808219178082,
+    "avg_scs": 0.9869105501608314,
+    "image_only_accuracy": 0.2633181126331811,
+    "text_only_accuracy": 0.2968036529680365,
     "cat_flip_rates": {
-      "Image": 0.26729240656181297,
-      "Control": 0.2009132420091324,
-      "Text": 0.3378995433789954
+      "Image": 0.25832910536106884,
+      "Control": 0.1917808219178082,
+      "Text": 0.3161556860186997
     },
     "per_condition": {
       "watermark_v1": {
-        "flip_rate": 0.2207001522070015,
+        "flip_rate": 0.2146118721461187,
         "n": 657,
-        "avg_conf_delta": 0.03753272450532724
+        "avg_conf_delta": 0.0381765601217656
       },
       "watermark_v2": {
-        "flip_rate": 0.2343987823439878,
+        "flip_rate": 0.2267884322678843,
         "n": 657,
-        "avg_conf_delta": 0.03866362252663623
+        "avg_conf_delta": 0.04039269406392694
       },
       "watermark_v3": {
-        "flip_rate": 0.2207001522070015,
-        "n": 657,
-        "avg_conf_delta": 0.03597412480974125
-      },
-      "jpeg_v1": {
-        "flip_rate": 0.2724505327245053,
-        "n": 657,
-        "avg_conf_delta": 0.04642770167427702
-      },
-      "jpeg_v2": {
-        "flip_rate": 0.3211567732115677,
-        "n": 657,
-        "avg_conf_delta": 0.04991324200913242
-      },
-      "jpeg_v3": {
-        "flip_rate": 0.4642313546423135,
-        "n": 657,
-        "avg_conf_delta": 0.07330593607305935
-      },
-      "chest_tube_v1": {
-        "flip_rate": 0.2754946727549467,
-        "n": 657,
-        "avg_conf_delta": 0.047919330289193304
-      },
-      "chest_tube_v2": {
-        "flip_rate": 0.2222222222222222,
-        "n": 657,
-        "avg_conf_delta": 0.04048706240487063
-      },
-      "chest_tube_v3": {
-        "flip_rate": 0.2511415525114155,
-        "n": 657,
-        "avg_conf_delta": 0.04670776255707763
-      },
-      "chest_drain_v1": {
-        "flip_rate": 0.2085235920852359,
-        "n": 657,
-        "avg_conf_delta": 0.03633028919330289
-      },
-      "chest_drain_v2": {
         "flip_rate": 0.2100456621004566,
         "n": 657,
-        "avg_conf_delta": 0.03684627092846271
+        "avg_conf_delta": 0.035666666666666666
       },
-      "chest_drain_v3": {
-        "flip_rate": 0.2222222222222222,
+      "jpeg_v1": {
+        "flip_rate": 0.2663622526636225,
         "n": 657,
-        "avg_conf_delta": 0.03829223744292238
+        "avg_conf_delta": 0.04875494672754946
       },
-      "ecg_leads_v1": {
+      "jpeg_v2": {
+        "flip_rate": 0.2952815829528158,
+        "n": 657,
+        "avg_conf_delta": 0.05088736681887367
+      },
+      "jpeg_v3": {
+        "flip_rate": 0.4520547945205479,
+        "n": 657,
+        "avg_conf_delta": 0.07453424657534247
+      },
+      "chest_tube_v1": {
         "flip_rate": 0.243531202435312,
         "n": 657,
-        "avg_conf_delta": 0.04452511415525114
+        "avg_conf_delta": 0.04671689497716895
+      },
+      "chest_tube_v2": {
+        "flip_rate": 0.2085235920852359,
+        "n": 657,
+        "avg_conf_delta": 0.04137138508371385
+      },
+      "chest_tube_v3": {
+        "flip_rate": 0.228310502283105,
+        "n": 657,
+        "avg_conf_delta": 0.04656468797564688
+      },
+      "chest_drain_v1": {
+        "flip_rate": 0.2024353120243531,
+        "n": 657,
+        "avg_conf_delta": 0.03838660578386605
+      },
+      "chest_drain_v2": {
+        "flip_rate": 0.1917808219178082,
+        "n": 657,
+        "avg_conf_delta": 0.03563165905631659
+      },
+      "chest_drain_v3": {
+        "flip_rate": 0.2313546423135464,
+        "n": 657,
+        "avg_conf_delta": 0.040044140030441405
+      },
+      "ecg_leads_v1": {
+        "flip_rate": 0.2374429223744292,
+        "n": 657,
+        "avg_conf_delta": 0.04399391171993912
       },
       "ecg_leads_v2": {
-        "flip_rate": 0.2709284627092846,
+        "flip_rate": 0.2557077625570776,
         "n": 657,
-        "avg_conf_delta": 0.04635464231354642
+        "avg_conf_delta": 0.045706240487062406
       },
       "ecg_leads_v3": {
-        "flip_rate": 0.2724505327245053,
+        "flip_rate": 0.2572298325722983,
         "n": 657,
-        "avg_conf_delta": 0.04452511415525114
+        "avg_conf_delta": 0.044339421613394214
       },
       "pacemaker_v1": {
-        "flip_rate": 0.3028919330289193,
+        "flip_rate": 0.3013698630136986,
         "n": 657,
-        "avg_conf_delta": 0.044616438356164384
+        "avg_conf_delta": 0.04467884322678843
       },
       "pacemaker_v2": {
-        "flip_rate": 0.2465753424657534,
+        "flip_rate": 0.2648401826484018,
         "n": 657,
-        "avg_conf_delta": 0.037226788432267885
+        "avg_conf_delta": 0.040033485540334854
       },
       "pacemaker_v3": {
-        "flip_rate": 0.3515981735159817,
+        "flip_rate": 0.3622526636225266,
         "n": 657,
-        "avg_conf_delta": 0.04431202435312024
+        "avg_conf_delta": 0.049013698630136986
       },
       "negative_control": {
-        "flip_rate": 0.2009132420091324,
+        "flip_rate": 0.1917808219178082,
         "n": 657,
-        "avg_conf_delta": 0.035350076103500765
+        "avg_conf_delta": 0.03857229832572298
       },
       "demographic_v1": {
-        "flip_rate": 0.3485540334855403,
+        "flip_rate": 0.3181126331811263,
         "n": 657,
-        "avg_conf_delta": 0.05278538812785388
+        "avg_conf_delta": 0.05357382039573821
       },
       "demographic_v2": {
-        "flip_rate": 0.3394216133942161,
+        "flip_rate": 0.3181126331811263,
         "n": 657,
-        "avg_conf_delta": 0.05299695585996956
+        "avg_conf_delta": 0.05310958904109589
       },
       "contradiction_v1": {
-        "flip_rate": 0.3942161339421613,
+        "flip_rate": 0.3850837138508371,
         "n": 657,
-        "avg_conf_delta": 0.058207001522070013
+        "avg_conf_delta": 0.06004109589041096
       },
       "contradiction_v2": {
-        "flip_rate": 0.3926940639269406,
+        "flip_rate": 0.3789954337899543,
         "n": 657,
-        "avg_conf_delta": 0.05673363774733638
+        "avg_conf_delta": 0.05631811263318112
       },
       "paraphrase_v1": {
-        "flip_rate": 0.2983257229832572,
+        "flip_rate": 0.2663622526636225,
         "n": 657,
-        "avg_conf_delta": 0.046254185692541853
+        "avg_conf_delta": 0.04498325722983257
       },
       "paraphrase_v2": {
-        "flip_rate": 0.2861491628614916,
+        "flip_rate": 0.2617960426179604,
         "n": 657,
-        "avg_conf_delta": 0.04503957382039574
+        "avg_conf_delta": 0.04549162861491629
       },
       "paraphrase_v3": {
-        "flip_rate": 0.3059360730593607,
+        "flip_rate": 0.2846270928462709,
         "n": 657,
-        "avg_conf_delta": 0.045748858447488584
+        "avg_conf_delta": 0.0467427701674277
       }
     },
     "per_label": {
       "no finding": {
-        "accuracy": 0.18,
-        "flip_rate": 0.30538461538461537,
+        "accuracy": 0.16,
+        "flip_rate": 0.27153846153846156,
         "n_cases": 50
       },
       "support devices": {
         "accuracy": 0.12,
-        "flip_rate": 0.2946153846153846,
+        "flip_rate": 0.26,
         "n_cases": 50
       },
       "fracture": {
-        "accuracy": 0.62,
-        "flip_rate": 0.23461538461538461,
+        "accuracy": 0.7,
+        "flip_rate": 0.20615384615384616,
         "n_cases": 50
       },
       "lung opacity": {
-        "accuracy": 0.22,
-        "flip_rate": 0.3046153846153846,
+        "accuracy": 0.16,
+        "flip_rate": 0.3176923076923077,
         "n_cases": 50
       },
       "lung lesion": {
-        "accuracy": 0.42857142857142855,
-        "flip_rate": 0.2645211930926217,
+        "accuracy": 0.3673469387755102,
+        "flip_rate": 0.30062794348508637,
         "n_cases": 49
       },
       "edema": {
-        "accuracy": 0.92,
-        "flip_rate": 0.07923076923076923,
+        "accuracy": 0.94,
+        "flip_rate": 0.06846153846153846,
         "n_cases": 50
       },
       "cardiomegaly": {
         "accuracy": 0.16,
-        "flip_rate": 0.3,
+        "flip_rate": 0.2692307692307692,
         "n_cases": 50
       },
       "pleural effusion": {
         "accuracy": 0.02,
-        "flip_rate": 0.30846153846153845,
+        "flip_rate": 0.26,
         "n_cases": 50
       },
       "pleural other": {
         "accuracy": 0.0,
-        "flip_rate": 0.32,
+        "flip_rate": 0.29923076923076924,
         "n_cases": 50
       },
       "pneumothorax": {
-        "accuracy": 0.6,
-        "flip_rate": 0.41,
+        "accuracy": 0.68,
+        "flip_rate": 0.36538461538461536,
         "n_cases": 50
       },
       "pneumonia": {
         "accuracy": 0.0,
-        "flip_rate": 0.2692307692307692,
+        "flip_rate": 0.3006993006993007,
         "n_cases": 11
       },
       "atelectasis": {
-        "accuracy": 0.04,
-        "flip_rate": 0.22384615384615383,
+        "accuracy": 0.06,
+        "flip_rate": 0.21307692307692308,
         "n_cases": 50
       },
       "enlarged cardiomediastinum": {
-        "accuracy": 0.36,
-        "flip_rate": 0.33,
+        "accuracy": 0.4,
+        "flip_rate": 0.3330769230769231,
         "n_cases": 50
       },
       "consolidation": {
-        "accuracy": 0.1276595744680851,
-        "flip_rate": 0.3183306055646481,
+        "accuracy": 0.0851063829787234,
+        "flip_rate": 0.3625204582651391,
         "n_cases": 47
       }
     }

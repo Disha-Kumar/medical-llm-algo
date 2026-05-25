@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_39828_S06",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -17,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, chest_tube_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pneumothorax vs ground truth no finding). chexagent flipped heavily on image perturbations (30 flips) with some text flips (12). chexagent baseline was already wrong (said lung opacity vs ground truth no finding). GPT-4o unstable across both image (10 flips) and text (12 flips). GPT-4o baseline was already wrong (said pleural effusion vs ground truth no finding). LLaVA-Med unstable across both image (22 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth no finding). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic). Qwen2-VL baseline was already wrong (said pleural effusion vs ground truth no finding)"
+    "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, jpeg_v3",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pneumothorax vs ground truth no finding). chexagent flipped on image perturbations (jpeg) but stable on text. chexagent baseline was already wrong (said pneumothorax vs ground truth no finding). GPT-4o unstable across both image (10 flips) and text (12 flips). GPT-4o baseline was already wrong (said pleural effusion vs ground truth no finding). LLaVA-Med unstable across both image (22 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth no finding). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic). Qwen2-VL baseline was already wrong (said pleural effusion vs ground truth no finding)"
 }

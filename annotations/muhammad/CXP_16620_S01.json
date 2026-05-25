@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_16620_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v2, contradiction_v1, contradiction_v2, demographic_v1, jpeg_v3",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said cardiomegaly vs ground truth lung opacity). chexagent flipped heavily on image perturbations (16 flips) with some text flips (4). chexagent baseline was already wrong (said support devices vs ground truth lung opacity). GPT-4o unstable across both image (10 flips) and text (14 flips). GPT-4o baseline was already wrong (said lung lesion vs ground truth lung opacity). LLaVA-Med unstable across both image (10 flips) and text (6 flips). LLaVA-Med baseline was already wrong (said atelectasis vs ground truth lung opacity). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said atelectasis vs ground truth lung opacity)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said cardiomegaly vs ground truth lung opacity). chexagent flipped heavily on image perturbations (12 flips) with some text flips (4). chexagent baseline was already wrong (said support devices vs ground truth lung opacity). GPT-4o unstable across both image (10 flips) and text (14 flips). GPT-4o baseline was already wrong (said lung lesion vs ground truth lung opacity). LLaVA-Med unstable across both image (10 flips) and text (6 flips). LLaVA-Med baseline was already wrong (said atelectasis vs ground truth lung opacity). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said atelectasis vs ground truth lung opacity)"
 }

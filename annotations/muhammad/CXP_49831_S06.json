@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_49831_S06",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -9,14 +9,14 @@
         "llava_med",
         "qwen2_vl"
     ],
-    "tier1_label_flip": "P",
-    "tier1_label_flip_label": "partial -- label flipped in some but not all variants",
-    "tier2_confidence_change": "B",
-    "tier2_confidence_change_label": "both  -- dropped in some variants, increased in others",
-    "tier3_explanation_shift": "P",
-    "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
+    "tier1_label_flip": "Y",
+    "tier1_label_flip_label": "yes -- label flipped in at least one variant",
+    "tier2_confidence_change": "D",
+    "tier2_confidence_change_label": "dropped -- confidence dropped noticeably",
+    "tier3_explanation_shift": "Y",
+    "tier3_explanation_shift_label": "yes -- explanation shifted meaningfully",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "paraphrase_v1, demographic_v1, demographic_v2, contradiction_v1, contradiction_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said lung lesion vs ground truth no finding). chexagent flipped mainly on text perturbations (12 flips) with some image flips (2). GPT-4o unstable across both image (6 flips) and text (6 flips). GPT-4o baseline was already wrong (said support devices vs ground truth no finding). LLaVA-Med flipped heavily on image perturbations (32 flips) with some text flips (14). LLaVA-Med baseline was already wrong (said enlarged cardiomediastinum vs ground truth no finding). Qwen2-VL flipped heavily on image perturbations (32 flips) with some text flips (12). Qwen2-VL baseline was already wrong (said lung opacity vs ground truth no finding)"
+    "trigger_perturbations": "demographic_v2, paraphrase_v1, demographic_v1, contradiction_v1, contradiction_v2",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said lung lesion vs ground truth no finding). chexagent flipped heavily on image perturbations (36 flips) with some text flips (12). chexagent baseline was already wrong (said enlarged cardiomediastinum vs ground truth no finding). GPT-4o unstable across both image (6 flips) and text (6 flips). GPT-4o baseline was already wrong (said support devices vs ground truth no finding). LLaVA-Med flipped heavily on image perturbations (32 flips) with some text flips (14). LLaVA-Med baseline was already wrong (said enlarged cardiomediastinum vs ground truth no finding). Qwen2-VL flipped heavily on image perturbations (32 flips) with some text flips (12). Qwen2-VL baseline was already wrong (said lung opacity vs ground truth no finding)"
 }

@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_36361_S02",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -17,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "demographic_v2, contradiction_v2, demographic_v1, contradiction_v1, paraphrase_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said support devices vs ground truth edema). chexagent unstable across both image (10 flips) and text (10 flips). chexagent baseline was already wrong (said enlarged cardiomediastinum vs ground truth edema). GPT-4o flipped heavily on image perturbations (34 flips) with some text flips (10). GPT-4o baseline was already wrong (said support devices vs ground truth edema). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said atelectasis vs ground truth edema)"
+    "trigger_perturbations": "contradiction_v2, demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said support devices vs ground truth edema). chexagent unstable across both image (10 flips) and text (8 flips). chexagent baseline was already wrong (said enlarged cardiomediastinum vs ground truth edema). GPT-4o flipped heavily on image perturbations (34 flips) with some text flips (10). GPT-4o baseline was already wrong (said support devices vs ground truth edema). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL baseline was already wrong (said atelectasis vs ground truth edema)"
 }

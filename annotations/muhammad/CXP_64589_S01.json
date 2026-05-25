@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_64589_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "contradiction_v2, demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pneumonia vs ground truth enlarged cardiomediastinum). chexagent flipped mainly on text perturbations (8 flips) with some image flips (2). chexagent baseline was already wrong (said edema vs ground truth enlarged cardiomediastinum). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). GPT-4o baseline was already wrong (said edema vs ground truth enlarged cardiomediastinum). LLaVA-Med unstable across both image (28 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth enlarged cardiomediastinum). Qwen2-VL unstable across both image (18 flips) and text (14 flips). Qwen2-VL baseline was already wrong (said edema vs ground truth enlarged cardiomediastinum)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pneumonia vs ground truth enlarged cardiomediastinum). chexagent stable on image perturbations but flipped on text (contradiction, paraphrase). chexagent baseline was already wrong (said edema vs ground truth enlarged cardiomediastinum). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). GPT-4o baseline was already wrong (said edema vs ground truth enlarged cardiomediastinum). LLaVA-Med unstable across both image (28 flips) and text (14 flips). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth enlarged cardiomediastinum). Qwen2-VL unstable across both image (18 flips) and text (14 flips). Qwen2-VL baseline was already wrong (said edema vs ground truth enlarged cardiomediastinum)"
 }

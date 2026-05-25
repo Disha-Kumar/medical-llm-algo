@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_16520_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, paraphrase_v1, paraphrase_v2, paraphrase_v3, demographic_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said  vs ground truth lung lesion). chexagent flipped heavily on image perturbations (34 flips) with some text flips (14). chexagent baseline was already wrong (said pneumonia vs ground truth lung lesion). GPT-4o flipped mainly on text perturbations (10 flips) with some image flips (4). GPT-4o baseline was already wrong (said support devices vs ground truth lung lesion). LLaVA-Med unstable across both image (20 flips) and text (12 flips). LLaVA-Med baseline was already wrong (said lung opacity vs ground truth lung lesion). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (2). Qwen2-VL baseline was already wrong (said no finding vs ground truth lung lesion)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said  vs ground truth lung lesion). chexagent flipped heavily on image perturbations (36 flips) with some text flips (14). chexagent baseline was already wrong (said atelectasis vs ground truth lung lesion). GPT-4o flipped mainly on text perturbations (10 flips) with some image flips (4). GPT-4o baseline was already wrong (said support devices vs ground truth lung lesion). LLaVA-Med unstable across both image (20 flips) and text (12 flips). LLaVA-Med baseline was already wrong (said lung opacity vs ground truth lung lesion). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (2). Qwen2-VL baseline was already wrong (said no finding vs ground truth lung lesion)"
 }

@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_54479_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "S",
     "failure_cause_label": "spurious-caused",
     "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, paraphrase_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). chexagent unstable across both image (12 flips) and text (8 flips). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (4)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). chexagent unstable across both image (14 flips) and text (8 flips). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). Qwen2-VL flipped mainly on text perturbations (14 flips) with some image flips (4)"
 }

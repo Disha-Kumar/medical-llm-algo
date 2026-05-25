@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_11751_S21",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -17,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "contradiction_v1, contradiction_v2, demographic_v1, demographic_v2, paraphrase_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). chexagent flipped on image perturbations (pacemaker) but stable on text. chexagent baseline was already wrong (said edema vs ground truth support devices). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). GPT-4o baseline was already wrong (said atelectasis vs ground truth support devices). LLaVA-Med flipped heavily on image perturbations (24 flips) with some text flips (10). LLaVA-Med baseline was already wrong (said atelectasis vs ground truth support devices). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic). Qwen2-VL baseline was already wrong (said pneumothorax vs ground truth support devices)"
+    "trigger_perturbations": "contradiction_v1, contradiction_v2, demographic_v1, demographic_v2, paraphrase_v3",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). chexagent flipped heavily on image perturbations (6 flips) with some text flips (2). chexagent baseline was already wrong (said edema vs ground truth support devices). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). GPT-4o baseline was already wrong (said atelectasis vs ground truth support devices). LLaVA-Med flipped heavily on image perturbations (24 flips) with some text flips (10). LLaVA-Med baseline was already wrong (said atelectasis vs ground truth support devices). Qwen2-VL stable on image perturbations but flipped on text (contradiction, demographic). Qwen2-VL baseline was already wrong (said pneumothorax vs ground truth support devices)"
 }

@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_37257_S05",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, contradiction_v2, jpeg_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said support devices vs ground truth no finding). chexagent flipped on image perturbations (jpeg) but stable on text. chexagent baseline was already wrong (said edema vs ground truth no finding). GPT-4o unstable across both image (8 flips) and text (8 flips). GPT-4o baseline was already wrong (said atelectasis vs ground truth no finding). LLaVA-Med flipped mainly on text perturbations (14 flips) with some image flips (4). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth no finding). Qwen2-VL flipped heavily on image perturbations (34 flips) with some text flips (8). Qwen2-VL baseline was already wrong (said pneumonia vs ground truth no finding)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said support devices vs ground truth no finding). chexagent completely stable across all perturbations. chexagent baseline was already wrong (said edema vs ground truth no finding). GPT-4o unstable across both image (8 flips) and text (8 flips). GPT-4o baseline was already wrong (said atelectasis vs ground truth no finding). LLaVA-Med flipped mainly on text perturbations (14 flips) with some image flips (4). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth no finding). Qwen2-VL flipped heavily on image perturbations (34 flips) with some text flips (8). Qwen2-VL baseline was already wrong (said pneumonia vs ground truth no finding)"
 }

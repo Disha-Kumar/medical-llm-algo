@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_04817_S03",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, paraphrase_v1, paraphrase_v3",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). chexagent completely stable across all perturbations. chexagent baseline was already wrong (said edema vs ground truth support devices). GPT-4o unstable across both image (6 flips) and text (12 flips). GPT-4o baseline was already wrong (said consolidation vs ground truth support devices). LLaVA-Med unstable across both image (8 flips) and text (10 flips). LLaVA-Med baseline was already wrong (said lung opacity vs ground truth support devices). Qwen2-VL unstable across both image (12 flips) and text (12 flips). Qwen2-VL baseline was already wrong (said lung opacity vs ground truth support devices)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). chexagent flipped on image perturbations (jpeg) but stable on text. chexagent baseline was already wrong (said edema vs ground truth support devices). GPT-4o unstable across both image (6 flips) and text (12 flips). GPT-4o baseline was already wrong (said consolidation vs ground truth support devices). LLaVA-Med unstable across both image (8 flips) and text (10 flips). LLaVA-Med baseline was already wrong (said lung opacity vs ground truth support devices). Qwen2-VL unstable across both image (12 flips) and text (12 flips). Qwen2-VL baseline was already wrong (said lung opacity vs ground truth support devices)"
 }

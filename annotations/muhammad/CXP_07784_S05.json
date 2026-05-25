@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_07784_S05",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v2, contradiction_v1, chest_tube_v1",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pneumothorax vs ground truth pleural effusion). chexagent flipped heavily on image perturbations (16 flips) with some text flips (6). chexagent baseline was already wrong (said lung opacity vs ground truth pleural effusion). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med flipped heavily on image perturbations (36 flips) with some text flips (12). LLaVA-Med baseline was already wrong (said no finding vs ground truth pleural effusion). Qwen2-VL unstable across both image (14 flips) and text (14 flips). Qwen2-VL baseline was already wrong (said pneumothorax vs ground truth pleural effusion)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said pneumothorax vs ground truth pleural effusion). chexagent flipped heavily on image perturbations (14 flips) with some text flips (6). chexagent baseline was already wrong (said lung opacity vs ground truth pleural effusion). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med flipped heavily on image perturbations (36 flips) with some text flips (12). LLaVA-Med baseline was already wrong (said no finding vs ground truth pleural effusion). Qwen2-VL unstable across both image (14 flips) and text (14 flips). Qwen2-VL baseline was already wrong (said pneumothorax vs ground truth pleural effusion)"
 }

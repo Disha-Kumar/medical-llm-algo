@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_34328_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, contradiction_v2, chest_tube_v2, chest_tube_v3, demographic_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said fracture vs ground truth lung lesion). chexagent unstable across both image (22 flips) and text (12 flips). GPT-4o unstable across both image (8 flips) and text (6 flips). GPT-4o baseline was already wrong (said no finding vs ground truth lung lesion). LLaVA-Med flipped heavily on image perturbations (30 flips) with some text flips (14). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth lung lesion). Qwen2-VL unstable across both image (10 flips) and text (12 flips). Qwen2-VL baseline was already wrong (said lung opacity vs ground truth lung lesion)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said fracture vs ground truth lung lesion). chexagent unstable across both image (22 flips) and text (14 flips). GPT-4o unstable across both image (8 flips) and text (6 flips). GPT-4o baseline was already wrong (said no finding vs ground truth lung lesion). LLaVA-Med flipped heavily on image perturbations (30 flips) with some text flips (14). LLaVA-Med baseline was already wrong (said cardiomegaly vs ground truth lung lesion). Qwen2-VL unstable across both image (10 flips) and text (12 flips). Qwen2-VL baseline was already wrong (said lung opacity vs ground truth lung lesion)"
 }

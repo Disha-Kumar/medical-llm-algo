@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_18468_S02",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -17,6 +17,6 @@
     "tier3_explanation_shift_label": "partial -- some explanations changed, others did not",
     "failure_cause": "B",
     "failure_cause_label": "both",
-    "trigger_perturbations": "demographic_v1, demographic_v2, contradiction_v1, ecg_leads_v3, contradiction_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said cardiomegaly vs ground truth support devices). chexagent flipped on image perturbations (chest drain, ecg leads, jpeg, pacemaker) but stable on text. chexagent baseline was already wrong (said pneumothorax vs ground truth support devices). GPT-4o unstable across both image (10 flips) and text (14 flips). GPT-4o baseline was already wrong (said pleural effusion vs ground truth support devices). LLaVA-Med flipped mainly on text perturbations (14 flips) with some image flips (6). LLaVA-Med baseline was already wrong (said pleural effusion vs ground truth support devices). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth support devices)"
+    "trigger_perturbations": "contradiction_v1, demographic_v1, demographic_v2, ecg_leads_v3, contradiction_v2",
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic). BioViL-T baseline was already wrong (said cardiomegaly vs ground truth support devices). chexagent flipped heavily on image perturbations (12 flips) with some text flips (2). chexagent baseline was already wrong (said pneumothorax vs ground truth support devices). GPT-4o unstable across both image (10 flips) and text (14 flips). GPT-4o baseline was already wrong (said pleural effusion vs ground truth support devices). LLaVA-Med flipped mainly on text perturbations (14 flips) with some image flips (6). LLaVA-Med baseline was already wrong (said pleural effusion vs ground truth support devices). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth support devices)"
 }

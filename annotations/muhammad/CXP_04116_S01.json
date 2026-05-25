@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_04116_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "demographic_v1, contradiction_v1, contradiction_v2, demographic_v2, pacemaker_v3",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pleural other vs ground truth atelectasis). chexagent flipped on image perturbations (chest drain, chest tube, ecg leads, jpeg, pacemaker) but stable on text. chexagent baseline was already wrong (said edema vs ground truth atelectasis). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med unstable across both image (8 flips) and text (6 flips). Qwen2-VL flipped mainly on text perturbations (12 flips) with some image flips (4). Qwen2-VL baseline was already wrong (said no finding vs ground truth atelectasis)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). BioViL-T baseline was already wrong (said pleural other vs ground truth atelectasis). chexagent flipped on image perturbations (chest drain, chest tube, ecg leads, jpeg, pacemaker, watermark) but stable on text. chexagent baseline was already wrong (said edema vs ground truth atelectasis). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic). LLaVA-Med unstable across both image (8 flips) and text (6 flips). Qwen2-VL flipped mainly on text perturbations (12 flips) with some image flips (4). Qwen2-VL baseline was already wrong (said no finding vs ground truth atelectasis)"
 }

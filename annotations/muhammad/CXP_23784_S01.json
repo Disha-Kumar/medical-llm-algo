@@ -1,7 +1,7 @@
 {
     "annotator_id": "muhammad",
     "case_id": "CXP_23784_S01",
-    "timestamp": "2026-05-24T21:14:12",
+    "timestamp": "2026-05-25T21:52:07",
     "models_reviewed": [
         "biovil_t",
         "chexagent",
@@ -18,5 +18,5 @@
     "failure_cause": "B",
     "failure_cause_label": "both",
     "trigger_perturbations": "contradiction_v2, demographic_v2, contradiction_v1, paraphrase_v1, paraphrase_v2",
-    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). chexagent unstable across both image (16 flips) and text (14 flips). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). LLaVA-Med flipped mainly on text perturbations (10 flips) with some image flips (4). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth enlarged cardiomediastinum)"
+    "notes": "BioViL-T stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). chexagent unstable across both image (14 flips) and text (14 flips). GPT-4o stable on image perturbations but flipped on text (contradiction, demographic, paraphrase). LLaVA-Med flipped mainly on text perturbations (10 flips) with some image flips (4). Qwen2-VL stable on image perturbations but flipped on text (contradiction). Qwen2-VL baseline was already wrong (said cardiomegaly vs ground truth enlarged cardiomediastinum)"
 }
